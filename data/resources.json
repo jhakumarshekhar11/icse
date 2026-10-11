@@ -357,6 +357,27 @@
         "language",
         "previous year papers"
       ]
+    },
+    {
+      "id": "englishlang-2023-sample-paper",
+      "title": "ICSE SPECIMEN 2023 English Language",
+      "subject": "englishlang",
+      "class": "X",
+      "type": "Sample Papers",
+      "year": 2023,
+      "file": "/pdfs/englishlang-2023-sample-paper.pdf",
+      "pages": 8,
+      "size_kb": 317,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "Specimen Paper of English Language 2023",
+      "tags": [
+        "english",
+        "language",
+        "specimen",
+        "paper"
+      ]
     }
   ]
 }
