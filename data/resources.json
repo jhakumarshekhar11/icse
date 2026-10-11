@@ -285,6 +285,34 @@
         "language",
         "previous year papers"
       ]
+    },
+    {
+      "id": "geography-2027-question-bank",
+      "title": "Geography Question(Selected Chapters) Bank",
+      "subject": "geography",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/geography-2027-question-bank.pdf",
+      "pages": 32,
+      "size_kb": 2957,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "Question Bank for Chapters:\nNatural Vegetation\nWater Resources\nMineral and Energy Resources\nAgriculture",
+      "tags": [
+        "Question Bank",
+        "Geography",
+        "Natural Vegetation",
+        "Water Resources",
+        "Mineral and Energy Resources",
+        "Agriculture",
+        "2027",
+        "2026",
+        "2025",
+        "2024",
+        "2023"
+      ]
     }
   ]
 }
