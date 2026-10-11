@@ -131,6 +131,28 @@
         "computer",
         "applications"
       ]
+    },
+    {
+      "id": "computer-2023-previous-year-paper",
+      "title": "ICSE 2023 Computer Applications",
+      "subject": "computer",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/computer-2023-previous-year-paper.pdf",
+      "pages": 8,
+      "size_kb": 91,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "PYQ of Computer Applications 2023",
+      "tags": [
+        "board",
+        "paper",
+        "computer",
+        "applications",
+        "previous year papers"
+      ]
     }
   ]
 }
