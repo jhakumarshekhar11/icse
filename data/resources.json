@@ -71,23 +71,6 @@
   ],
   "resources": [
     {
-      "id": "geographybank5678",
-      "title": "Geography Question Bank",
-      "subject": "Geography",
-      "class": "X",
-      "type": "Question Banks",
-      "year": 2027,
-      "file": "/pdfs/geography-question-bank.pdf",
-      "pages": 5,
-      "size_kb": 6,
-      "added": "2026-08-15",
-      "downloads": 1,
-      "description": "Commonly asked questions.",
-      "tags": [
-        "geography"
-      ]
-    },
-    {
       "id": "computer-2025-specimen-paper",
       "title": "ICSE SPECIMEN 2025 Computer Applications",
       "subject": "computer",
