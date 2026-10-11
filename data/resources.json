@@ -399,6 +399,27 @@
         "specimen",
         "paper"
       ]
+    },
+    {
+      "id": "englishlang-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 English Language",
+      "subject": "englishlang",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/englishlang-2026-specimen-paper.pdf",
+      "pages": 6,
+      "size_kb": 225,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "Specimen Paper of English Language 2026",
+      "tags": [
+        "english",
+        "language",
+        "specimen",
+        "paper"
+      ]
     }
   ]
 }
