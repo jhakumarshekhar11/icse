@@ -89,6 +89,23 @@
         "computer",
         "2025"
       ]
+    },
+    {
+      "id": "icse-2024-specimen-861-cta",
+      "title": "ICSE 2024 SPECIMEN 861 CTA",
+      "subject": "",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2024,
+      "file": "/pdfs/icse-2024-specimen-861-cta.pdf",
+      "pages": 10,
+      "size_kb": 89,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "draft": true,
+      "description": "",
+      "tags": []
     }
   ]
 }
