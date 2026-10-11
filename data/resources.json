@@ -197,6 +197,28 @@
         "applications",
         "previous year papers"
       ]
+    },
+    {
+      "id": "computer-2026-previous-year-paper",
+      "title": "ICSE 2026 Computer Applications",
+      "subject": "computer",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/computer-2026-previous-year-paper.pdf",
+      "pages": 12,
+      "size_kb": 405,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "PYQ of Computer Applications 2026",
+      "tags": [
+        "board",
+        "paper",
+        "computer",
+        "applications",
+        "previous year papers"
+      ]
     }
   ]
 }
