@@ -110,6 +110,27 @@
         "computer",
         "applications"
       ]
+    },
+    {
+      "id": "computer-2023-specimen-paper",
+      "title": "ICSE SPECIMEN 2023 Computer Applications",
+      "subject": "computer",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2023,
+      "file": "/pdfs/computer-2023-specimen-paper.pdf",
+      "pages": 9,
+      "size_kb": 209,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "Specimen paper of Computer Applications 2023",
+      "tags": [
+        "specimen paper",
+        "2023",
+        "computer",
+        "applications"
+      ]
     }
   ]
 }
