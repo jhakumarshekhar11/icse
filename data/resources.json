@@ -175,6 +175,28 @@
         "applications",
         "previous year papers"
       ]
+    },
+    {
+      "id": "computer-2025-previous-year-paper",
+      "title": "ICSE 2025 Computer Applications",
+      "subject": "computer",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/computer-2025-previous-year-paper.pdf",
+      "pages": 12,
+      "size_kb": 376,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "PYQ of Computer Applications",
+      "tags": [
+        "board",
+        "paper",
+        "computer",
+        "applications",
+        "previous year papers"
+      ]
     }
   ]
 }
