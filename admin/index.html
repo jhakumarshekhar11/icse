@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin | ICSE Resources</title>
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#000000">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://api.github.com https://abacus.jasoncameron.dev blob: data:; worker-src 'self' blob:; base-uri 'self'; form-action 'none'; object-src 'none'">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/admin.css">
+</head>
+<body class="adm">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 20h16"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-zin" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></symbol>
+  <symbol id="i-zout" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6"/></symbol>
+  <symbol id="i-fitw" viewBox="0 0 24 24"><path d="M4 5v14M20 5v14M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></symbol>
+  <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-read" viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 20h16"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.5 20h19L12 4zM12 10v4m0 3v.01"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></symbol>
+</svg>
+
+<div class="ambient" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+
+<div class="page">
+
+  <!-- Sign in -->
+  <section id="login" class="login wrap" hidden>
+    <div class="login-card glass">
+      <h1>Admin</h1>
+      <p class="lead">Sign in with GitHub to manage resources for <b id="repoName"></b>.</p>
+      <form id="loginForm" autocomplete="off">
+        <label class="lbl" for="tokenIn">GitHub access token</label>
+        <input id="tokenIn" type="password" placeholder="github_pat_…" spellcheck="false" autocomplete="off" required>
+        <p class="err" id="loginErr" role="alert" hidden></p>
+        <button class="btn btn-primary" id="loginBtn" type="submit">Sign in</button>
+      </form>
+      <details class="how">
+        <summary>How do I get a token?</summary>
+        <ol>
+          <li>Open GitHub, then Settings, Developer settings, Fine-grained personal access tokens, Generate new token.</li>
+          <li>Repository access: choose <b>Only select repositories</b> and pick <b id="repoName2"></b>.</li>
+          <li>Permissions, Repository: set <b>Contents</b> to <b>Read and write</b>. Leave the rest.</li>
+          <li>Set a short expiry, generate, and paste the token above.</li>
+        </ol>
+        <p>The token stays in this tab only. It is cleared when you sign out, close the tab, or after <span id="idleMin"></span> minutes of inactivity.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Console -->
+  <div id="console" hidden>
+    <header class="adm-top wrap">
+      <div class="adm-bar glass">
+        <a class="brand" href="/resource">ICSE <span>Admin</span></a>
+        <div class="grow"></div>
+        <span class="who" id="who"></span>
+        <button class="btn" id="undoBtn" type="button" disabled><svg class="ic"><use href="#i-undo"/></svg>Undo last change</button>
+        <button class="btn" id="exportBtn" type="button"><svg class="ic"><use href="#i-download"/></svg>Export JSON</button>
+        <a class="btn" href="/resource" target="_blank" rel="noopener"><svg class="ic"><use href="#i-read"/></svg>View site</a>
+        <button class="btn" id="outBtn" type="button"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Admin sections">
+        <button role="tab" data-tab="upload" aria-selected="true">Upload</button>
+        <button role="tab" data-tab="library" aria-selected="false">Library <span class="n" id="libCount">0</span></button>
+        <button role="tab" data-tab="taxonomy" aria-selected="false">Subjects and types</button>
+        <button role="tab" data-tab="activity" aria-selected="false">Activity</button>
+      </nav>
+    </header>
+
+    <main class="wrap adm-main">
+      <section id="tab-upload" data-panel="upload"><div id="uploadHost"></div></section>
+
+      <section id="tab-library" data-panel="library" hidden>
+        <div class="lib-tools glass">
+          <div class="search-s"><svg class="ic"><use href="#i-search"/></svg><input id="lq" type="search" placeholder="Search title, subject, type or year" aria-label="Search library"></div>
+          <select id="fSubject" aria-label="Subject"></select>
+          <select id="fType" aria-label="Type"></select>
+          <select id="fYear" aria-label="Year"></select>
+          <select id="fStatus" aria-label="Status">
+            <option value="">All statuses</option><option value="live">Live</option><option value="draft">Draft</option>
+          </select>
+        </div>
+        <div class="bulk glass" id="bulkBar" hidden>
+          <b id="bulkN"></b>
+          <button class="btn" id="bulkEdit" type="button"><svg class="ic"><use href="#i-edit"/></svg>Edit selected</button>
+          <button class="btn danger" id="bulkDel" type="button"><svg class="ic"><use href="#i-trash"/></svg>Delete selected</button>
+          <button class="btn" id="bulkClear" type="button">Clear selection</button>
+        </div>
+        <div class="tbl-wrap glass">
+          <table class="tbl" id="tbl">
+            <thead><tr>
+              <th class="c-sel"><input type="checkbox" id="selAll" aria-label="Select all shown"></th>
+              <th><button class="th" data-sort="title">Title</button></th>
+              <th><button class="th" data-sort="subject">Subject</button></th>
+              <th><button class="th" data-sort="type">Type</button></th>
+              <th><button class="th" data-sort="year">Year</button></th>
+              <th>Status</th>
+              <th><button class="th" data-sort="downloads">Downloads</button></th>
+              <th><button class="th" data-sort="updated">Updated</button></th>
+              <th class="c-act"><span class="sr">Actions</span></th>
+            </tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <p class="hint" id="libHint"></p>
+      </section>
+
+      <section id="tab-taxonomy" data-panel="taxonomy" hidden>
+        <div class="tax-grid">
+          <div class="glass tax-card">
+            <div class="tax-head"><h2>Subjects</h2><button class="btn" id="addSubject" type="button"><svg class="ic"><use href="#i-plus"/></svg>Add subject</button></div>
+            <div id="subjList" class="tax-list"></div>
+          </div>
+          <div class="glass tax-card">
+            <div class="tax-head"><h2>Types</h2><button class="btn" id="addType" type="button"><svg class="ic"><use href="#i-plus"/></svg>Add type</button></div>
+            <div id="typeList" class="tax-list"></div>
+          </div>
+        </div>
+        <div class="tax-save"><button class="btn btn-primary" id="taxSave" type="button" disabled>Save changes</button><button class="btn" id="taxReset" type="button" disabled>Discard</button><span class="hint" id="taxHint"></span></div>
+      </section>
+
+      <section id="tab-activity" data-panel="activity" hidden>
+        <div class="act-grid">
+          <div class="glass tax-card"><h2>Recent uploads</h2><div id="recentList" class="act-list"></div></div>
+          <div class="glass tax-card"><h2>Change history</h2><div id="histList" class="act-list"></div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Reader (preview) -->
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="PDF preview">
+  <div class="v-shell">
+    <div class="v-bar">
+      <button class="ib o-close" id="vClose" type="button" aria-label="Close preview" title="Close (Esc)"><svg class="ic"><use href="#i-close"/></svg></button>
+      <div class="v-title"><strong id="vTitle"></strong><span id="vSub"></span></div>
+      <div class="grp" role="group" aria-label="Page navigation">
+        <button class="ib" id="vPrev" type="button" aria-label="Previous page"><svg class="ic"><use href="#i-up"/></svg></button>
+        <span class="pg-in"><label class="sr" for="vPage">Go to page</label><input id="vPage" type="number" min="1" value="1" inputmode="numeric"> of <span id="vTotal">–</span></span>
+        <button class="ib" id="vNext" type="button" aria-label="Next page"><svg class="ic"><use href="#i-down"/></svg></button>
+      </div>
+      <div class="grp" role="group" aria-label="Zoom">
+        <button class="ib zbtn" id="vZout" type="button" aria-label="Zoom out"><svg class="ic"><use href="#i-zout"/></svg></button>
+        <span class="zl" id="vZoom">100%</span>
+        <button class="ib zbtn" id="vZin" type="button" aria-label="Zoom in"><svg class="ic"><use href="#i-zin"/></svg></button>
+        <button class="ib" id="vFit" type="button" aria-label="Fit to width"><svg class="ic"><use href="#i-fitw"/></svg></button>
+      </div>
+      <span class="v-break"></span>
+      <button class="ib" id="vSave" type="button" hidden><svg class="ic"><use href="#i-bookmark"/></svg></button>
+      <button class="ib" id="vShare" type="button" hidden><svg class="ic"><use href="#i-share"/></svg></button>
+      <a class="ib" id="vReport" hidden><svg class="ic"><use href="#i-flag"/></svg></a>
+      <button class="ib o-full" id="vFull" type="button" aria-label="Fullscreen"><svg class="ic"><use href="#i-full"/></svg></button>
+      <a class="btn btn-primary o-dl" id="vDl" href="#" download><svg class="ic"><use href="#i-download"/></svg>Download</a>
+    </div>
+    <div class="v-scroll" id="vScroll" tabindex="-1">
+      <div class="v-pages" id="vPages"></div>
+      <div class="v-status" id="vStatus"></div>
+    </div>
+    <div class="v-prog"><i id="vProg"></i></div>
+  </div>
+</div>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="/assets/vendor/pdf.min.js"></script>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/admin-config.js"></script>
+<script src="/assets/js/admin-gh.js"></script>
+<script src="/assets/js/viewer.js"></script>
+<script src="/assets/js/admin.js"></script>
+</body>
+</html>

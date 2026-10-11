@@ -1,0 +1,91 @@
+{
+  "subjects": [
+    {
+      "id": "englishlang",
+      "name": "English Language",
+      "accent": "#fcd34d"
+    },
+    {
+      "id": "englishlit",
+      "name": "English Literature",
+      "accent": "#fcd34d"
+    },
+    {
+      "id": "physics",
+      "name": "Physics",
+      "accent": "#5eead4"
+    },
+    {
+      "id": "chemistry",
+      "name": "Chemistry",
+      "accent": "#f0abfc"
+    },
+    {
+      "id": "biology",
+      "name": "Biology",
+      "accent": "#86efac"
+    },
+    {
+      "id": "maths",
+      "name": "Mathematics",
+      "accent": "#7aa2ff"
+    },
+    {
+      "id": "history",
+      "name": "History & Civics",
+      "accent": "#fdba74"
+    },
+    {
+      "id": "geography",
+      "name": "Geography",
+      "accent": "#67e8f9"
+    },
+    {
+      "id": "computer",
+      "name": "Computer Applications",
+      "accent": "#fda4af"
+    },
+    {
+      "id": "hindi",
+      "name": "Hindi",
+      "accent": "#fcd34d"
+    },
+    {
+      "id": "commercialstudies",
+      "name": "Commercial Studies",
+      "accent": "#f0abfc"
+    },
+    {
+      "id": "economics",
+      "name": "Economic Applications",
+      "accent": "#87efac"
+    }
+  ],
+  "types": [
+    "Notes",
+    "Question Banks",
+    "Solutions",
+    "Formula Sheets",
+    "Sample Papers",
+    "Specimen Papers"
+  ],
+  "resources": [
+    {
+      "id": "geographybank5678",
+      "title": "Geography Question Bank",
+      "subject": "Geography",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/geography-question-bank.pdf",
+      "pages": 5,
+      "size_kb": 6,
+      "added": "2026-08-15",
+      "downloads": 1,
+      "description": "Commonly asked questions.",
+      "tags": [
+        "geography"
+      ],
+      "class": "X"
+    }
+  ]
+}

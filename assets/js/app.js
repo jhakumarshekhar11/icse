@@ -1,0 +1,458 @@
+// Library page: search, filters, sorting, cards, bookmarks, sharing,
+// download counter and deep links. The reader lives in viewer.js.
+(() => {
+  'use strict';
+  const CFG = window.ICSE_CONFIG;
+  const $ = (s, r = document) => r.querySelector(s);
+  const el = {
+    q: $('#q'), form: $('#searchForm'), clear: $('#qClear'), quick: $('#quick'),
+    strip: $('#strip'), subjects: $('#subjectGrid'), grid: $('#grid'), count: $('#count'),
+    chipsClass: $('#chipsClass'), rowClass: $('#rowClass'), chipsSubject: $('#chipsSubject'),
+    chipsType: $('#chipsType'), chipsYear: $('#chipsYear'), sort: $('#sortSeg'),
+    savedBtn: $('#savedBtn'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
+    spot: $('#spot'), page: $('#page'),
+    dlg: $('#shareDlg'), shName: $('#shName'), shLink: $('#shLink'), shQr: $('#shQr'),
+    shCopy: $('#shCopy'), shNative: $('#shNative'), shReport: $('#shReport'), shClose: $('#shClose'),
+    toasts: $('#toasts')
+  };
+
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
+  };
+  const session = {
+    get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch { /* ignore */ } }
+  };
+
+  const state = {
+    res: [], byId: new Map(), subjects: new Map(), types: [],
+    q: '', cls: '', subject: '', type: '', year: '', sort: 'new', savedOnly: false,
+    saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
+  };
+
+  /* ---------- helpers ---------- */
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const icon = (n) => `<svg class="ic" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const dlCount = (r) => (r.downloads || 0) + (state.live[r.id] || 0);
+  const fmtCount = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n));
+  const fmtSize = (kb) => (kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB');
+  const daysAgo = (r) => Math.floor((Date.now() - r._date) / 864e5);
+  const isNew = (r) => daysAgo(r) <= CFG.newDays;
+  const isPopular = (r) => r.popular === true || dlCount(r) >= CFG.popularMin;
+  const fileName = (r) => slug(r.title) + '.pdf';
+  const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+
+  function when(r) {
+    const d = daysAgo(r);
+    if (d <= 0) return 'Added today';
+    if (d === 1) return 'Added yesterday';
+    if (d < 14) return `Added ${d} days ago`;
+    if (d < 60) return `Added ${Math.floor(d / 7)} weeks ago`;
+    return 'Added ' + new Date(r._date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+  }
+
+  function toast(msg) {
+    const host = window.Viewer ? Viewer.fullscreenHost() : document.body;
+    if (el.toasts.parentNode !== host) host.appendChild(el.toasts);
+    const t = document.createElement('div');
+    t.className = 'toast'; t.textContent = msg;
+    el.toasts.appendChild(t);
+    setTimeout(() => t.remove(), 2600);
+  }
+
+  /* ---------- data ---------- */
+  async function load() {
+    try {
+      const r = await fetch(CFG.dataUrl, { cache: 'no-cache' });
+      if (!r.ok) throw new Error(r.status);
+      const data = await r.json();
+      data.subjects.forEach((s) => state.subjects.set(s.id, s));
+      state.types = data.types || [];
+      state.res = data.resources.filter((r) => !r.draft).map((r) => {
+        const s = state.subjects.get(r.subject) || { name: r.subject, accent: '#fff' };
+        return Object.assign({}, r, {
+          subject_name: s.name, accent: s.accent,
+          _date: new Date(r.added + 'T00:00:00').getTime() || 0,
+          _hay: [r.title, s.name, r.type, r.year, 'class ' + r.class, (r.tags || []).join(' '), r.description || ''].join(' ').toLowerCase()
+        });
+      });
+      state.res.forEach((r) => state.byId.set(r.id, r));
+    } catch (e) {
+      console.error(e);
+      el.grid.innerHTML = `<div class="empty glass"><h3>Resources could not load</h3><p>Refresh the page. If it keeps happening, the resource list is missing or has a typo.</p></div>`;
+      return false;
+    }
+    return true;
+  }
+
+  /* ---------- filtering ---------- */
+  function visible() {
+    const tokens = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const list = state.res.filter((r) =>
+      (!state.savedOnly || state.saved.has(r.id)) &&
+      (!state.cls || r.class === state.cls) &&
+      (!state.subject || r.subject === state.subject) &&
+      (!state.type || r.type === state.type) &&
+      (!state.year || String(r.year) === state.year) &&
+      tokens.every((t) => r._hay.includes(t)));
+    const by = {
+      new: (a, b) => b._date - a._date || a.title.localeCompare(b.title),
+      popular: (a, b) => dlCount(b) - dlCount(a),
+      az: (a, b) => a.title.localeCompare(b.title)
+    }[state.sort];
+    return list.sort(by);
+  }
+  const filtering = () => !!(state.q || state.cls || state.subject || state.type || state.year || state.savedOnly);
+
+  /* ---------- rendering ---------- */
+  function badges(r) {
+    return (isNew(r) ? '<span class="badge new">New</span>' : '') + (isPopular(r) ? '<span class="badge pop">Popular</span>' : '');
+  }
+  function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
+
+  function cardHtml(r) {
+    const saved = state.saved.has(r.id);
+    return `
+    <article class="card glass gh" style="--accent:${esc(r.accent)}" data-id="${esc(r.id)}">
+      <button class="ib corner ${saved ? 'saved' : ''}" data-act="save" aria-pressed="${saved}" aria-label="${saved ? 'Remove bookmark' : 'Save to bookmarks'}" title="Bookmark">${icon('bookmark')}</button>
+      <div class="tags">
+        <span class="sj"><i class="dot"></i>${esc(r.subject_name)}</span><span class="ty">${esc(r.type)}</span>${badges(r)}
+      </div>
+      <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
+      <p class="desc">${esc(r.description || '')}</p>
+      <div class="facts">
+        <span>Class ${esc(r.class)}, ${esc(r.year)}</span>
+        ${r.pages ? `<span>${plural(r.pages, 'page')}</span>` : ''}
+        ${r.size_kb ? `<span>${fmtSize(r.size_kb)}</span>` : ''}
+        <span><span data-count="${esc(r.id)}">${fmtCount(dlCount(r))}</span> downloads</span>
+      </div>
+      <div class="acts">
+        <a class="btn" href="${esc(readHref(r))}" data-act="read">${icon('read')}Read</a>
+        <a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>
+      </div>
+      <div class="more">
+        <span></span>
+        <span>
+          <button class="ib" data-act="share" aria-label="Share ${esc(r.title)}" title="Share">${icon('share')}</button>
+          <a class="ib" href="${esc(reportHref(r))}" target="_blank" rel="noopener" aria-label="Report an error in ${esc(r.title)}" title="Report an error">${icon('flag')}</a>
+        </span>
+      </div>
+    </article>`;
+  }
+
+  function miniHtml(r) {
+    return `
+    <article class="mini glass gh" style="--accent:${esc(r.accent)}" data-id="${esc(r.id)}">
+      <div class="tl"><i class="dot"></i>${esc(r.subject_name)}${badges(r)}</div>
+      <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
+      <div class="row">
+        <span class="when">${esc(when(r))}</span>
+        <a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>
+      </div>
+    </article>`;
+  }
+
+  function renderGrid() {
+    const list = visible();
+    document.body.classList.toggle('is-filtering', filtering());
+    el.clear.hidden = !state.q;
+
+    if (!list.length) {
+      let msg = 'Try fewer words, or clear the filters.', title = 'Nothing matches that';
+      if (state.savedOnly && !state.saved.size) { title = 'No saved resources yet'; msg = 'Use the bookmark on any resource to keep it here.'; }
+      el.grid.innerHTML = `<div class="empty glass"><h3>${title}</h3><p>${msg}</p><button class="btn" data-act="reset" type="button">Clear search and filters</button></div>`;
+    } else {
+      el.grid.innerHTML = list.map(cardHtml).join('');
+    }
+    const q = state.q ? ` for <b>“${esc(state.q)}”</b>` : '';
+    el.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'resource' : 'resources'}${q}` +
+      (filtering() ? '<button type="button" data-act="reset">Clear all</button>' : '');
+  }
+
+  function chip(label, value, active, accent) {
+    return `<button class="chip" type="button" data-v="${esc(value)}" aria-pressed="${active}">${accent ? `<i class="dot" style="--accent:${esc(accent)}"></i>` : ''}${esc(label)}</button>`;
+  }
+  function renderChips() {
+    const classes = [...new Set(state.res.map((r) => r.class))].sort();
+    el.rowClass.hidden = classes.length < 2;
+    el.chipsClass.innerHTML = chip('All', '', !state.cls) + classes.map((c) => chip('Class ' + c, c, state.cls === c)).join('');
+    const subs = [...state.subjects.values()].filter((s) => state.res.some((r) => r.subject === s.id));
+    el.chipsSubject.innerHTML = chip('All', '', !state.subject) + subs.map((s) => chip(s.name, s.id, state.subject === s.id, s.accent)).join('');
+    const types = state.types.filter((t) => state.res.some((r) => r.type === t));
+    el.chipsType.innerHTML = chip('All', '', !state.type) + types.map((t) => chip(t, t, state.type === t)).join('');
+    const years = [...new Set(state.res.map((r) => String(r.year)))].sort().reverse();
+    el.chipsYear.innerHTML = chip('All', '', !state.year) + years.map((y) => chip(y, y, state.year === y)).join('');
+    el.sort.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sort === state.sort));
+    el.savedBtn.setAttribute('aria-pressed', state.savedOnly);
+    el.savedCount.textContent = state.saved.size;
+  }
+
+  function renderSubjects() {
+    el.subjects.innerHTML = [...state.subjects.values()].map((s) => {
+      const items = state.res.filter((r) => r.subject === s.id);
+      if (!items.length) return '';
+      const types = new Set(items.map((r) => r.type)).size;
+      return `<button class="subj glass gh" type="button" data-subject="${esc(s.id)}" style="--accent:${esc(s.accent)}" aria-label="${esc(s.name)}, ${plural(items.length, 'resource')}">
+        <span class="top"><i class="dot"></i><span class="cnt">${items.length}</span></span>
+        <span><h3>${esc(s.name)}</h3><span class="meta">${plural(types, 'type')} of material</span></span>
+      </button>`;
+    }).join('');
+  }
+
+  function renderStrip() {
+    const recent = [...state.res].sort((a, b) => b._date - a._date).slice(0, 7);
+    el.strip.innerHTML = recent.map(miniHtml).join('');
+    el.recentSub.textContent = recent.length ? 'Latest ' + recent.length + ' uploads' : '';
+  }
+
+  function renderQuick() {
+    const list = CFG.quickSearches || [];
+    el.quick.innerHTML = list.length ? '<span>Try</span>' + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('') : '';
+  }
+
+  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); }
+
+  function refreshSavedUI() {
+    el.savedCount.textContent = state.saved.size;
+    document.querySelectorAll('[data-act="save"]').forEach((b) => {
+      const on = state.saved.has(b.closest('[data-id]').dataset.id);
+      b.classList.toggle('saved', on); b.setAttribute('aria-pressed', on);
+      b.setAttribute('aria-label', on ? 'Remove bookmark' : 'Save to bookmarks');
+    });
+  }
+  function refreshCounts() {
+    document.querySelectorAll('[data-count]').forEach((n) => {
+      const r = state.byId.get(n.dataset.count); if (r) n.textContent = fmtCount(dlCount(r));
+    });
+  }
+
+  /* ---------- bookmarks ---------- */
+  function isSaved(id) { return state.saved.has(id); }
+  function toggleSave(id) {
+    const on = !state.saved.has(id);
+    on ? state.saved.add(id) : state.saved.delete(id);
+    store.set('icse:saved', [...state.saved]);
+    refreshSavedUI();
+    toast(on ? 'Saved to bookmarks' : 'Removed from bookmarks');
+    if (state.savedOnly && !on) renderGrid();
+  }
+
+  /* ---------- downloads + counter ---------- */
+  async function loadCounts() {
+    const c = CFG.counter;
+    if (!c || !c.enabled) return;
+    const cache = store.get('icse:counts', null);
+    if (cache && Date.now() - cache.t < (c.cacheMinutes || 10) * 6e4) { state.live = cache.v; refreshCounts(); return; }
+    const v = {};
+    await Promise.allSettled(state.res.map(async (r) => {
+      const res = await fetch(`${c.baseUrl}/get/${c.namespace}/${encodeURIComponent(r.id)}`);
+      if (res.ok) { const j = await res.json(); v[r.id] = Number(j.value) || 0; }
+    }));
+    if (Object.keys(v).length) { state.live = v; store.set('icse:counts', { t: Date.now(), v }); }
+    refreshCounts();
+  }
+  function download(r) {
+    state.live[r.id] = (state.live[r.id] || 0) + 1;
+    refreshCounts();
+    toast('Download started');
+    const c = CFG.counter, key = 'icse:hit:' + r.id;
+    if (c && c.enabled && !session.get(key)) {
+      session.set(key, '1');
+      fetch(`${c.baseUrl}/hit/${c.namespace}/${encodeURIComponent(r.id)}`, { keepalive: true }).catch(() => {});
+    }
+  }
+
+  /* ---------- report + share ---------- */
+  function reportHref(r) {
+    const link = location.origin + CFG.basePath + '?file=' + encodeURIComponent(r.id);
+    const subject = `Error report: ${r.title}`;
+    const body = `Resource: ${r.title}\nLink: ${link}\n\nWhat is wrong (page number and details):\n`;
+    return `mailto:${CFG.reportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+  function shareLink(r) { return location.origin + CFG.basePath + '?file=' + encodeURIComponent(r.id); }
+
+  function qrSvg(text) {
+    const qr = qrcode(0, 'M'); qr.addData(text); qr.make();
+    const n = qr.getModuleCount(); let d = '';
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (qr.isDark(y, x)) d += `M${x} ${y}h1v1h-1z`;
+    return `<svg viewBox="-2 -2 ${n + 4} ${n + 4}" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg"><path d="${d}" fill="#000"/></svg>`;
+  }
+
+  let shareReturn = null;
+  function share(r) {
+    state.shareFor = r;
+    const link = shareLink(r);
+    el.shName.textContent = r.title;
+    el.shLink.value = link;
+    el.shQr.innerHTML = qrSvg(link);
+    el.shReport.href = reportHref(r);
+    el.shNative.hidden = !navigator.share;
+    const host = Viewer.fullscreenHost();
+    if (el.dlg.parentNode !== host) host.appendChild(el.dlg);
+    shareReturn = document.activeElement;
+    el.dlg.hidden = false;
+    el.shCopy.focus();
+  }
+  function closeShare() {
+    el.dlg.hidden = true; state.shareFor = null;
+    if (shareReturn && shareReturn.focus) shareReturn.focus({ preventScroll: true });
+  }
+  el.shClose.addEventListener('click', closeShare);
+  el.dlg.addEventListener('click', (e) => { if (e.target === el.dlg) closeShare(); });
+  el.dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeShare(); }
+    if (e.key === 'Tab') {
+      const f = [...el.dlg.querySelectorAll('button:not([hidden]),a[href],input')];
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  el.shCopy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(el.shLink.value); }
+    catch { el.shLink.select(); document.execCommand && document.execCommand('copy'); }
+    toast('Link copied');
+  });
+  el.shLink.addEventListener('focus', () => el.shLink.select());
+  el.shNative.addEventListener('click', () => {
+    const r = state.shareFor; if (!r) return;
+    navigator.share({ title: r.title, text: r.title + ' (ICSE Class X)', url: shareLink(r) }).catch(() => {});
+  });
+
+  /* ---------- reader + deep links ---------- */
+  function openReader(r, page) {
+    const u = new URL(location.href);
+    u.searchParams.set('file', r.id);
+    page ? u.searchParams.set('page', page) : u.searchParams.delete('page');
+    if (!Viewer.isOpen()) { history.pushState({ reader: true }, '', u); state.pushed = true; }
+    else history.replaceState(history.state, '', u);
+    Viewer.open(r, page);
+  }
+  function closeReader() {
+    if (state.shareFor) closeShare();
+    Viewer.close();
+    if (history.state && history.state.reader) { state.pushed = false; history.back(); }
+    else cleanUrl();
+  }
+  function cleanUrl() {
+    const u = new URL(location.href);
+    u.searchParams.delete('file'); u.searchParams.delete('page');
+    history.replaceState(null, '', u.pathname + (u.search || '') + u.hash);
+  }
+  function pageChanged(n) {
+    if (!Viewer.isOpen()) return;
+    const u = new URL(location.href);
+    if (!u.searchParams.get('file')) return;
+    n > 1 ? u.searchParams.set('page', n) : u.searchParams.delete('page');
+    history.replaceState(history.state, '', u);
+  }
+  function syncFromUrl(initial) {
+    const p = new URLSearchParams(location.search);
+    const id = p.get('file');
+    if (!id) { if (Viewer.isOpen()) Viewer.close(); return; }
+    const r = state.byId.get(id);
+    if (!r) { toast('That file could not be found'); cleanUrl(); return; }
+    if (initial && !history.state) history.replaceState({ reader: false }, '', location.href);
+    Viewer.open(r, parseInt(p.get('page'), 10) || 0);
+  }
+  addEventListener('popstate', () => syncFromUrl(false));
+
+  /* ---------- search + filters ---------- */
+  function setQuery(v, focus) {
+    state.q = v; el.q.value = v;
+    renderGrid();
+    if (focus) el.q.focus();
+  }
+  function focusSearch() {
+    el.q.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    el.q.focus({ preventScroll: true }); el.q.select();
+  }
+  function resetAll() {
+    Object.assign(state, { q: '', cls: '', subject: '', type: '', year: '', savedOnly: false });
+    el.q.value = ''; renderChips(); renderGrid();
+  }
+
+  el.q.addEventListener('input', () => setQuery(el.q.value));
+  el.form.addEventListener('submit', (e) => { e.preventDefault(); $('#library').scrollIntoView({ behavior: 'smooth' }); });
+  el.clear.addEventListener('click', () => setQuery('', true));
+  el.quick.addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) setQuery(b.dataset.q, true); });
+
+  function bindChips(node, key) {
+    node.addEventListener('click', (e) => {
+      const b = e.target.closest('.chip'); if (!b) return;
+      state[key] = b.dataset.v; renderChips(); renderGrid();
+    });
+  }
+  bindChips(el.chipsClass, 'cls'); bindChips(el.chipsSubject, 'subject');
+  bindChips(el.chipsType, 'type'); bindChips(el.chipsYear, 'year');
+
+  el.sort.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    state.sort = b.dataset.sort; store.set('icse:sort', state.sort); renderChips(); renderGrid();
+  });
+  el.savedBtn.addEventListener('click', () => {
+    state.savedOnly = !state.savedOnly; renderChips(); renderGrid();
+    if (state.savedOnly) $('#library').scrollIntoView({ behavior: 'smooth' });
+  });
+  el.subjects.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-subject]'); if (!b) return;
+    state.subject = b.dataset.subject; renderChips(); renderGrid();
+    requestAnimationFrame(() => $('#library').scrollIntoView({ behavior: 'smooth' }));
+  });
+
+  // Card / strip actions (event delegation)
+  function onAction(e) {
+    const t = e.target.closest('[data-act]'); if (!t) return;
+    const card = t.closest('[data-id]');
+    const r = card && state.byId.get(card.dataset.id);
+    switch (t.dataset.act) {
+      case 'read':
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let the browser open a new tab
+        e.preventDefault(); openReader(r); break;
+      case 'download': download(r); break;           // native download proceeds
+      case 'save': toggleSave(r.id); break;
+      case 'share': share(r); break;
+      case 'reset': resetAll(); break;
+    }
+  }
+  el.grid.addEventListener('click', onAction);
+  el.strip.addEventListener('click', onAction);
+  el.count.addEventListener('click', onAction);
+
+  // Pointer glow
+  let px = 0, py = 0, raf = 0;
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    px = e.clientX; py = e.clientY;
+    const c = e.target.closest && e.target.closest('.gh');
+    if (c) { const r = c.getBoundingClientRect(); c.style.setProperty('--mx', e.clientX - r.left + 'px'); c.style.setProperty('--my', e.clientY - r.top + 'px'); }
+    if (!raf) raf = requestAnimationFrame(() => { raf = 0; el.spot.style.transform = `translate(${px}px, ${py}px)`; el.spot.classList.add('on'); });
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => el.spot.classList.remove('on'));
+
+  // Keyboard shortcuts (the reader handles its own keys while open)
+  document.addEventListener('keydown', (e) => {
+    if (Viewer.isOpen() || !el.dlg.hidden) return;
+    const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); focusSearch(); }
+    else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey) { e.preventDefault(); focusSearch(); }
+    else if (e.key === 'Escape' && e.target === el.q) { if (state.q) setQuery(''); else el.q.blur(); }
+  });
+
+  // Public hooks used by viewer.js
+  window.App = { fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, shareOpen: () => !el.dlg.hidden };
+
+  /* ---------- init ---------- */
+  (async function init() {
+    $('#backLink').href = CFG.portfolioUrl;
+    $('#notice').textContent = CFG.notice;
+    state.sort = store.get('icse:sort', 'new');
+    renderQuick();
+    if (!(await load())) return;
+    renderAll();
+    syncFromUrl(true);
+    loadCounts();
+  })();
+})();

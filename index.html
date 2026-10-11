@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ICSE Class X Resources | Shekhar Jha</title>
+  <meta name="description" content="Free ICSE Class X notes, question papers, solutions, formula sheets and sample papers. Read them online or download the PDF.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:title" content="ICSE Class X Resources">
+  <meta property="og:description" content="Notes, question papers, solutions, formula sheets and sample papers for ICSE Class X. Read online or download.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 20h16"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-zin" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></symbol>
+  <symbol id="i-zout" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8 11h6"/></symbol>
+  <symbol id="i-fitw" viewBox="0 0 24 24"><path d="M4 5v14M20 5v14M8 12h8M8 12l2.5-2.5M8 12l2.5 2.5M16 12l-2.5-2.5M16 12l-2.5 2.5"/></symbol>
+  <symbol id="i-full" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-read" viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></symbol>
+</svg>
+
+<div class="ambient" aria-hidden="true">
+  <i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i>
+  <i class="spot" id="spot"></i>
+</div>
+
+<div class="page" id="page">
+  <header class="nav wrap">
+    <div class="nav-in glass">
+      <a class="back" id="backLink" href="https://shekharjha.tech">
+        <svg class="ic"><use href="#i-left"/></svg><span class="t">shekharjha.tech</span>
+      </a>
+      <a class="brand" href="/resource">ICSE <span>Resources</span></a>
+      <button class="pill" id="savedBtn" type="button" aria-pressed="false" title="Show only saved resources">
+        <svg class="ic"><use href="#i-bookmark"/></svg>Saved <span class="n" id="savedCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="h1">
+      <h1 id="h1">ICSE Class X, ready to study.</h1>
+      <p>Notes, past papers, solutions and formula sheets by Shekhar Jha. Read them right here, or download the PDF.</p>
+
+      <form class="search glass" id="searchForm" role="search" autocomplete="off">
+        <svg class="ic"><use href="#i-search"/></svg>
+        <label class="sr" for="q">Search resources</label>
+        <input id="q" type="search" placeholder="Search by subject, topic or year" enterkeyhint="search" spellcheck="false">
+        <button class="ib clear" id="qClear" type="button" aria-label="Clear search" hidden><svg class="ic"><use href="#i-close"/></svg></button>
+        <span class="kbd" aria-hidden="true"><kbd>/</kbd> or <kbd>Ctrl</kbd><kbd>K</kbd></span>
+      </form>
+      <div class="quick" id="quick" aria-label="Quick searches"></div>
+    </section>
+
+    <section class="block" id="recent" aria-labelledby="hRecent">
+      <div class="block-head"><h2 id="hRecent">Just added</h2><span class="sub" id="recentSub"></span></div>
+      <div class="strip" id="strip"></div>
+    </section>
+
+    <section class="block" id="subjects" aria-labelledby="hSubj">
+      <div class="block-head"><h2 id="hSubj">Browse by subject</h2></div>
+      <div class="subjects" id="subjectGrid"></div>
+    </section>
+
+    <section class="block" id="library" aria-labelledby="hLib">
+      <div class="block-head"><h2 id="hLib">All resources</h2></div>
+      <div class="filters glass" id="filters">
+        <div class="frow" id="rowClass" hidden><label>Class</label><div class="chips" id="chipsClass"></div></div>
+        <div class="frow"><label>Subject</label><div class="chips" id="chipsSubject"></div></div>
+        <div class="frow"><label>Type</label><div class="chips" id="chipsType"></div></div>
+        <div class="frow"><label>Year</label><div class="chips" id="chipsYear"></div></div>
+      </div>
+      <div class="toolbar">
+        <p class="count" id="count" aria-live="polite"></p>
+        <div class="seg glass" role="group" aria-label="Sort resources" id="sortSeg">
+          <button type="button" data-sort="new" aria-pressed="true">Newest</button>
+          <button type="button" data-sort="popular" aria-pressed="false">Most downloaded</button>
+          <button type="button" data-sort="az" aria-pressed="false">A to Z</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <footer class="foot wrap">
+    <div class="glass">
+      <span id="notice">Free for personal study. If you share these, please credit Shekhar Jha.</span>
+      <span>Found a mistake? Use the flag on any resource to tell me.</span>
+    </div>
+  </footer>
+</div>
+
+<!-- Reader -->
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="PDF reader">
+  <div class="v-shell">
+    <div class="v-bar">
+      <button class="ib o-close" id="vClose" type="button" aria-label="Close reader" title="Close (Esc)"><svg class="ic"><use href="#i-close"/></svg></button>
+      <div class="v-title"><strong id="vTitle"></strong><span id="vSub"></span></div>
+
+      <div class="grp" role="group" aria-label="Page navigation">
+        <button class="ib" id="vPrev" type="button" aria-label="Previous page" title="Previous page (←)"><svg class="ic"><use href="#i-up"/></svg></button>
+        <span class="pg-in"><label class="sr" for="vPage">Go to page</label><input id="vPage" type="number" min="1" value="1" inputmode="numeric"> of <span id="vTotal">–</span></span>
+        <button class="ib" id="vNext" type="button" aria-label="Next page" title="Next page (→)"><svg class="ic"><use href="#i-down"/></svg></button>
+      </div>
+
+      <div class="grp" role="group" aria-label="Zoom">
+        <button class="ib zbtn" id="vZout" type="button" aria-label="Zoom out" title="Zoom out (-)"><svg class="ic"><use href="#i-zout"/></svg></button>
+        <span class="zl" id="vZoom">100%</span>
+        <button class="ib zbtn" id="vZin" type="button" aria-label="Zoom in" title="Zoom in (+)"><svg class="ic"><use href="#i-zin"/></svg></button>
+        <button class="ib" id="vFit" type="button" aria-label="Fit to width" title="Fit to width (0)"><svg class="ic"><use href="#i-fitw"/></svg></button>
+      </div>
+
+      <span class="v-break"></span>
+
+      <button class="ib" id="vSave" type="button" aria-pressed="false" aria-label="Save to bookmarks" title="Bookmark"><svg class="ic"><use href="#i-bookmark"/></svg></button>
+      <button class="ib" id="vShare" type="button" aria-label="Share" title="Share"><svg class="ic"><use href="#i-share"/></svg></button>
+      <a class="ib" id="vReport" aria-label="Report an error" title="Report an error" target="_blank" rel="noopener"><svg class="ic"><use href="#i-flag"/></svg></a>
+      <button class="ib o-full" id="vFull" type="button" aria-label="Fullscreen" title="Fullscreen (F)"><svg class="ic"><use href="#i-full"/></svg></button>
+      <a class="btn btn-primary o-dl" id="vDl" href="#" download><svg class="ic"><use href="#i-download"/></svg>Download</a>
+    </div>
+
+    <div class="v-scroll" id="vScroll" tabindex="-1">
+      <div class="v-pages" id="vPages"></div>
+      <div class="v-status" id="vStatus"></div>
+    </div>
+    <div class="v-prog"><i id="vProg"></i></div>
+  </div>
+</div>
+
+<!-- Share dialog -->
+<div class="dlg" id="shareDlg" hidden role="dialog" aria-modal="true" aria-labelledby="shTitle">
+  <div class="dlg-card glass">
+    <button class="ib dlg-x" id="shClose" type="button" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button>
+    <h3 id="shTitle">Share this resource</h3>
+    <p class="nm" id="shName"></p>
+    <div class="qr" id="shQr" role="img" aria-label="QR code for this resource"></div>
+    <div class="copy">
+      <input id="shLink" readonly aria-label="Link to this resource">
+      <button class="btn btn-primary" id="shCopy" type="button"><svg class="ic"><use href="#i-copy"/></svg>Copy</button>
+    </div>
+    <div class="dlg-acts">
+      <button class="btn" id="shNative" type="button" hidden><svg class="ic"><use href="#i-share"/></svg>Share</button>
+      <a class="btn" id="shReport" target="_blank" rel="noopener"><svg class="ic"><use href="#i-flag"/></svg>Report an error</a>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<script src="/assets/vendor/pdf.min.js"></script>
+<script src="/assets/vendor/qrcode.min.js"></script>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/viewer.js"></script>
+<script src="/assets/js/app.js"></script>
+</body>
+</html>
