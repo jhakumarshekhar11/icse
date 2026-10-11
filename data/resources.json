@@ -441,6 +441,28 @@
         "specimen",
         "paper"
       ]
+    },
+    {
+      "id": "englishlit-2026-specimen-paper",
+      "title": "ICSE 2026 English Literature",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/englishlit-2026-specimen-paper.pdf",
+      "pages": 12,
+      "size_kb": 204,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "PYQ of English Literature 2026",
+      "tags": [
+        "board",
+        "paper",
+        "english",
+        "literature",
+        "previous year papers"
+      ]
     }
   ]
 }
