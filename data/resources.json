@@ -92,8 +92,8 @@
     },
     {
       "id": "icse-2024-specimen-861-cta",
-      "title": "ICSE 2024 SPECIMEN 861 CTA",
-      "subject": "",
+      "title": "ICSE SPECIMEN 2024 Computer Applications",
+      "subject": "computer",
       "class": "X",
       "type": "Specimen Papers",
       "year": 2024,
@@ -104,8 +104,13 @@
       "updated": "2026-10-11",
       "downloads": 0,
       "draft": true,
-      "description": "",
-      "tags": []
+      "description": "Specimen of Computer Applications 2024",
+      "tags": [
+        "specimen paper",
+        "2024",
+        "computer",
+        "applications"
+      ]
     }
   ]
 }
