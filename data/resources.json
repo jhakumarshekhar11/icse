@@ -463,6 +463,28 @@
         "literature",
         "previous year papers"
       ]
+    },
+    {
+      "id": "englishlit-2025-previous-year-paper",
+      "title": "ICSE 2025 English Literature",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/englishlit-2025-previous-year-paper.pdf",
+      "pages": 12,
+      "size_kb": 205,
+      "added": "2026-10-11",
+      "updated": "2026-10-11",
+      "downloads": 0,
+      "description": "PYQ of English Literature 2025",
+      "tags": [
+        "board",
+        "paper",
+        "english",
+        "language",
+        "previous year papers"
+      ]
     }
   ]
 }
