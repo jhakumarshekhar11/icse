@@ -485,6 +485,27 @@
         "language",
         "previous year papers"
       ]
+    },
+    {
+      "id": "geography-2026-previous-year-paper",
+      "title": "ICSE 2026 Geography",
+      "subject": "geography",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/geography-2026-previous-year-paper.pdf",
+      "pages": 15,
+      "size_kb": 1445,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Geography 2026",
+      "tags": [
+        "board",
+        "geography",
+        "paper",
+        "PYQ"
+      ]
     }
   ]
 }
