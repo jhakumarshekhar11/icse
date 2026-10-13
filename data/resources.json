@@ -1417,6 +1417,35 @@
         "water",
         "understanding"
       ]
+    },
+    {
+      "id": "biology-2026-previous-year-paper",
+      "title": "ICSE 2026 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/biology-2026-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 784,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Biology 2026",
+      "tags": [
+        "blood",
+        "mitosis",
+        "chromosomes",
+        "transpiration",
+        "photosynthesis",
+        "cell cycle",
+        "left atrium",
+        "body tissues",
+        "left ventricle",
+        "colour blindness",
+        "prostate gland",
+        "ventricle lungs"
+      ]
     }
   ]
 }
