@@ -2031,6 +2031,32 @@
         "number",
         "company"
       ]
+    },
+    {
+      "id": "geography-2027-map",
+      "title": "INDIA MAJOR RIVERS",
+      "subject": "geography",
+      "class": "X",
+      "type": "Maps",
+      "year": 2027,
+      "file": "/pdfs/geography-2027-map.pdf",
+      "pages": 1,
+      "size_kb": 2269,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "River Maps for Geography.",
+      "tags": [
+        "2027",
+        "2026",
+        "2025",
+        "2024",
+        "2023",
+        "2022",
+        "map",
+        "river",
+        "india"
+      ]
     }
   ]
 }
