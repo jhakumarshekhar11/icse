@@ -1446,6 +1446,35 @@
         "prostate gland",
         "ventricle lungs"
       ]
+    },
+    {
+      "id": "biology-2023-previous-year-paper",
+      "title": "ICSE 2023 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/biology-2023-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 497,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Biology 2023",
+      "tags": [
+        "population",
+        "transpiration",
+        "chromosomes",
+        "photosynthesis",
+        "cell cycle",
+        "cell division",
+        "nervous system",
+        "human",
+        "semi permeable membrane",
+        "atrio ventricular valves",
+        "plant",
+        "phase"
+      ]
     }
   ]
 }
