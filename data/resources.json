@@ -1768,6 +1768,35 @@
       "tags": [
         "sahitya sagar"
       ]
+    },
+    {
+      "id": "maths-2026-previous-year-paper",
+      "title": "ICSE 2026 Mathematics",
+      "subject": "maths",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/maths-2026-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 1281,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Mathematics 2026",
+      "tags": [
+        "gst",
+        "cylinder",
+        "cone",
+        "ogive",
+        "matrix",
+        "sphere",
+        "probability",
+        "quadratic equation",
+        "equation of a line",
+        "geometric progression",
+        "arithmetic progression",
+        "𝑥"
+      ]
     }
   ]
 }
