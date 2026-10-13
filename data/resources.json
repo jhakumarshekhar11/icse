@@ -984,6 +984,35 @@
         "total internal reflection",
         "energy"
       ]
+    },
+    {
+      "id": "physics-2025-previous-year-paper",
+      "title": "ICSE 2025 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/physics-2025-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 525,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Physics 2025",
+      "tags": [
+        "lens",
+        "specific heat capacity",
+        "force",
+        "sound",
+        "latent heat",
+        "refractive index",
+        "total internal reflection",
+        "gamma rays",
+        "visible light",
+        "water",
+        "shown",
+        "current"
+      ]
     }
   ]
 }
