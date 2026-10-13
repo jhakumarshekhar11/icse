@@ -1855,6 +1855,33 @@
         "policy holders",
         "point"
       ]
+    },
+    {
+      "id": "maths-2025-previous-year-paper",
+      "title": "ICSE 2025 Mathematics",
+      "subject": "maths",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/maths-2025-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 1566,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Mathematics 2025",
+      "tags": [
+        "𝒙𝒙",
+        "cone",
+        "sphere",
+        "probability",
+        "quadratic equation",
+        "geometric progression",
+        "arithmetic progression",
+        "number",
+        "real roots",
+        "axis"
+      ]
     }
   ]
 }
