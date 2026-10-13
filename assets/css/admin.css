@@ -175,3 +175,10 @@
   .adm-bar .btn { padding: 0 12px; }
   .adm-bar .btn .ic + * { }
 }
+
+/* keyword suggestions */
+.kw { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+.kw:empty { display: none; }
+.kw-l { color: var(--dim); font-size: 0.85rem; margin-right: 2px; }
+.kw .chip { height: 30px; padding: 0 12px; font-size: 0.84rem; }
+.kw .chip .ic { width: 0.9em; height: 0.9em; }
