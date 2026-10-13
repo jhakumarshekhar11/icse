@@ -813,6 +813,26 @@
         "paper",
         "history"
       ]
+    },
+    {
+      "id": "history-2025-specimen-paper",
+      "title": "ICSE 2025 SPECIMEN History & Civics",
+      "subject": "history",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2025,
+      "file": "/pdfs/history-2025-specimen-paper.pdf",
+      "pages": 17,
+      "size_kb": 997,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of History & Civics 2025",
+      "tags": [
+        "board",
+        "paper",
+        "history"
+      ]
     }
   ]
 }
