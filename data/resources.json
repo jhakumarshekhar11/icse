@@ -868,6 +868,35 @@
         "home rule",
         "cold war"
       ]
+    },
+    {
+      "id": "history-2027-specimen-paper",
+      "title": "ICSE SPECIMEN 2027 History & Civics",
+      "subject": "history",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2027,
+      "file": "/pdfs/history-2027-specimen-paper.pdf",
+      "pages": 20,
+      "size_kb": 715,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of History & Civics 2027",
+      "tags": [
+        "president",
+        "parliament",
+        "lok sabha",
+        "supreme court",
+        "rajya sabha",
+        "recall",
+        "high court",
+        "cabinet",
+        "united nations",
+        "prime minister",
+        "civil disobedience",
+        "council of ministers"
+      ]
     }
   ]
 }
