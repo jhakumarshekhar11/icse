@@ -1100,6 +1100,35 @@
         "position",
         "temperature"
       ]
+    },
+    {
+      "id": "physics-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/physics-2026-specimen-paper.pdf",
+      "pages": 23,
+      "size_kb": 1311,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Physics 2026",
+      "tags": [
+        "lens",
+        "pulley",
+        "heat",
+        "understanding",
+        "refractive index",
+        "echo",
+        "recall",
+        "total internal reflection",
+        "generator",
+        "ohm s law",
+        "nuclear fission",
+        "energy"
+      ]
     }
   ]
 }
