@@ -1620,6 +1620,35 @@
         "girls",
         "plant"
       ]
+    },
+    {
+      "id": "biology-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/biology-2026-specimen-paper.pdf",
+      "pages": 19,
+      "size_kb": 1782,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Biology 2026",
+      "tags": [
+        "recall",
+        "transpiration",
+        "photosynthesis",
+        "blood",
+        "plant hormones",
+        "understanding",
+        "analysis application",
+        "tool making",
+        "water",
+        "hormone",
+        "root hair",
+        "semicircular canals"
+      ]
     }
   ]
 }
