@@ -1475,6 +1475,35 @@
         "plant",
         "phase"
       ]
+    },
+    {
+      "id": "biology-2024-previous-year-paper",
+      "title": "ICSE 2024 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2024,
+      "file": "/pdfs/biology-2024-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 525,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Resource for Biology 2024",
+      "tags": [
+        "chromosomes",
+        "nervous system",
+        "water",
+        "body",
+        "term",
+        "artery",
+        "ions",
+        "leaf",
+        "cells",
+        "leaves",
+        "defect",
+        "process"
+      ]
     }
   ]
 }
