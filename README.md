@@ -6,10 +6,8 @@ Plain HTML, CSS and JS. No build step.
 ## Folder layout
 
 ```
-index.html              the library page (served at /resource)
+index.html              the library page (served at icse.shekharjha.tech)
 admin/index.html        the admin console (served at /admin)
-render.yaml             Render settings (routes + caching)
-netlify.toml            Netlify settings (routes + caching)
 assets/css/style.css    all styles
 assets/js/config.js     site settings: email, badges, counter
 assets/js/app.js        search, filters, cards, bookmarks, share, deep links
