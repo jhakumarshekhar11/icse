@@ -125,10 +125,14 @@
 .tax-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 .tax-head h2 { margin: 0; }
 .tax-list { display: grid; gap: 10px; }
-.trow { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; }
-.trow .cnt { color: var(--dim); font-size: 0.85rem; white-space: nowrap; }
+.trow { display: grid; grid-template-columns: auto minmax(0, 1fr) 84px 84px 90px auto; gap: 10px; align-items: center; }
+.trow .cnt { color: var(--dim); font-size: 0.85rem; white-space: nowrap; text-align: right; }
 .trow .ib.del { color: var(--muted); }
 .trow .ib.del:hover { color: #ffb4b4; border-color: #ff8a8a; }
+.trow.head { margin-bottom: -2px; color: var(--dim); font-size: 0.8rem; }
+.trow input[data-k="code"], .trow input[data-k="altCode"] { padding: 0 10px; text-align: center; }
+.trow input[data-k="altCode"] { text-transform: uppercase; }
+.trow input[data-k="altCode"]::placeholder { text-transform: none; }
 .trow.type { grid-template-columns: minmax(0, 1fr) auto auto; }
 .tax-save { display: flex; align-items: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
 .act-list { display: grid; gap: 4px; }
@@ -163,6 +167,9 @@
   .tax-grid, .act-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
+  .trow:not(.type) { grid-template-columns: auto 1fr 1fr auto; }
+  .trow:not(.type) [data-k="name"] { grid-column: 2 / -1; }
+  .trow.head { display: none; }
   .fields, .bulk-form { grid-template-columns: 1fr; }
   .who { display: none; }
   .adm-bar .btn { padding: 0 12px; }
