@@ -73,9 +73,9 @@
       state.res = data.resources.filter((r) => !r.draft).map((r) => {
         const s = state.subjects.get(r.subject) || { name: r.subject, accent: '#fff' };
         return Object.assign({}, r, {
-          subject_name: s.name, accent: s.accent,
+          subject_name: s.name, accent: s.accent, codes: [s.code, s.altCode].filter(Boolean),
           _date: new Date(r.added + 'T00:00:00').getTime() || 0,
-          _hay: [r.title, s.name, r.type, r.year, 'class ' + r.class, (r.tags || []).join(' '), r.description || ''].join(' ').toLowerCase()
+          _hay: [r.title, s.name, [s.code, s.altCode].filter(Boolean).join(' '), r.type, r.year, 'class ' + r.class, (r.tags || []).join(' '), r.description || ''].join(' ').toLowerCase()
         });
       });
       state.res.forEach((r) => state.byId.set(r.id, r));
@@ -124,6 +124,7 @@
       <p class="desc">${esc(r.description || '')}</p>
       <div class="facts">
         <span>Class ${esc(r.class)}, ${esc(r.year)}</span>
+        ${r.codes && r.codes.length ? `<span>Code ${esc(r.codes.join(', '))}</span>` : ''}
         ${r.pages ? `<span>${plural(r.pages, 'page')}</span>` : ''}
         ${r.size_kb ? `<span>${fmtSize(r.size_kb)}</span>` : ''}
         <span><span data-count="${esc(r.id)}">${fmtCount(dlCount(r))}</span> downloads</span>
@@ -196,7 +197,7 @@
       const types = new Set(items.map((r) => r.type)).size;
       return `<button class="subj glass gh" type="button" data-subject="${esc(s.id)}" style="--accent:${esc(s.accent)}" aria-label="${esc(s.name)}, ${plural(items.length, 'resource')}">
         <span class="top"><i class="dot"></i><span class="cnt">${items.length}</span></span>
-        <span><h3>${esc(s.name)}</h3><span class="meta">${plural(types, 'type')} of material</span></span>
+        <span><h3>${esc(s.name)}</h3><span class="meta">${s.code || s.altCode ? 'Code ' + esc([s.code, s.altCode].filter(Boolean).join(', ')) : plural(types, 'type') + ' of material'}</span></span>
       </button>`;
     }).join('');
   }
