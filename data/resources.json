@@ -2073,6 +2073,22 @@
       "downloads": 0,
       "description": "School question paper",
       "tags": []
+    },
+    {
+      "id": "commercialstudies-2025-previous-year-paper",
+      "title": "Commercial Studies Question paper 2025",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/commercialstudies-2025-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 926,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "",
+      "tags": []
     }
   ]
 }
