@@ -1504,6 +1504,35 @@
         "defect",
         "process"
       ]
+    },
+    {
+      "id": "biology-2025-previous-year-paper",
+      "title": "ICSE 2025 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/biology-2025-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 1105,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Biology 2025",
+      "tags": [
+        "blood",
+        "pollution",
+        "population",
+        "photosynthesis",
+        "cell division",
+        "nervous system",
+        "offsprings",
+        "body",
+        "plant",
+        "water",
+        "heart",
+        "fruits"
+      ]
     }
   ]
 }
