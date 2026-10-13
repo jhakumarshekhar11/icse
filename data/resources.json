@@ -1940,6 +1940,37 @@
         "arithmetic progression",
         "𝑥"
       ]
+    },
+    {
+      "id": "maths-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 Mathematics",
+      "subject": "maths",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/maths-2026-specimen-paper.pdf",
+      "pages": 23,
+      "size_kb": 3158,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Mathematics 2026.",
+      "tags": [
+        "gst",
+        "cylinder",
+        "cone",
+        "ogive",
+        "matrix",
+        "sphere",
+        "probability",
+        "quadratic equation",
+        "equation of a line",
+        "geometric progression",
+        "arithmetic progression",
+        "𝑥",
+        "analysis evaluation",
+        "application evaluation"
+      ]
     }
   ]
 }
