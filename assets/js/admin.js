@@ -31,6 +31,7 @@
     selected: new Set(), tab: 'upload', last: Date.now(), tax: null, editor: null, urls: []
   };
   const subj = (id) => state.data.subjects.find((s) => s.id === id);
+  const codeText = (s) => [s.code, s.altCode].filter(Boolean).join(', ');
   const dlTotal = (r) => (r.downloads || 0) + (state.live[r.id] || 0);
 
   /* ---------- toasts, dialogs ---------- */
@@ -227,7 +228,9 @@
     let subject = '', best = 0;
     for (const s of state.data.subjects) {
       const keys = new Set([s.id, ...s.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3), ...(ALIAS[s.id] || [])]);
-      const hits = new Set(tokens.filter((t) => keys.has(t))).size;
+      const codes = [s.code, s.altCode].filter(Boolean).map((c) => String(c).toLowerCase());
+      // an exact subject code (011, ENG1, 861, CTA ...) in the file name is the strongest signal
+      const hits = new Set(tokens.filter((t) => keys.has(t))).size + (tokens.some((t) => codes.includes(t)) ? 5 : 0);
       if (hits > best) { best = hits; subject = s.id; }
     }
 
@@ -359,7 +362,7 @@
         <div class="tags"><span class="sj"><i class="dot"></i>${esc(s ? s.name : 'Subject')}</span><span class="ty">${esc(v.type || 'Type')}</span>${isNewB ? '<span class="badge new">New</span>' : ''}${v.popular ? '<span class="badge pop">Popular</span>' : ''}</div>
         <h3><a>${esc(v.title || 'Untitled resource')}</a></h3>
         <p class="desc">${esc(v.description || 'Your description appears here.')}</p>
-        <div class="facts"><span>Class ${esc(v.cls)}, ${isNaN(v.year) ? 'year' : v.year}</span>${pages ? `<span>${plural(pages, 'page')}</span>` : ''}${size ? `<span>${fmtSize(size)}</span>` : ''}<span>${fmtCount(res ? dlTotal(res) : 0)} downloads</span></div>
+        <div class="facts"><span>Class ${esc(v.cls)}, ${isNaN(v.year) ? 'year' : v.year}</span>${s && codeText(s) ? `<span>Code ${esc(codeText(s))}</span>` : ''}${pages ? `<span>${plural(pages, 'page')}</span>` : ''}${size ? `<span>${fmtSize(size)}</span>` : ''}<span>${fmtCount(res ? dlTotal(res) : 0)} downloads</span></div>
         <div class="acts"><span class="btn">${icon('read')}Read</span><span class="btn btn-primary">${icon('download')}Download</span></div>
       </article>`;
     }
@@ -555,7 +558,7 @@
       return `<tr data-id="${esc(r.id)}" class="${sel ? 'sel' : ''}">
         <td class="c-sel"><input type="checkbox" data-sel ${sel ? 'checked' : ''} aria-label="Select ${esc(r.title)}"></td>
         <td><button class="ttl" data-act="edit" type="button">${esc(r.title)}</button><span class="id">${esc(r.id)}</span></td>
-        <td>${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>` : '<span class="dim">Not set</span>'}</td>
+        <td>${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>${codeText(s) ? `<span class="id">${esc(codeText(s))}</span>` : ''}` : '<span class="dim">Not set</span>'}</td>
         <td class="dim">${esc(r.type || 'Not set')}</td>
         <td class="dim">${esc(r.year || '–')}</td>
         <td><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}</div></td>
@@ -676,7 +679,7 @@
   /* ---------- subjects and types ---------- */
   function resetTax() {
     state.tax = {
-      subjects: state.data.subjects.map((s) => ({ id: s.id, name: s.name, accent: s.accent, isNew: false })),
+      subjects: state.data.subjects.map((s) => ({ id: s.id, name: s.name, accent: s.accent, code: s.code || '', altCode: s.altCode || '', isNew: false })),
       types: state.data.types.map((t) => ({ orig: t, name: t })), dirty: false
     };
     renderTax();
@@ -685,11 +688,13 @@
     const t = state.tax; if (!t) return;
     const count = (id) => state.data.resources.filter((r) => r.subject === id).length;
     const tcount = (name) => state.data.resources.filter((r) => r.type === name).length;
-    $('#subjList').innerHTML = t.subjects.map((s, i) => {
+    $('#subjList').innerHTML = (t.subjects.length ? '<div class="trow head" aria-hidden="true"><span></span><span>Subject</span><span>Numeric code</span><span>Alpha code</span><span></span><span></span></div>' : '') + t.subjects.map((s, i) => {
       const n = s.isNew ? 0 : count(s.id);
       return `<div class="trow" data-i="${i}">
         <input type="color" value="${esc(s.accent)}" data-k="accent" aria-label="Accent colour for ${esc(s.name)}">
         <input type="text" value="${esc(s.name)}" data-k="name" maxlength="40" aria-label="Subject name">
+        <input type="text" value="${esc(s.code)}" data-k="code" maxlength="8" placeholder="Code" spellcheck="false" aria-label="Numeric subject code for ${esc(s.name)}">
+        <input type="text" value="${esc(s.altCode)}" data-k="altCode" maxlength="8" placeholder="Alt code" spellcheck="false" aria-label="Alphanumeric subject code for ${esc(s.name)}">
         <span class="cnt">${n ? plural(n, 'resource') : 'unused'}</span>
         <button class="ib del" type="button" data-k="del" ${n ? 'disabled title="Move or delete its resources first"' : 'title="Remove subject"'} aria-label="Remove ${esc(s.name)}">${icon('trash')}</button>
       </div>`;
@@ -708,7 +713,7 @@
   const dirty = () => { state.tax.dirty = true; $('#taxSave').disabled = false; $('#taxReset').disabled = false; $('#taxHint').textContent = 'Unsaved changes. Renaming a type updates every resource that uses it.'; };
   $('#subjList').addEventListener('input', (e) => {
     const row = e.target.closest('.trow'); if (!row) return; const s = state.tax.subjects[row.dataset.i];
-    if (e.target.dataset.k === 'name') s.name = e.target.value; else if (e.target.dataset.k === 'accent') s.accent = e.target.value;
+    const k = e.target.dataset.k; if (k === 'name' || k === 'accent' || k === 'code' || k === 'altCode') s[k] = e.target.value;
     dirty();
   });
   $('#subjList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tax.subjects.splice(b.closest('.trow').dataset.i, 1); dirty(); renderTax(); });
@@ -716,7 +721,7 @@
   $('#typeList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tax.types.splice(b.closest('.trow').dataset.i, 1); dirty(); renderTax(); });
   $('#addSubject').addEventListener('click', () => {
     const used = state.tax.subjects.length;
-    state.tax.subjects.push({ id: '', name: '', accent: PALETTE[used % PALETTE.length], isNew: true }); dirty(); renderTax();
+    state.tax.subjects.push({ id: '', name: '', accent: PALETTE[used % PALETTE.length], code: '', altCode: '', isNew: true }); dirty(); renderTax();
     const rows = $$('#subjList .trow'); rows[rows.length - 1].querySelector('[data-k="name"]').focus();
   });
   $('#addType').addEventListener('click', () => { state.tax.types.push({ orig: '', name: '' }); dirty(); renderTax(); const rows = $$('#typeList .trow'); rows[rows.length - 1].querySelector('input').focus(); });
@@ -726,11 +731,22 @@
     if (names.some((n) => !n) || tn.some((n) => !n)) return toast('Every subject and type needs a name.');
     if (new Set(names.map((n) => n.toLowerCase())).size !== names.length) return toast('Two subjects have the same name.');
     if (new Set(tn.map((n) => n.toLowerCase())).size !== tn.length) return toast('Two types have the same name.');
+    const codeOk = (c) => !c || /^[A-Za-z0-9]{1,8}$/.test(c.trim());
+    if (t.subjects.some((s) => !codeOk(s.code) || !codeOk(s.altCode))) return toast('Subject codes can use letters and numbers only, up to 8 characters.');
+    for (const key of ['code', 'altCode']) {
+      const vals = t.subjects.map((s) => s[key].trim().toLowerCase()).filter(Boolean);
+      if (new Set(vals).size !== vals.length) return toast('Two subjects share the same ' + (key === 'code' ? 'code' : 'alt code') + '.');
+    }
     const taken = new Set(t.subjects.filter((s) => !s.isNew).map((s) => s.id));
     t.subjects.forEach((s) => { if (s.isNew) { let b = slug(s.name) || 'subject', id = b, n = 2; while (taken.has(id)) id = b + '-' + n++; s.id = id; taken.add(id); } });
     try {
       await withBusy('Saving subjects and types', (step) => commitMutation('Update subjects and types', (data) => {
-        data.subjects = t.subjects.map((s) => ({ id: s.id, name: s.name.trim(), accent: s.accent }));
+        data.subjects = t.subjects.map((s) => {
+          const o = { id: s.id, name: s.name.trim(), accent: s.accent };
+          if (s.code.trim()) o.code = s.code.trim();
+          if (s.altCode.trim()) o.altCode = s.altCode.trim().toUpperCase();
+          return o;
+        });
         const map = new Map(t.types.filter((x) => x.orig).map((x) => [x.orig, x.name.trim()]));
         data.types = t.types.map((x) => x.name.trim());
         data.resources.forEach((r) => { if (map.has(r.type)) r.type = map.get(r.type); });
@@ -818,4 +834,5 @@
     if (t) { SS.del('icse:adm:t'); showLogin('You were signed out after ' + AC.idleMinutes + ' minutes of inactivity.'); return; }
     showLogin();
   })();
+  
 })();
