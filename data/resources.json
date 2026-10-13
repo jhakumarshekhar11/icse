@@ -1533,6 +1533,35 @@
         "heart",
         "fruits"
       ]
+    },
+    {
+      "id": "biology-2023-specimen-paper",
+      "title": "ICSE SPECIMEN 2023 Biology",
+      "subject": "biology",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2023,
+      "file": "/pdfs/biology-2023-specimen-paper.pdf",
+      "pages": 9,
+      "size_kb": 239,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Biology 2023",
+      "tags": [
+        "blood",
+        "pollution",
+        "population",
+        "photosynthesis",
+        "cell division",
+        "nervous system",
+        "offsprings",
+        "body",
+        "plant",
+        "water",
+        "heart",
+        "fruits"
+      ]
     }
   ]
 }
