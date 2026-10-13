@@ -1129,6 +1129,33 @@
         "nuclear fission",
         "energy"
       ]
+    },
+    {
+      "id": "physics-2027-specimen-paper",
+      "title": "ICSE SPECIMEN 2027 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2027,
+      "file": "/pdfs/physics-2027-specimen-paper.pdf",
+      "pages": 25,
+      "size_kb": 715,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Physics 2027",
+      "tags": [
+        "application",
+        "𝑐𝑐",
+        "lens",
+        "sound",
+        "heat capacity",
+        "latent heat",
+        "echo",
+        "light",
+        "refractive index",
+        "total internal reflection"
+      ]
     }
   ]
 }
