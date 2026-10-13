@@ -548,6 +548,27 @@
         "paper",
         "PYQ"
       ]
+    },
+    {
+      "id": "geography-2025-previous-year-paper",
+      "title": "ICSE 2025 Geography",
+      "subject": "geography",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/geography-2025-previous-year-paper.pdf",
+      "pages": 13,
+      "size_kb": 683,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Geography 2025",
+      "tags": [
+        "board",
+        "geography",
+        "paper",
+        "PYQ"
+      ]
     }
   ]
 }
