@@ -1156,6 +1156,35 @@
         "refractive index",
         "total internal reflection"
       ]
+    },
+    {
+      "id": "chemistry-2026-previous-year-paper",
+      "title": "ICSE 2026 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/chemistry-2026-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 523,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Chemistry 2026",
+      "tags": [
+        "ammonia",
+        "electrode",
+        "sulphuric acid",
+        "nitric acid",
+        "electrolysis",
+        "periodic table",
+        "reaction",
+        "hydrochloric acid",
+        "balanced chemical",
+        "element",
+        "process",
+        "solution"
+      ]
     }
   ]
 }
