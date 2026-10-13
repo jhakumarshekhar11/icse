@@ -897,6 +897,35 @@
         "civil disobedience",
         "council of ministers"
       ]
+    },
+    {
+      "id": "physics-2026-previous-year-paper",
+      "title": "ICSE 2026 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/physics-2026-previous-year-paper.pdf",
+      "pages": 19,
+      "size_kb": 640,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Physics 2026",
+      "tags": [
+        "lens",
+        "force",
+        "pulley",
+        "refractive index",
+        "echo",
+        "latent heat",
+        "nuclear fission",
+        "specific heat capacity",
+        "𝑅𝑅",
+        "energy",
+        "light",
+        "magnetic field"
+      ]
     }
   ]
 }
