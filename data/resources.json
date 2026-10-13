@@ -1185,6 +1185,35 @@
         "process",
         "solution"
       ]
+    },
+    {
+      "id": "chemistry-2023-previous-year-paper",
+      "title": "ICSE 2023 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/chemistry-2023-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 126,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Chemistry 2023",
+      "tags": [
+        "sulphuric acid",
+        "ammonia",
+        "hydrogen chloride",
+        "electrolysis",
+        "nitric acid",
+        "ionic compounds",
+        "covalent compounds",
+        "hydroxide solution",
+        "sodium hydroxide",
+        "white precipitate",
+        "organic compounds",
+        "chemical equation"
+      ]
     }
   ]
 }
