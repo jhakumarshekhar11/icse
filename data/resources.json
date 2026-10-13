@@ -527,6 +527,27 @@
         "paper",
         "PYQ"
       ]
+    },
+    {
+      "id": "geography-2024-previous-year-paper",
+      "title": "ICSE 2024 Geography",
+      "subject": "geography",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2024,
+      "file": "/pdfs/geography-2024-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 582,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Geography 2024",
+      "tags": [
+        "board",
+        "geography",
+        "paper",
+        "PYQ"
+      ]
     }
   ]
 }
