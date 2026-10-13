@@ -1330,6 +1330,35 @@
         "process",
         "solution"
       ]
+    },
+    {
+      "id": "chemistry-2024-specimen-paper",
+      "title": "ICSE SPECIMEN 2024 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2024,
+      "file": "/pdfs/chemistry-2024-specimen-paper.pdf",
+      "pages": 11,
+      "size_kb": 106,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Chemistry 2024",
+      "tags": [
+        "sulphuric acid",
+        "ammonia",
+        "electrode",
+        "nitric acid",
+        "solution",
+        "electrolysis",
+        "alkane",
+        "periodic table",
+        "hydrogen chloride",
+        "sodium hydroxide",
+        "reaction",
+        "copper"
+      ]
     }
   ]
 }
