@@ -260,8 +260,23 @@
     let doc;
     try { doc = await pdfjsLib.getDocument({ data: buf }).promise; }
     catch (e) { throw new Error(e && e.name === 'PasswordException' ? 'This PDF is password protected. Remove the password first.' : 'This PDF could not be opened. It may be damaged.'); }
-    const pages = doc.numPages; doc.destroy();
-    return { pages, size_kb: Math.max(1, Math.round(file.size / 1024)) };
+    const pages = doc.numPages;
+    const text = await pagesText(doc);
+    doc.destroy();
+    return { pages, text, size_kb: Math.max(1, Math.round(file.size / 1024)) };
+  }
+  // Reads the text of up to 60 pages. Scanned PDFs come back (almost) empty.
+  async function pagesText(doc, max = 60) {
+    const out = [];
+    for (let i = 1; i <= Math.min(doc.numPages, max); i++) {
+      try { const tc = await (await doc.getPage(i)).getTextContent(); out.push(tc.items.map((it) => it.str).join(' ')); }
+      catch { out.push(''); }
+    }
+    return out;
+  }
+  async function loadPdfText(blob) {
+    const doc = await pdfjsLib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
+    const t = await pagesText(doc); doc.destroy(); return t;
   }
 
   /* ---------- editor (used for new uploads and for editing) ---------- */
@@ -278,6 +293,7 @@
         </div>
         <div class="fileinfo glass" data-el="info" ${edit ? '' : 'hidden'}>
           ${icon('file')}<div class="nm"><b data-el="fname"></b><span data-el="fmeta"></span></div>
+          <button class="btn sm" type="button" data-el="suggest" ${edit ? '' : 'hidden'}>Suggest from PDF</button>
           <button class="btn sm" type="button" data-el="clear" hidden>Remove</button>
         </div>
         <p class="note" data-el="guessNote" hidden>Some fields were filled in from the file name. Check each one.</p>
@@ -290,8 +306,8 @@
           <div class="field"><label>Added on</label><input type="date" data-f="added"></div>
           <div class="field"><label>Popular badge</label><label class="switch"><input type="checkbox" data-f="popular"> Show the Popular badge</label></div>
           <div class="field full"><label>Link name (share link)</label><input type="text" data-f="id" maxlength="80" spellcheck="false" ${edit ? 'disabled' : ''}><div class="sub" data-el="idSub"></div></div>
-          <div class="field full"><label>Description</label><textarea data-f="desc" maxlength="240" placeholder="One line about what is inside."></textarea></div>
-          <div class="field full"><label>Tags</label><input type="text" data-f="tags" placeholder="board, paper, algebra"><div class="sub">Separate with commas. Tags make search find this resource.</div></div>
+          <div class="field full"><label>Description</label><textarea data-f="desc" maxlength="240" placeholder="One line about what is inside."></textarea><div class="sub" data-el="descSub"></div></div>
+          <div class="field full"><label>Tags</label><input type="text" data-f="tags" placeholder="board, paper, algebra"><div class="kw" data-el="kw"></div><div class="sub">Separate with commas. Tags make search find this resource.</div></div>
         </form>
         <ul class="issues" data-el="issues" aria-live="polite"></ul>
         <div class="ed-actions" data-el="actions"></div>
@@ -390,6 +406,57 @@
     };
     host.addEventListener('input', onInput); host.addEventListener('change', onInput);
 
+    // ----- keyword and description suggestions, worked out locally from the PDF text -----
+    st.result = null; st.lastDesc = ''; st.suggest = [];
+    const kwBox = el('kw'), descSub = el('descSub');
+    const curTags = () => f.tags.value.split(',').map((x) => x.trim()).filter(Boolean);
+    const kwOpts = () => { const v = val(); return { subject: subj(v.subject) || null, type: v.type, year: isNaN(v.year) ? '' : v.year, title: v.title }; };
+    function drawChips() {
+      const have = new Set(curTags().map((x) => x.toLowerCase()));
+      const left = st.suggest.filter((x) => !have.has(x.toLowerCase()));
+      kwBox.innerHTML = left.length
+        ? '<span class="kw-l">Suggested from the PDF</span>' + left.map((x) => `<button type="button" class="chip" data-kw="${esc(x)}">${icon('plus')}${esc(x)}</button>`).join('') + (left.length > 1 ? '<button type="button" class="chip" data-kwall>Add all</button>' : '')
+        : '';
+    }
+    function writeDesc(force) {
+      if (!st.result || !st.result.hasText) return;
+      const o = kwOpts();
+      const d = KW.describe({ subjectName: o.subject ? o.subject.name : '', type: o.type, year: o.year, topics: st.result.topics, marking: st.result.marking, answerKey: st.result.answerKey });
+      if (force || !f.desc.value.trim() || f.desc.value === st.lastDesc) { f.desc.value = d; st.lastDesc = d; descSub.textContent = 'Written from the PDF. Edit it if you like.'; }
+    }
+    function analyze(pages, force) {
+      const r = st.result = KW.analyze(pages, kwOpts());
+      if (!r.hasText) {
+        st.suggest = []; kwBox.innerHTML = '<span class="sub bad">This PDF has no readable text, so it looks scanned. Keywords and a description cannot be suggested. Add tags by hand.</span>';
+        descSub.textContent = ''; return;
+      }
+      st.suggest = r.tags;
+      if (force) { const have = new Set(curTags().map((x) => x.toLowerCase())); f.tags.value = curTags().concat(r.tags.slice(0, 6).filter((x) => !have.has(x))).join(', '); }
+      else if (!curTags().length) f.tags.value = r.tags.slice(0, 6).join(', ');
+      writeDesc(force); drawChips(); touched = true; render();
+    }
+    kwBox.addEventListener('click', (e) => {
+      const one = e.target.closest('[data-kw]'), all = e.target.closest('[data-kwall]');
+      if (!one && !all) return;
+      const have = new Set(curTags().map((x) => x.toLowerCase()));
+      const add = one ? [one.dataset.kw] : st.suggest.filter((x) => !have.has(x.toLowerCase()));
+      f.tags.value = curTags().concat(add).join(', '); drawChips(); touched = true; render();
+    });
+    f.tags.addEventListener('input', drawChips);
+    ['subject', 'type', 'year', 'title'].forEach((k) => f[k].addEventListener('input', () => { if (f.desc.value === st.lastDesc) writeDesc(false); }));
+    f.subject.addEventListener('change', () => { if (f.desc.value === st.lastDesc) writeDesc(false); });
+    f.type.addEventListener('change', () => { if (f.desc.value === st.lastDesc) writeDesc(false); });
+    el('suggest').addEventListener('click', async () => {
+      try {
+        let pages = st.pdf && st.pdf.text;
+        if (!pages) {
+          pages = await withBusy('Reading the PDF', async (step) => { step('Fetching it from GitHub'); return loadPdfText(await GH.fetchBlob(res.file)); });
+        }
+        analyze(pages, true);
+        toast(st.result.hasText ? 'Suggestions added' : 'No readable text in this PDF');
+      } catch (e) { showError(e); }
+    });
+
     el('form').addEventListener('submit', (e) => e.preventDefault());
 
     // file handling
@@ -415,20 +482,27 @@
         el('fmeta').textContent = `${plural(info.pages, 'page')}, ${fmtSize(info.size_kb)}${edit ? ', replaces the current file' : ''}`;
         if (!edit) {
           const g = guess(file.name);
-          if (!f.title.value.trim()) f.title.value = g.title;
+          // Titles follow your existing pattern, e.g. "ICSE SPECIMEN 2025 Computer Applications"
+          const sj = subj(g.subject);
+          const patterned = sj && g.year && /^(Specimen Papers|Previous Year Papers)$/.test(g.type)
+            ? `ICSE ${g.type === 'Specimen Papers' ? 'SPECIMEN ' : ''}${g.year} ${sj.name}` : '';
+          if (!f.title.value.trim()) f.title.value = patterned || g.title;
           if (!f.subject.value && g.subject) f.subject.value = g.subject;
           if (!f.type.value && g.type) f.type.value = g.type;
           if (!f.year.value && g.year) f.year.value = g.year;
           st.guessed = true; el('guessNote').hidden = false;
         }
+        el('suggest').hidden = false;
         touched = true; render();
+        analyze(info.text, false);
       } catch (e) { showError(e); }
     }
     el('clear').addEventListener('click', () => {
       if (st.url) URL.revokeObjectURL(st.url);
       st.file = st.pdf = st.url = null;
       if (edit) { el('fname').textContent = res.file.split('/').pop(); el('fmeta').textContent = [res.pages && plural(res.pages, 'page'), res.size_kb && fmtSize(res.size_kb)].filter(Boolean).join(', '); el('clear').hidden = true; }
-      else el('info').hidden = true;
+      else { el('info').hidden = true; el('suggest').hidden = true; }
+      st.result = null; st.suggest = []; kwBox.innerHTML = '';
       render();
     });
 
@@ -834,5 +908,4 @@
     if (t) { SS.del('icse:adm:t'); showLogin('You were signed out after ' + AC.idleMinutes + ' minutes of inactivity.'); return; }
     showLogin();
   })();
-  
 })();
