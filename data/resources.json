@@ -45,12 +45,16 @@
     {
       "id": "history",
       "name": "History & Civics",
-      "accent": "#fdba74"
+      "accent": "#fdba74",
+      "code": "501",
+      "altCode": "HCG1"
     },
     {
       "id": "geography",
       "name": "Geography",
-      "accent": "#67e8f9"
+      "accent": "#67e8f9",
+      "code": "502",
+      "altCode": "HCG2"
     },
     {
       "id": "computer",
