@@ -1272,6 +1272,35 @@
         "molecular formula",
         "organic compounds"
       ]
+    },
+    {
+      "id": "chemistry-2023-specimen-paper",
+      "title": "ICSE SPECIMEN 2023 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2023,
+      "file": "/pdfs/chemistry-2023-specimen-paper.pdf",
+      "pages": 10,
+      "size_kb": 289,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Chemistry 2023",
+      "tags": [
+        "ammonia",
+        "electrode",
+        "sulphuric acid",
+        "nitric acid",
+        "electrolysis",
+        "periodic table",
+        "reaction",
+        "hydrochloric acid",
+        "balanced chemical",
+        "element",
+        "process",
+        "solution"
+      ]
     }
   ]
 }
