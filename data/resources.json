@@ -1243,6 +1243,35 @@
         "reaction",
         "solution"
       ]
+    },
+    {
+      "id": "chemistry-2025-previous-year-paper",
+      "title": "ICSE 2025 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/chemistry-2025-previous-year-paper.pdf",
+      "pages": 16,
+      "size_kb": 473,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of Chemistry 2025.",
+      "tags": [
+        "sulphuric acid",
+        "ammonia",
+        "electrode",
+        "electrolysis",
+        "nitric acid",
+        "hydrogen chloride",
+        "test tube",
+        "reaction",
+        "dilute hcl",
+        "compound formed",
+        "molecular formula",
+        "organic compounds"
+      ]
     }
   ]
 }
