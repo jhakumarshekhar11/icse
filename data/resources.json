@@ -629,6 +629,26 @@
         "paper",
         "geography"
       ]
+    },
+    {
+      "id": "geography-2026-specimen-paper",
+      "title": "ICSE 2026 SPECIMEN Geography",
+      "subject": "geography",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/geography-2026-specimen-paper.pdf",
+      "pages": 22,
+      "size_kb": 2183,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Geography 2026",
+      "tags": [
+        "specimen",
+        "paper",
+        "geography"
+      ]
     }
   ]
 }
