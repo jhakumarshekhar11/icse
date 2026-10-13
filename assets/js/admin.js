@@ -199,19 +199,49 @@
   const filePath = (r) => GH.repoPath(String(r.file).replace(/^\//, ''));
 
   /* ---------- guess from file name ---------- */
-  const ALIAS = { maths: ['math', 'maths', 'mathematics'], physics: ['phy', 'physics'], chemistry: ['chem', 'chemistry'], biology: ['bio', 'biology'], english: ['eng', 'english', 'literature', 'lang', 'language'], history: ['hist', 'history', 'civics'], geography: ['geo', 'geography'], computer: ['comp', 'computer', 'applications', 'java', 'cs'] };
-  const TYPE_RULES = [['Solutions', /(solution|solutions|sol|answers?|answer-key)/], ['Formula Sheets', /(formula|formulae|cheat)/], ['Sample Papers', /(sample|mock|practice|specimen)/], ['Notes', /(notes?|summary|revision|chapter)/], ['Question Papers', /(qp|question|questions|paper|papers|pyq|board)/]];
+  // Words that point to a subject. Subject ids and name words are always tried as well.
+  const ALIAS = {
+    maths: ['math', 'maths', 'mathematics'], physics: ['phy', 'physics'], chemistry: ['chem', 'chemistry'], biology: ['bio', 'biology'],
+    englishlang: ['eng', 'english', 'lang', 'language'], englishlit: ['eng', 'english', 'lit', 'literature'],
+    history: ['hist', 'history', 'civics'], geography: ['geo', 'geography'], computer: ['comp', 'computer', 'java', 'cs'],
+    hindi: ['hindi'], commercialstudies: ['commercial', 'commerce'], economics: ['eco', 'economic', 'economics']
+  };
+  // Most specific rules first, so "specimen" is never mistaken for "sample".
+  // Each rule lists the type names it can map to; the first one that exists in your list is used.
+  const TYPE_RULES = [
+    [/specimen/, ['Specimen Papers']],
+    [/question[ -]?bank|\bqb\b/, ['Question Banks']],
+    [/sample|mock|practice/, ['Sample Papers']],
+    [/formula|formulae|cheat/, ['Formula Sheets']],
+    [/solution|answers?\b|answer key/, ['Solutions']],
+    [/previous[ -]?year|pyqs?\b|\bboard\b|past paper/, ['Previous Year Papers', 'Question Papers']],
+    [/notes?\b|summary|revision|chapter/, ['Notes']],
+    [/\bqp\b|question|papers?\b/, ['Previous Year Papers', 'Question Papers']]
+  ];
   function guess(filename) {
     const base = filename.replace(/\.pdf$/i, '');
     const text = base.toLowerCase().replace(/[_\-.]+/g, ' ');
     const tokens = text.split(/[^a-z0-9]+/).filter(Boolean);
-    let subject = '';
+
+    // Subject: the one that matches the most words wins (so "English Literature" beats "English Language").
+    let subject = '', best = 0;
     for (const s of state.data.subjects) {
-      const keys = [s.id, ...s.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3), ...(ALIAS[s.id] || [])];
-      if (tokens.some((t) => keys.includes(t))) { subject = s.id; break; }
+      const keys = new Set([s.id, ...s.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3), ...(ALIAS[s.id] || [])]);
+      const hits = new Set(tokens.filter((t) => keys.has(t))).size;
+      if (hits > best) { best = hits; subject = s.id; }
     }
-    let type = '';
-    for (const [name, rx] of TYPE_RULES) { if (state.data.types.includes(name) && rx.test(text)) { type = name; break; } }
+
+    // Type: a type the file name spells out in full (including types you added) wins, then the rules above.
+    const types = state.data.types;
+    let type = types.filter((t) => text.includes(t.toLowerCase().replace(/s$/, ''))).sort((x, y) => y.length - x.length)[0] || '';
+    if (!type) {
+      for (const [rx, names] of TYPE_RULES) {
+        if (!rx.test(text)) continue;
+        const hit = names.find((n) => types.includes(n));
+        if (hit) { type = hit; break; }
+      }
+    }
+
     const years = text.match(/\b(19|20)\d{2}\b/g);
     const year = years ? Number(years[years.length - 1]) : '';
     const title = base.replace(/[_\-.]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b([a-z])([a-z]*)/g, (m, a, b) => a.toUpperCase() + b);
