@@ -926,6 +926,35 @@
         "light",
         "magnetic field"
       ]
+    },
+    {
+      "id": "physics-2023-previous-year-paper",
+      "title": "ICSE 2023 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/physics-2023-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 297,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "PYQ of ICSE 2023",
+      "tags": [
+        "force",
+        "lens",
+        "pulley",
+        "specific heat capacity",
+        "latent heat",
+        "refractive index",
+        "total internal reflection",
+        "magnetic field",
+        "light",
+        "substance",
+        "iron filings",
+        "specific resistance"
+      ]
     }
   ]
 }
