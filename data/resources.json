@@ -1359,6 +1359,35 @@
         "reaction",
         "copper"
       ]
+    },
+    {
+      "id": "chemistry-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 Chemistry",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/chemistry-2026-specimen-paper.pdf",
+      "pages": 20,
+      "size_kb": 875,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of Chemistry 2026",
+      "tags": [
+        "sulphuric acid",
+        "understanding",
+        "ammonium dichromate",
+        "nitric acid",
+        "copper",
+        "ammonia",
+        "hydrogen chloride",
+        "periodic table",
+        "sodium hydroxide solution",
+        "dilute sulphuric",
+        "application",
+        "oxide"
+      ]
     }
   ]
 }
