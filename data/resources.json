@@ -569,6 +569,26 @@
         "paper",
         "PYQ"
       ]
+    },
+    {
+      "id": "geography-2023-specimen-paper",
+      "title": "ICSE 2023 SPECIMEN Geography",
+      "subject": "geography",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2023,
+      "file": "/pdfs/geography-2023-specimen-paper.pdf",
+      "pages": 9,
+      "size_kb": 290,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen Paper of Geography 2023",
+      "tags": [
+        "specimen",
+        "paper",
+        "geography"
+      ]
     }
   ]
 }
