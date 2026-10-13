@@ -3,32 +3,44 @@
     {
       "id": "englishlang",
       "name": "English Language",
-      "accent": "#03b5a9"
+      "accent": "#03b5a9",
+      "code": "011",
+      "altCode": "ENG1"
     },
     {
       "id": "englishlit",
       "name": "English Literature",
-      "accent": "#fcd34d"
+      "accent": "#fcd34d",
+      "code": "012",
+      "altCode": "ENG2"
     },
     {
       "id": "physics",
       "name": "Physics",
-      "accent": "#5eead4"
+      "accent": "#5eead4",
+      "code": "521",
+      "altCode": "SCI1"
     },
     {
       "id": "chemistry",
       "name": "Chemistry",
-      "accent": "#f0abfc"
+      "accent": "#f0abfc",
+      "code": "522",
+      "altCode": "SCI2"
     },
     {
       "id": "biology",
       "name": "Biology",
-      "accent": "#86efac"
+      "accent": "#86efac",
+      "code": "523",
+      "altCode": "SCI3"
     },
     {
       "id": "maths",
       "name": "Mathematics",
-      "accent": "#7aa2ff"
+      "accent": "#7aa2ff",
+      "code": "511",
+      "altCode": "MAT"
     },
     {
       "id": "history",
@@ -43,22 +55,30 @@
     {
       "id": "computer",
       "name": "Computer Applications",
-      "accent": "#fda4af"
+      "accent": "#fda4af",
+      "code": "861",
+      "altCode": "CTA"
     },
     {
       "id": "hindi",
       "name": "Hindi",
-      "accent": "#fcd34d"
+      "accent": "#fcd34d",
+      "code": "051",
+      "altCode": "HIN"
     },
     {
       "id": "commercialstudies",
       "name": "Commercial Studies",
-      "accent": "#f0abfc"
+      "accent": "#f0abfc",
+      "code": "631",
+      "altCode": "CST"
     },
     {
       "id": "economics",
       "name": "Economic Applications",
-      "accent": "#87efac"
+      "accent": "#87efac",
+      "code": "871",
+      "altCode": "EAS"
     }
   ],
   "types": [
