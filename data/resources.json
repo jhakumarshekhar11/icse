@@ -839,6 +839,35 @@
         "paper",
         "history"
       ]
+    },
+    {
+      "id": "history-2026-specimen-paper",
+      "title": "ICSE SPECIMEN 2026 History & Civics",
+      "subject": "history",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2026,
+      "file": "/pdfs/history-2026-specimen-paper.pdf",
+      "pages": 19,
+      "size_kb": 1313,
+      "added": "2026-10-13",
+      "updated": "2026-10-13",
+      "downloads": 0,
+      "description": "Specimen paper of History & Civics 2026",
+      "tags": [
+        "lok sabha",
+        "supreme court",
+        "president",
+        "parliament",
+        "rajya sabha",
+        "recall",
+        "first world war",
+        "partition",
+        "united nations",
+        "prime minister",
+        "home rule",
+        "cold war"
+      ]
     }
   ]
 }
