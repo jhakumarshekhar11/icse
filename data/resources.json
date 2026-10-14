@@ -2232,6 +2232,35 @@
         "new pattern",
         "competency based"
       ]
+    },
+    {
+      "id": "commercialstudies-2023-specimen-paper",
+      "title": "ICSE SPECIMEN 2023 Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2023,
+      "file": "/pdfs/commercialstudies-2023-specimen-paper.pdf",
+      "pages": 6,
+      "size_kb": 172,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Specimen paper of Commercial Studies.",
+      "tags": [
+        "practice",
+        "mock test",
+        "revision",
+        "last minute revision",
+        "exam preparation",
+        "important questions",
+        "chapterwise",
+        "topic wise",
+        "full syllabus",
+        "board pattern",
+        "new pattern",
+        "competency based"
+      ]
     }
   ]
 }
