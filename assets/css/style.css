@@ -363,6 +363,6 @@ section[id] { scroll-margin-top: 84px; }
 .about h2 { font-family: var(--font-display); font-weight: 650; font-size: 1.25rem; letter-spacing: -0.02em; margin-bottom: 10px; }
 .about p, .about li { color: var(--muted); }
 .about ul { padding-left: 1.2em; display: grid; gap: 6px; }
-.about a { color: #fff; text-underline-offset: 3px; }
+.about a:not(.btn) { color: #fff; text-underline-offset: 3px; }
 .about .glass { padding: 18px 22px; border-radius: var(--r-lg); }
 .about .back-cta { margin-top: 34px; display: inline-flex; }
