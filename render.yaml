@@ -48,4 +48,4 @@ services:
         value: public, max-age=3600
       - path: /assets/*
         name: Cache-Control
-        value: public, max-age=3600
+        value: public, max-age=300, must-revalidate
