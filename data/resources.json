@@ -3035,6 +3035,35 @@
         "electrolysis",
         "stoichiometry"
       ]
+    },
+    {
+      "id": "englishlang-2025-question-bank",
+      "title": "ICSE English Language X",
+      "subject": "englishlang",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/englishlang-2025-question-bank.pdf",
+      "pages": 23,
+      "size_kb": 718,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for English Language with answer key. Covers notice, composition, comprehension and letter writing.",
+      "tags": [
+        "answer key",
+        "application",
+        "mcq",
+        "notice",
+        "creative title",
+        "took music lessons",
+        "mother instructed rohan",
+        "composition",
+        "comprehension",
+        "letter writing",
+        "books",
+        "manager said"
+      ]
     }
   ]
 }
