@@ -2401,6 +2401,26 @@
         "new pattern",
         "competency based"
       ]
+    },
+    {
+      "id": "commercialstudies-2020-previous-year-paper",
+      "title": "ICSE 2020 Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2020,
+      "file": "/pdfs/commercialstudies-2020-previous-year-paper.pdf",
+      "pages": 4,
+      "size_kb": 140,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Commercial Studies 2020",
+      "tags": [
+        "insurance",
+        "advertising",
+        "consumer protection"
+      ]
     }
   ]
 }
