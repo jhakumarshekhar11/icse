@@ -578,24 +578,53 @@
   // Public hooks used by viewer.js
   window.App = { fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, shareOpen: () => !el.dlg.hidden };
 
-  /* ---------- exam countdown (edit data/exams.json) ---------- */
+  /* ---------- exam countdown (edit data/exams.json) ----------
+     The time comes from the web server's clock (the HTTP Date header), not from the
+     visitor's device, so a wrong date or time on their phone or PC does not change it.
+     After that first reading it ticks with a monotonic timer, which also ignores clock changes. */
   async function loadExams() {
     const box = $('#exams'); if (!box) return;
     try {
-      const r = await fetch('/data/exams.json', { cache: 'no-cache' });
+      const t0 = performance.now();
+      const r = await fetch('/data/exams.json?t=' + Date.now(), { cache: 'no-store' });
+      const t1 = performance.now();
       if (!r.ok) return;
       const d = await r.json();
+
+      // Server time at the moment the response arrived (falls back to the device clock if the header is missing)
+      let serverNow = Date.now();
+      const hdr = Date.parse(r.headers.get('Date') || '');
+      if (!isNaN(hdr)) serverNow = hdr + (Number(r.headers.get('Age')) || 0) * 1000 + (t1 - t0) / 2;
+      const now = () => serverNow + (performance.now() - t1);
+
+      const tz = d.timezone || '+05:30';
+      const time = d.time || '00:00';
+      const target = Date.parse(`${d.date}T${time}:00${tz}`);
+      if (isNaN(target) || target <= now()) return;        // missing or already started: hide the strip
+
+      const [hh, mm] = time.split(':').map(Number);
+      const clock = `${((hh + 11) % 12) + 1}:${String(mm).padStart(2, '0')} ${hh < 12 ? 'AM' : 'PM'}`;
       const [y, m, dd] = String(d.date).split('-').map(Number);
-      const when = new Date(y, (m || 1) - 1, dd || 1);
-      if (isNaN(when)) return;
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      const days = Math.round((when - today) / 864e5);
-      if (days < 0) return;                       // the date has passed: hide the strip
-      const dateText = when.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      const dateText = new Date(y, m - 1, dd).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
       $('#hExams').textContent = d.title || 'Board exams';
-      $('#examNext').innerHTML = `${esc(d.label || 'Starts')} <b>${esc(dateText)}</b>`;
-      $('#examDays').innerHTML = days === 0 ? '<b>Today</b>' : days === 1 ? '<b>Tomorrow</b>' : `<b>${days}</b><span>days to go</span>`;
+      $('#examNext').innerHTML = `${esc(d.label || 'Starts')} <b>${esc(dateText)}</b>, ${esc(clock)}`;
+
+      const units = $('#examDays');
+      units.innerHTML = ['days', 'hours', 'mins', 'secs'].map((u) => `<div><b data-u="${u}">0</b><span>${u}</span></div>`).join('');
+      const cell = {}; units.querySelectorAll('[data-u]').forEach((n) => { cell[n.dataset.u] = n; });
       box.hidden = false;
+
+      const pad = (n) => String(n).padStart(2, '0');
+      const tick = () => {
+        const left = Math.max(0, Math.floor((target - now()) / 1000));
+        if (left === 0) { box.hidden = true; clearInterval(timer); return; }
+        cell.days.textContent = Math.floor(left / 86400);
+        cell.hours.textContent = pad(Math.floor(left % 86400 / 3600));
+        cell.mins.textContent = pad(Math.floor(left % 3600 / 60));
+        cell.secs.textContent = pad(left % 60);
+      };
+      const timer = setInterval(tick, 1000);
+      tick();
     } catch (e) { /* no countdown if the file is missing or invalid */ }
   }
 

@@ -351,9 +351,11 @@ section[id] { scroll-margin-top: 84px; }
 .exam-title { color: var(--dim); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .exam-next { margin-top: 2px; color: var(--muted); }
 .exam-next b { color: #fff; font-weight: 600; }
-.exam-days { text-align: right; line-height: 1.1; }
-.exam-days b { display: block; font-family: var(--font-display); font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; text-shadow: 0 0 30px rgba(255, 255, 255, 0.35); }
-.exam-days span { color: var(--dim); font-size: 0.8rem; }
+.exam-days { display: flex; gap: clamp(10px, 2.4vw, 22px); }
+.exam-days > div { text-align: center; line-height: 1.1; min-width: 2.4ch; }
+.exam-days b { display: block; font-family: var(--font-display); font-variant-numeric: tabular-nums; font-size: clamp(1.4rem, 4.4vw, 2.2rem); font-weight: 700; letter-spacing: -0.03em; text-shadow: 0 0 30px rgba(255, 255, 255, 0.35); }
+.exam-days span { color: var(--dim); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+@media (max-width: 560px) { .exam-main { flex-wrap: wrap; } .exam-days { width: 100%; justify-content: space-between; padding: 6px 4px 0; } }
 .is-filtering #exams { display: none; }
 /* About page */
 .about { padding: clamp(40px, 8vh, 90px) 0 20px; max-width: 760px; }
