@@ -2073,6 +2073,25 @@
       "downloads": 0,
       "description": "School question paper uploaded by Ashu Choudhary.",
       "tags": []
+    },
+    {
+      "id": "geography-2027-map-2",
+      "title": "INDIAN STATE",
+      "subject": "geography",
+      "class": "X",
+      "type": "Maps",
+      "year": 2027,
+      "file": "/pdfs/geography-2027-map-2.pdf",
+      "pages": 1,
+      "size_kb": 3225,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "State Boundary Maps for Geography 2027",
+      "tags": [
+        "states",
+        "indian"
+      ]
     }
   ]
 }
