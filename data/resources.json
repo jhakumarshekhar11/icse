@@ -3093,6 +3093,35 @@
         "waste management",
         "topographical map"
       ]
+    },
+    {
+      "id": "englishlit-2025-question-bank",
+      "title": "ICSE Literature In English X",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/englishlit-2025-question-bank.pdf",
+      "pages": 44,
+      "size_kb": 853,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for English Literature with answer key. Covers poem and extract.",
+      "tags": [
+        "answer key",
+        "mcq",
+        "analysis",
+        "cassius",
+        "brutus",
+        "recall",
+        "julius caesar",
+        "understanding",
+        "antony",
+        "poem",
+        "extract",
+        "personal response"
+      ]
     }
   ]
 }
