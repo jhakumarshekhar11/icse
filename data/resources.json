@@ -2679,6 +2679,39 @@
         "production",
         "savings bank account"
       ]
+    },
+    {
+      "id": "computer-2027-question-bank",
+      "title": "CTA Arrays Question Bank Class 10",
+      "subject": "computer",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/computer-2027-question-bank.pdf",
+      "pages": 6,
+      "size_kb": 318,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Computer Applications",
+      "tags": [
+        "ascending order",
+        "binary search",
+        "selection sort",
+        "bubble sort",
+        "linear search",
+        "array",
+        "string",
+        "java",
+        "roll number",
+        "descending order",
+        "alphabetical order",
+        "user defined method",
+        "2026",
+        "2025",
+        "2024",
+        "2023"
+      ]
     }
   ]
 }
