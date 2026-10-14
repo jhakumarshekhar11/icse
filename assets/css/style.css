@@ -355,7 +355,6 @@ section[id] { scroll-margin-top: 84px; }
 .exam-days b { display: block; font-family: var(--font-display); font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; text-shadow: 0 0 30px rgba(255, 255, 255, 0.35); }
 .exam-days span { color: var(--dim); font-size: 0.8rem; }
 .is-filtering #exams { display: none; }
-@media (max-width: 560px) { 
 /* About page */
 .about { padding: clamp(40px, 8vh, 90px) 0 20px; max-width: 760px; }
 .about h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.035em; line-height: 1.05; }
@@ -367,4 +366,3 @@ section[id] { scroll-margin-top: 84px; }
 .about a { color: #fff; text-underline-offset: 3px; }
 .about .glass { padding: 18px 22px; border-radius: var(--r-lg); }
 .about .back-cta { margin-top: 34px; display: inline-flex; }
-}
