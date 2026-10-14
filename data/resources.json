@@ -2890,6 +2890,35 @@
         "cassius",
         "body"
       ]
+    },
+    {
+      "id": "biology-2027-question-bank",
+      "title": "ICSE Biology Complete Question Bank 2023 - 2027",
+      "subject": "biology",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/biology-2027-question-bank.pdf",
+      "pages": 15,
+      "size_kb": 353,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Biology. Covers blood, population, nervous system and chromosomes.",
+      "tags": [
+        "mcq",
+        "exact location",
+        "blood",
+        "population",
+        "spinal cord",
+        "nervous system",
+        "renal",
+        "artery",
+        "chromosomes",
+        "human evolution",
+        "reproductive system",
+        "arrange"
+      ]
     }
   ]
 }
