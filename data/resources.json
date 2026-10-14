@@ -2621,6 +2621,35 @@
         "identify",
         "labour"
       ]
+    },
+    {
+      "id": "commercialstudies-2026-previous-year-paper",
+      "title": "ICSE 2026 Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/commercialstudies-2026-previous-year-paper.pdf",
+      "pages": 11,
+      "size_kb": 299,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Commercial Studies 2026",
+      "tags": [
+        "insurance",
+        "transport",
+        "advertising",
+        "consumer protection",
+        "central bank",
+        "protection act",
+        "whereas services",
+        "pollution control",
+        "loss account",
+        "trial balance",
+        "balance sheet",
+        "trading account"
+      ]
     }
   ]
 }
