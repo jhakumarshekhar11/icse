@@ -2534,6 +2534,35 @@
         "identify",
         "profit"
       ]
+    },
+    {
+      "id": "economics-2025-previous-year-paper",
+      "title": "ICSE 2025 Economic Applications",
+      "subject": "economics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2025,
+      "file": "/pdfs/economics-2025-previous-year-paper.pdf",
+      "pages": 15,
+      "size_kb": 562,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Economic Applications 2025",
+      "tags": [
+        "demand",
+        "supply",
+        "market",
+        "price",
+        "money",
+        "inflation",
+        "elasticity",
+        "taxation",
+        "loanable funds",
+        "labour",
+        "reserve bank",
+        "central bank"
+      ]
     }
   ]
 }
