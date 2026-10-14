@@ -2948,6 +2948,35 @@
         "understanding",
         "void"
       ]
+    },
+    {
+      "id": "history-2025-question-bank",
+      "title": "ICSE History And Civics X",
+      "subject": "history",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/history-2025-question-bank.pdf",
+      "pages": 35,
+      "size_kb": 1285,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for History & Civics with answer key.",
+      "tags": [
+        "answer key",
+        "national movement",
+        "india",
+        "mcq",
+        "mass phase",
+        "lok sabha",
+        "government",
+        "contemporary world",
+        "prime minister",
+        "union legislature",
+        "british",
+        "understanding"
+      ]
     }
   ]
 }
