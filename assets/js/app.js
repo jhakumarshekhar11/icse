@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', rest: '', auto: {}, cls: '', subject: '', type: '', year: '', sort: 'new', savedOnly: false,
+    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'new', savedOnly: false,
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -169,8 +169,8 @@
   function applyQuery(v) {
     const p = parseQuery(v);
     ['cls', 'subject', 'type', 'year'].forEach((k) => {
-      if (p[k]) { state[k] = p[k]; state.auto[k] = true; }
-      else if (state.auto[k]) { state[k] = ''; state.auto[k] = false; }
+      if (p[k]) { state[k] = [p[k]]; state.auto[k] = true; }
+      else if (state.auto[k]) { state[k] = []; state.auto[k] = false; }
     });
     state.rest = p.rest;
     return p;
@@ -180,10 +180,10 @@
     const tokens = state.rest.split(/\s+/).filter(Boolean);
     const list = state.res.filter((r) =>
       (!state.savedOnly || state.saved.has(r.id)) &&
-      (!state.cls || r.class === state.cls) &&
-      (!state.subject || r.subject === state.subject) &&
-      (!state.type || r.type === state.type) &&
-      (!state.year || String(r.year) === state.year) &&
+      (!state.cls.length || state.cls.includes(r.class)) &&
+      (!state.subject.length || state.subject.includes(r.subject)) &&
+      (!state.type.length || state.type.includes(r.type)) &&
+      (!state.year.length || state.year.includes(String(r.year))) &&
       tokens.every((t) => r._hay.includes(t)));
     const by = {
       new: (a, b) => b._date - a._date || a.title.localeCompare(b.title),
@@ -192,7 +192,7 @@
     }[state.sort];
     return list.sort(by);
   }
-  const filtering = () => !!(state.q || state.cls || state.subject || state.type || state.year || state.savedOnly);
+  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
 
   /* ---------- rendering ---------- */
   function badges(r) {
@@ -256,10 +256,10 @@
       el.grid.innerHTML = list.map(cardHtml).join('');
     }
     const autoLabels = [];
-    if (state.auto.subject && state.subject) autoLabels.push(state.subjects.get(state.subject).name);
-    if (state.auto.type) autoLabels.push(state.type);
-    if (state.auto.year) autoLabels.push(state.year);
-    if (state.auto.cls) autoLabels.push('Class ' + state.cls);
+    if (state.auto.subject && state.subject.length) autoLabels.push(state.subjects.get(state.subject[0]).name);
+    if (state.auto.type && state.type.length) autoLabels.push(state.type[0]);
+    if (state.auto.year && state.year.length) autoLabels.push(state.year[0]);
+    if (state.auto.cls && state.cls.length) autoLabels.push('Class ' + state.cls[0]);
     const shown = state.rest || (!autoLabels.length ? state.q : '');
     const q = (autoLabels.length ? ` in <b>${esc(autoLabels.join(', '))}</b>` : '') + (shown ? ` for <b>“${esc(shown)}”</b>` : '');
     el.note.hidden = !autoLabels.length;
@@ -271,16 +271,30 @@
   function chip(label, value, active, accent) {
     return `<button class="chip" type="button" data-v="${esc(value)}" aria-pressed="${active}">${accent ? `<i class="dot" style="--accent:${esc(accent)}"></i>` : ''}${esc(label)}</button>`;
   }
+  // Every value a filter row can offer, in display order
+  function options(k) {
+    if (k === 'cls') return [...new Set(state.res.map((r) => r.class))].sort();
+    if (k === 'subject') return [...state.subjects.values()].filter((s) => state.res.some((r) => r.subject === s.id)).map((s) => s.id);
+    if (k === 'type') return state.types.filter((t) => state.res.some((r) => r.type === t));
+    return [...new Set(state.res.map((r) => String(r.year)))].sort().reverse();
+  }
+  // Click on a chip: "All" clears; others toggle. Picking every option is the same as All.
+  function toggleFilter(k, v) {
+    if (!v) { state[k] = []; return; }
+    const set = new Set(state[k]);
+    set.has(v) ? set.delete(v) : set.add(v);
+    const all = options(k);
+    state[k] = set.size >= all.length ? [] : all.filter((x) => set.has(x));
+  }
   function renderChips() {
-    const classes = [...new Set(state.res.map((r) => r.class))].sort();
+    const on = (k, v) => state[k].includes(v);
+    const allOf = (k) => !state[k].length;
+    const classes = options('cls');
     el.rowClass.hidden = classes.length < 2;
-    el.chipsClass.innerHTML = chip('All', '', !state.cls) + classes.map((c) => chip('Class ' + c, c, state.cls === c)).join('');
-    const subs = [...state.subjects.values()].filter((s) => state.res.some((r) => r.subject === s.id));
-    el.chipsSubject.innerHTML = chip('All', '', !state.subject) + subs.map((s) => chip(s.name, s.id, state.subject === s.id, s.accent)).join('');
-    const types = state.types.filter((t) => state.res.some((r) => r.type === t));
-    el.chipsType.innerHTML = chip('All', '', !state.type) + types.map((t) => chip(t, t, state.type === t)).join('');
-    const years = [...new Set(state.res.map((r) => String(r.year)))].sort().reverse();
-    el.chipsYear.innerHTML = chip('All', '', !state.year) + years.map((y) => chip(y, y, state.year === y)).join('');
+    el.chipsClass.innerHTML = chip('All', '', allOf('cls')) + classes.map((c) => chip('Class ' + c, c, on('cls', c))).join('');
+    el.chipsSubject.innerHTML = chip('All', '', allOf('subject')) + options('subject').map((id) => { const s = state.subjects.get(id); return chip(s.name, id, on('subject', id), s.accent); }).join('');
+    el.chipsType.innerHTML = chip('All', '', allOf('type')) + options('type').map((t) => chip(t, t, on('type', t))).join('');
+    el.chipsYear.innerHTML = chip('All', '', allOf('year')) + options('year').map((y) => chip(y, y, on('year', y))).join('');
     el.sort.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sort === state.sort));
     el.savedBtn.setAttribute('aria-pressed', state.savedOnly);
     el.savedCount.textContent = state.saved.size;
@@ -470,12 +484,13 @@
     const pre = Object.assign({}, window.__PRESET || {});
     ['subject', 'type', 'year'].forEach((k) => { if (p.get(k)) pre[k] = p.get(k); });
     const norm = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, '');
+    const list = (v) => String(v).split(',').map((x) => x.trim()).filter(Boolean);
     if (pre.subject) {
-      const sj = [...state.subjects.values()].find((x) => x.id === pre.subject || norm(x.name) === norm(pre.subject) || norm(x.id) === norm(pre.subject));
-      if (sj) state.subject = sj.id;
+      state.subject = list(pre.subject).map((v) => [...state.subjects.values()].find((x) => x.id === v || norm(x.name) === norm(v) || norm(x.id) === norm(v))).filter(Boolean).map((x) => x.id);
     }
-    if (pre.type) { const t = state.types.find((x) => x === pre.type || norm(x) === norm(pre.type)); if (t) state.type = t; }
-    if (pre.year) state.year = String(pre.year);
+    if (pre.type) state.type = list(pre.type).map((v) => state.types.find((x) => x === v || norm(x) === norm(v))).filter(Boolean);
+    if (pre.year) state.year = list(pre.year).map(String);
+    ['subject', 'type', 'year'].forEach((k) => { if (state[k].length >= options(k).length) state[k] = []; });
     if (p.get('q')) { el.q.value = state.q = p.get('q'); applyQuery(state.q); }
   }
   function setQuery(v, focus) {
@@ -488,7 +503,7 @@
     el.q.focus({ preventScroll: true }); el.q.select();
   }
   function resetAll() {
-    Object.assign(state, { q: '', rest: '', auto: {}, cls: '', subject: '', type: '', year: '', savedOnly: false });
+    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false });
     el.q.value = ''; renderChips(); renderGrid(); syncQueryUrl();
   }
 
@@ -500,7 +515,7 @@
   function bindChips(node, key) {
     node.addEventListener('click', (e) => {
       const b = e.target.closest('.chip'); if (!b) return;
-      state[key] = b.dataset.v; state.auto[key] = false; renderChips(); renderGrid();
+      toggleFilter(key, b.dataset.v); state.auto[key] = false; renderChips(); renderGrid();
     });
   }
   bindChips(el.chipsClass, 'cls'); bindChips(el.chipsSubject, 'subject');
@@ -516,7 +531,7 @@
   });
   el.subjects.addEventListener('click', (e) => {
     const b = e.target.closest('[data-subject]'); if (!b) return;
-    state.subject = b.dataset.subject; state.auto.subject = false; renderChips(); renderGrid();
+    state.subject = [b.dataset.subject]; state.auto.subject = false; renderChips(); renderGrid();
     requestAnimationFrame(() => $('#library').scrollIntoView({ behavior: 'smooth' }));
   });
 
