@@ -2919,6 +2919,35 @@
         "reproductive system",
         "arrange"
       ]
+    },
+    {
+      "id": "computer-2025-question-bank",
+      "title": "CFQs ICSE Computer Application Class X",
+      "subject": "computer",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/computer-2025-question-bank.pdf",
+      "pages": 40,
+      "size_kb": 921,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Computer Applications with answer key. Covers java, array and scanner.",
+      "tags": [
+        "answer key",
+        "system",
+        "println",
+        "mcq",
+        "string",
+        "number",
+        "user defined methods",
+        "java",
+        "array",
+        "scanner",
+        "understanding",
+        "void"
+      ]
     }
   ]
 }
