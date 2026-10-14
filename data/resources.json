@@ -2832,6 +2832,35 @@
         "2024",
         "2023"
       ]
+    },
+    {
+      "id": "physics-2027-question-bank",
+      "title": "Physics Question Bank",
+      "subject": "physics",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/physics-2027-question-bank.pdf",
+      "pages": 19,
+      "size_kb": 633,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Physics. Covers sound, total internal reflection, echo and pulley.",
+      "tags": [
+        "refractive index",
+        "lens",
+        "apparent depth",
+        "light",
+        "sound",
+        "glass",
+        "energy",
+        "angle",
+        "total internal reflection",
+        "echo",
+        "pulley",
+        "resonance"
+      ]
     }
   ]
 }
