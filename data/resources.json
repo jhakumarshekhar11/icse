@@ -3064,6 +3064,35 @@
         "books",
         "manager said"
       ]
+    },
+    {
+      "id": "geography-2025-question-bank",
+      "title": "ICSE Geography X",
+      "subject": "geography",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/geography-2025-question-bank.pdf",
+      "pages": 29,
+      "size_kb": 1896,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Geography with answer key. Covers transport, agriculture, manufacturing industries and irrigation.",
+      "tags": [
+        "answer key",
+        "mcq",
+        "transport",
+        "agriculture",
+        "manufacturing industries",
+        "irrigation",
+        "understanding analysis",
+        "india",
+        "climate",
+        "water resources",
+        "waste management",
+        "topographical map"
+      ]
     }
   ]
 }
