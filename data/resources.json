@@ -3180,6 +3180,35 @@
         "sound",
         "pulley"
       ]
+    },
+    {
+      "id": "physics-2027-sample-paper",
+      "title": "ICSE 2027 Physics",
+      "subject": "physics",
+      "class": "X",
+      "type": "Sample Papers",
+      "year": 2027,
+      "file": "/pdfs/physics-2027-sample-paper.pdf",
+      "pages": 7,
+      "size_kb": 35,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Sample paper of Physics 2027. Covers lens, sound, pulley and echo.",
+      "tags": [
+        "lens",
+        "sound",
+        "pulley",
+        "echo",
+        "refractive index",
+        "total internal reflection",
+        "kinetic energy",
+        "distance",
+        "minimum deviation",
+        "point",
+        "tuning fork",
+        "tackle system"
+      ]
     }
   ]
 }
