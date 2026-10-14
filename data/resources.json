@@ -3122,6 +3122,35 @@
         "extract",
         "personal response"
       ]
+    },
+    {
+      "id": "maths-2025-question-bank",
+      "title": "ICSE Mathematics X",
+      "subject": "maths",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/maths-2025-question-bank.pdf",
+      "pages": 49,
+      "size_kb": 1737,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Mathematics with answer key. Covers gst, matrix, cone and statistics.",
+      "tags": [
+        "answer key",
+        "application evaluate",
+        "mcq",
+        "analysis",
+        "understanding application",
+        "algebra",
+        "gst",
+        "matrix",
+        "cone",
+        "statistics",
+        "mensuration",
+        "probability"
+      ]
     }
   ]
 }
