@@ -80,10 +80,10 @@
         <a class="brand" href="/resource">ICSE <span>Admin</span></a>
         <div class="grow"></div>
         <span class="who" id="who"></span>
-        <button class="btn" id="undoBtn" type="button" disabled><svg class="ic"><use href="#i-undo"/></svg>Undo last change</button>
-        <button class="btn" id="exportBtn" type="button"><svg class="ic"><use href="#i-download"/></svg>Export JSON</button>
-        <a class="btn" href="/" target="_blank" rel="noopener"><svg class="ic"><use href="#i-read"/></svg>View site</a>
-        <button class="btn" id="outBtn" type="button"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+        <button class="btn" id="undoBtn" type="button" disabled aria-label="Undo last change" title="Undo last change"><svg class="ic"><use href="#i-undo"/></svg><span class="lb">Undo last change</span></button>
+        <button class="btn" id="exportBtn" type="button" aria-label="Export JSON backup" title="Export JSON backup"><svg class="ic"><use href="#i-download"/></svg><span class="lb">Export JSON</span></button>
+        <a class="btn" href="/resource" target="_blank" rel="noopener" aria-label="View site" title="View site"><svg class="ic"><use href="#i-read"/></svg><span class="lb">View site</span></a>
+        <button class="btn" id="outBtn" type="button" aria-label="Sign out" title="Sign out"><svg class="ic"><use href="#i-logout"/></svg><span class="lb">Sign out</span></button>
       </div>
       <nav class="tabs" role="tablist" aria-label="Admin sections">
         <button role="tab" data-tab="upload" aria-selected="true">Upload</button>
@@ -102,6 +102,7 @@
           <select id="fSubject" aria-label="Subject"></select>
           <select id="fType" aria-label="Type"></select>
           <select id="fYear" aria-label="Year"></select>
+          <select id="fSort" class="m-only" aria-label="Sort by"><option value="updated">Recently updated</option><option value="title">Title, A to Z</option><option value="year">Year, newest first</option><option value="downloads">Most downloaded</option></select>
           <select id="fStatus" aria-label="Status">
             <option value="">All statuses</option><option value="live">Live</option><option value="draft">Draft</option>
           </select>

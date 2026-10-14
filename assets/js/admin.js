@@ -631,13 +631,13 @@
       const pop = r.popular || dlTotal(r) >= CFG.popularMin;
       return `<tr data-id="${esc(r.id)}" class="${sel ? 'sel' : ''}">
         <td class="c-sel"><input type="checkbox" data-sel ${sel ? 'checked' : ''} aria-label="Select ${esc(r.title)}"></td>
-        <td><button class="ttl" data-act="edit" type="button">${esc(r.title)}</button><span class="id">${esc(r.id)}</span></td>
-        <td>${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>${codeText(s) ? `<span class="id">${esc(codeText(s))}</span>` : ''}` : '<span class="dim">Not set</span>'}</td>
-        <td class="dim">${esc(r.type || 'Not set')}</td>
-        <td class="dim">${esc(r.year || '–')}</td>
-        <td><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}</div></td>
-        <td class="dim" title="${esc((r.downloads || 0) + ' starting + ' + (state.live[r.id] || 0) + ' counted')}">${fmtCount(dlTotal(r))}</td>
-        <td class="dim">${esc(fmtDate(r.updated || r.added))}</td>
+        <td class="c-title"><button class="ttl" data-act="edit" type="button">${esc(r.title)}</button><span class="id">${esc(r.id)}</span></td>
+        <td class="c-sub">${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>${codeText(s) ? `<span class="id">${esc(codeText(s))}</span>` : ''}` : '<span class="dim">Not set</span>'}</td>
+        <td class="c-type dim">${esc(r.type || 'Not set')}</td>
+        <td class="c-year dim">${esc(r.year || '–')}</td>
+        <td class="c-st"><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}</div></td>
+        <td class="c-dl dim" data-l="Downloads" title="${esc((r.downloads || 0) + ' starting + ' + (state.live[r.id] || 0) + ' counted')}">${fmtCount(dlTotal(r))}</td>
+        <td class="c-up dim" data-l="Updated">${esc(fmtDate(r.updated || r.added))}</td>
         <td class="c-act">
           <button class="ib" data-act="preview" type="button" aria-label="Preview ${esc(r.title)}" title="Preview">${icon('read')}</button>
           <button class="ib" data-act="edit" type="button" aria-label="Edit ${esc(r.title)}" title="Edit">${icon('edit')}</button>
@@ -667,7 +667,7 @@
 
   function openEdit(r) {
     uid++;
-    const m = modal('<button class="ib dlg-x" type="button" aria-label="Close" data-x><svg class="ic"><use href="#i-close"/></svg></button><h3 style="margin-bottom:16px">Edit resource</h3><div data-host></div>', { cls: 'wide', scroll: true });
+    const m = modal('<div class="sheet-head"><h3>Edit resource</h3><button class="ib" type="button" aria-label="Close" data-x><svg class="ic"><use href="#i-close"/></svg></button></div><div data-host></div>', { cls: 'wide', scroll: true });
     m.card.querySelector('[data-x]').onclick = () => m.close();
     const ed = createEditor(m.card.querySelector('[data-host]'), { mode: 'edit', res: r, onSaved: () => m.close() });
     m.onClose = () => ed.destroy();
@@ -736,6 +736,8 @@
     const k = b.dataset.sort; state.sort = { key: k, dir: state.sort.key === k ? -state.sort.dir : (k === 'title' || k === 'subject' || k === 'type' ? 1 : -1) };
     renderLibrary();
   });
+  const SORTS = { updated: { key: 'updated', dir: -1 }, title: { key: 'title', dir: 1 }, year: { key: 'year', dir: -1 }, downloads: { key: 'downloads', dir: -1 } };
+  $('#fSort').addEventListener('change', (e) => { state.sort = Object.assign({}, SORTS[e.target.value]); renderLibrary(); });
   $('#selAll').addEventListener('change', (e) => { filtered().forEach((r) => (e.target.checked ? state.selected.add(r.id) : state.selected.delete(r.id))); renderLibrary(); });
   $('#rows').addEventListener('click', (e) => {
     const tr = e.target.closest('tr[data-id]'); if (!tr) return;
@@ -766,9 +768,9 @@
       const n = s.isNew ? 0 : count(s.id);
       return `<div class="trow" data-i="${i}">
         <input type="color" value="${esc(s.accent)}" data-k="accent" aria-label="Accent colour for ${esc(s.name)}">
-        <input type="text" value="${esc(s.name)}" data-k="name" maxlength="40" aria-label="Subject name">
-        <input type="text" value="${esc(s.code)}" data-k="code" maxlength="8" placeholder="Code" spellcheck="false" aria-label="Numeric subject code for ${esc(s.name)}">
-        <input type="text" value="${esc(s.altCode)}" data-k="altCode" maxlength="8" placeholder="Alt code" spellcheck="false" aria-label="Alphanumeric subject code for ${esc(s.name)}">
+        <label class="fld f-name"><span>Subject</span><input type="text" value="${esc(s.name)}" data-k="name" maxlength="40" aria-label="Subject name"></label>
+        <label class="fld f-code"><span>Numeric code</span><input type="text" value="${esc(s.code)}" data-k="code" maxlength="8" placeholder="Code" spellcheck="false" aria-label="Numeric subject code for ${esc(s.name)}"></label>
+        <label class="fld f-alt"><span>Alpha code</span><input type="text" value="${esc(s.altCode)}" data-k="altCode" maxlength="8" placeholder="Alt code" spellcheck="false" aria-label="Alphanumeric subject code for ${esc(s.name)}"></label>
         <span class="cnt">${n ? plural(n, 'resource') : 'unused'}</span>
         <button class="ib del" type="button" data-k="del" ${n ? 'disabled title="Move or delete its resources first"' : 'title="Remove subject"'} aria-label="Remove ${esc(s.name)}">${icon('trash')}</button>
       </div>`;
