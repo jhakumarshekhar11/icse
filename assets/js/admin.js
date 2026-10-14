@@ -769,8 +769,8 @@
       return `<div class="trow" data-i="${i}">
         <input type="color" value="${esc(s.accent)}" data-k="accent" aria-label="Accent colour for ${esc(s.name)}">
         <label class="fld f-name"><span>Subject</span><input type="text" value="${esc(s.name)}" data-k="name" maxlength="40" aria-label="Subject name"></label>
-        <label class="fld f-code"><span>Numeric code</span><input type="text" value="${esc(s.code)}" data-k="code" maxlength="8" placeholder="Code" spellcheck="false" aria-label="Numeric subject code for ${esc(s.name)}"></label>
-        <label class="fld f-alt"><span>Alpha code</span><input type="text" value="${esc(s.altCode)}" data-k="altCode" maxlength="8" placeholder="Alt code" spellcheck="false" aria-label="Alphanumeric subject code for ${esc(s.name)}"></label>
+        <label class="fld f-code"><span>Numeric code</span><input type="text" value="${esc(s.code)}" data-k="code" maxlength="3" placeholder="Code" spellcheck="false" aria-label="Numeric subject code for ${esc(s.name)}"></label>
+        <label class="fld f-alt"><span>Alpha code</span><input type="text" value="${esc(s.altCode)}" data-k="altCode" maxlength="3" placeholder="Alt code" spellcheck="false" aria-label="Alphanumeric subject code for ${esc(s.name)}"></label>
         <span class="cnt">${n ? plural(n, 'resource') : 'unused'}</span>
         <button class="ib del" type="button" data-k="del" ${n ? 'disabled title="Move or delete its resources first"' : 'title="Remove subject"'} aria-label="Remove ${esc(s.name)}">${icon('trash')}</button>
       </div>`;
