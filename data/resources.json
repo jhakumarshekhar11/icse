@@ -2650,6 +2650,35 @@
         "balance sheet",
         "trading account"
       ]
+    },
+    {
+      "id": "economics-2026-previous-year-paper",
+      "title": "ICSE 2026 Economic Applications",
+      "subject": "economics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2026,
+      "file": "/pdfs/economics-2026-previous-year-paper.pdf",
+      "pages": 12,
+      "size_kb": 914,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Economic Applications 2026",
+      "tags": [
+        "price",
+        "supply",
+        "market",
+        "demand",
+        "inflation",
+        "elasticity",
+        "money",
+        "national income",
+        "capital",
+        "image",
+        "production",
+        "savings bank account"
+      ]
     }
   ]
 }
