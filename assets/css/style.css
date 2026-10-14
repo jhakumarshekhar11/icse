@@ -318,3 +318,20 @@ section[id] { scroll-margin-top: 84px; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .spot { display: none; }
 }
+
+/* Filters applied from the search text */
+.auto-note { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--dim); font-size: 0.88rem; }
+.auto-note[hidden] { display: none; }
+.auto-note span { padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line-hi); color: #fff; background: var(--glass); }
+/* Static copy for crawlers; the live page replaces it */
+.js-ready .seo-static { display: none; }
+.seo-static { padding: 24px 0; color: var(--muted); }
+.seo-static a { color: #fff; }
+.seo-static ul { padding-left: 1.1em; display: grid; gap: 6px; }
+
+/* Browse links (also how search engines find every landing page) */
+.seo-browse { display: grid; gap: 10px; margin-bottom: 14px; color: var(--dim); font-size: 0.85rem; }
+.seo-browse div { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+.seo-browse b { color: var(--muted); font-weight: 600; min-width: 112px; }
+.seo-browse a { color: var(--muted); text-decoration: none; }
+.seo-browse a:hover, .seo-browse a[aria-current] { color: #fff; text-decoration: underline; text-underline-offset: 3px; }

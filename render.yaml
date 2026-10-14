@@ -1,0 +1,48 @@
+# Render Blueprint for a static site. Connect the GitHub repo in Render and it picks this up.
+services:
+  - type: web
+    name: icse-resources
+    runtime: static
+    branch: website
+    buildCommand: node scripts/build-seo.js
+    staticPublishPath: .
+    routes:
+      # The library lives at the site root. Old /resource links still work.
+      - type: redirect
+        source: /resource
+        destination: /
+      - type: redirect
+        source: /resource/*
+        destination: /*
+      # /admin serves the admin console
+      - type: rewrite
+        source: /admin
+        destination: /admin/index.html
+      - type: rewrite
+        source: /admin/
+        destination: /admin/index.html
+    headers:
+      - path: /admin
+        name: X-Robots-Tag
+        value: noindex, nofollow, noarchive
+      - path: /admin/*
+        name: X-Robots-Tag
+        value: noindex, nofollow, noarchive
+      - path: /admin
+        name: Cache-Control
+        value: no-store
+      - path: /admin/*
+        name: Cache-Control
+        value: no-store
+      - path: /sitemap.xml
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /data/*
+        name: Cache-Control
+        value: public, max-age=60
+      - path: /pdfs/*
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=3600

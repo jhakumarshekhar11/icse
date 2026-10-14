@@ -13,7 +13,7 @@
     spot: $('#spot'), page: $('#page'),
     dlg: $('#shareDlg'), shName: $('#shName'), shLink: $('#shLink'), shQr: $('#shQr'),
     shCopy: $('#shCopy'), shNative: $('#shNative'), shReport: $('#shReport'), shClose: $('#shClose'),
-    toasts: $('#toasts')
+    toasts: $('#toasts'), note: $('#autoNote')
   };
 
   const store = {
@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', cls: '', subject: '', type: '', year: '', sort: 'new', savedOnly: false,
+    q: '', rest: '', auto: {}, cls: '', subject: '', type: '', year: '', sort: 'new', savedOnly: false,
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -88,8 +88,96 @@
   }
 
   /* ---------- filtering ---------- */
+  /* Smart search: "Icse Computer paper 2025" selects Computer Applications + 2025
+     and leaves only the words it could not place as plain text search. */
+  const STOP = new Set(('icse isc class tenth board exam examination examinations free download downloads pdf pdfs ' +
+    'paper papers question questions solved latest new for of the and with in on a an to me my please ' +
+    'study material materials resource resources sheet sheets bank banks year years pyq pyqs last past ').split(/\s+/).filter(Boolean));
+  const SUBJ_ALIAS = { cs: 'computer', comp: 'computer', java: 'computer', maths: 'mathematics', math: 'mathematics',
+    geo: 'geography', bio: 'biology', chem: 'chemistry', phy: 'physics', hist: 'history', eco: 'economic',
+    econ: 'economic', lit: 'literature', lang: 'language', comm: 'commercial', commerce: 'commercial' };
+  const TYPE_ALIAS = { pyq: 'previous', pyqs: 'previous', past: 'previous', qb: 'bank', formulas: 'formula', formulae: 'formula' };
+  const GENERIC_TYPE_WORD = new Set(['paper', 'year', 'sheet', 'question']);
+  const sing = (w) => w.replace(/(ies)$/, 'y').replace(/s$/, '');
+  const GENERIC_SUBJ_WORD = new Set(['application', 'applications', 'and', 'of', 'the', 'studies']);
+
+  function parseQuery(raw) {
+    const out = { cls: '', subject: '', type: '', year: '', rest: '', labels: [] };
+    let text = ' ' + String(raw || '').toLowerCase().replace(/[^a-z0-9\s-]+/g, ' ').replace(/-/g, ' ') + ' ';
+    // year (2024-25 style also lands on 2024)
+    const ym = text.match(/\b(20\d{2})\b/);
+    if (ym) { out.year = ym[1]; text = text.replace(/\b20\d{2}(\s+\d{2,4})?\b/, ' '); }
+    // class
+    if (/\bclass\s+(10|x)\b|\b10th\b|\btenth\b/.test(text)) {
+      const c = [...new Set(state.res.map((r) => r.class))].find((v) => /^(10|x)$/i.test(v));
+      if (c) out.cls = c;
+      text = text.replace(/\bclass\s+(10|x)\b|\b10th\b|\btenth\b/g, ' ');
+    }
+    // "last year", "previous year" phrases first
+    text = text.replace(/\b(last|previous|past)\s+years?\b/g, ' pyq ');
+    let toks = text.split(/\s+/).filter(Boolean);
+
+    // type: match distinctive words of exactly one type
+    const hits = new Map();
+    state.types.forEach((t) => {
+      const words = t.toLowerCase().split(/\s+/).map(sing);
+      const distinct = words.filter((w) => !GENERIC_TYPE_WORD.has(w));
+      toks.forEach((tok) => {
+        const w = sing(TYPE_ALIAS[tok] || tok);
+        if (distinct.includes(w) || (words.includes(w) && !GENERIC_TYPE_WORD.has(w))) {
+          if (!hits.has(t)) hits.set(t, new Set()); hits.get(t).add(tok);
+        }
+      });
+    });
+    if (hits.size === 1) {
+      const [t, used] = [...hits.entries()][0];
+      out.type = t; toks = toks.filter((x) => !used.has(x));
+      // "question bank" leaves a stray "question"
+      if (/bank/i.test(t)) toks = toks.filter((x) => x !== 'question' && x !== 'questions');
+    }
+
+    // subject: every placeable word must agree on one subject
+    const subs = [...state.subjects.values()];
+    const matchWord = (tok, sj) => {
+      const keys = [sj.id, sj.code, sj.altCode].filter(Boolean).map((k) => String(k).toLowerCase());
+      if (keys.includes(tok)) return true;
+      const words = sj.name.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !GENERIC_SUBJ_WORD.has(w));
+      const a = SUBJ_ALIAS[tok];
+      return words.some((w) => w === tok || (a && w.startsWith(a)) || (tok.length >= 4 && (w.startsWith(tok) || (tok.startsWith(w) && w.length >= 4))));
+    };
+    let cand = null; const used = [];
+    toks.forEach((tok) => {
+      if (STOP.has(tok) || GENERIC_SUBJ_WORD.has(tok)) return;
+      const m = new Set(subs.filter((sj) => matchWord(tok, sj)).map((sj) => sj.id));
+      if (!m.size) return;
+      const next = cand ? new Set([...cand].filter((id) => m.has(id))) : m;
+      if (!next.size) return;                  // conflicting word: treat as plain text
+      cand = next; used.push(tok);
+    });
+    if (cand && cand.size === 1) {
+      out.subject = [...cand][0];
+      toks = toks.filter((x) => !used.includes(x) && !GENERIC_SUBJ_WORD.has(x));
+    }
+    out.rest = toks.filter((x) => !STOP.has(x)).join(' ');
+    if (out.subject) out.labels.push(state.subjects.get(out.subject).name);
+    if (out.type) out.labels.push(out.type);
+    if (out.year) out.labels.push(out.year);
+    if (out.cls) out.labels.push('Class ' + out.cls);
+    return out;
+  }
+
+  function applyQuery(v) {
+    const p = parseQuery(v);
+    ['cls', 'subject', 'type', 'year'].forEach((k) => {
+      if (p[k]) { state[k] = p[k]; state.auto[k] = true; }
+      else if (state.auto[k]) { state[k] = ''; state.auto[k] = false; }
+    });
+    state.rest = p.rest;
+    return p;
+  }
+
   function visible() {
-    const tokens = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const tokens = state.rest.split(/\s+/).filter(Boolean);
     const list = state.res.filter((r) =>
       (!state.savedOnly || state.saved.has(r.id)) &&
       (!state.cls || r.class === state.cls) &&
@@ -167,7 +255,15 @@
     } else {
       el.grid.innerHTML = list.map(cardHtml).join('');
     }
-    const q = state.q ? ` for <b>“${esc(state.q)}”</b>` : '';
+    const autoLabels = [];
+    if (state.auto.subject && state.subject) autoLabels.push(state.subjects.get(state.subject).name);
+    if (state.auto.type) autoLabels.push(state.type);
+    if (state.auto.year) autoLabels.push(state.year);
+    if (state.auto.cls) autoLabels.push('Class ' + state.cls);
+    const shown = state.rest || (!autoLabels.length ? state.q : '');
+    const q = (autoLabels.length ? ` in <b>${esc(autoLabels.join(', '))}</b>` : '') + (shown ? ` for <b>“${esc(shown)}”</b>` : '');
+    el.note.hidden = !autoLabels.length;
+    el.note.innerHTML = autoLabels.length ? 'Filters applied from your search: ' + autoLabels.map((l) => `<span>${esc(l)}</span>`).join('') : '';
     el.count.innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'resource' : 'resources'}${q}` +
       (filtering() ? '<button type="button" data-act="reset">Clear all</button>' : '');
   }
@@ -361,9 +457,30 @@
   addEventListener('popstate', () => syncFromUrl(false));
 
   /* ---------- search + filters ---------- */
+  // ?q= is kept in the address bar so a search can be shared or bookmarked
+  function syncQueryUrl() {
+    if (Viewer.isOpen()) return;
+    const u = new URL(location.href);
+    state.q ? u.searchParams.set('q', state.q) : u.searchParams.delete('q');
+    history.replaceState(history.state, '', u.pathname + (u.search || '') + u.hash);
+  }
+  // Starting filters from ?q= / ?subject= / ?type= / ?year= or from a generated landing page
+  function readStartFilters() {
+    const p = new URLSearchParams(location.search);
+    const pre = Object.assign({}, window.__PRESET || {});
+    ['subject', 'type', 'year'].forEach((k) => { if (p.get(k)) pre[k] = p.get(k); });
+    const norm = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, '');
+    if (pre.subject) {
+      const sj = [...state.subjects.values()].find((x) => x.id === pre.subject || norm(x.name) === norm(pre.subject) || norm(x.id) === norm(pre.subject));
+      if (sj) state.subject = sj.id;
+    }
+    if (pre.type) { const t = state.types.find((x) => x === pre.type || norm(x) === norm(pre.type)); if (t) state.type = t; }
+    if (pre.year) state.year = String(pre.year);
+    if (p.get('q')) { el.q.value = state.q = p.get('q'); applyQuery(state.q); }
+  }
   function setQuery(v, focus) {
     state.q = v; el.q.value = v;
-    renderGrid();
+    applyQuery(v); renderChips(); renderGrid(); syncQueryUrl();
     if (focus) el.q.focus();
   }
   function focusSearch() {
@@ -371,8 +488,8 @@
     el.q.focus({ preventScroll: true }); el.q.select();
   }
   function resetAll() {
-    Object.assign(state, { q: '', cls: '', subject: '', type: '', year: '', savedOnly: false });
-    el.q.value = ''; renderChips(); renderGrid();
+    Object.assign(state, { q: '', rest: '', auto: {}, cls: '', subject: '', type: '', year: '', savedOnly: false });
+    el.q.value = ''; renderChips(); renderGrid(); syncQueryUrl();
   }
 
   el.q.addEventListener('input', () => setQuery(el.q.value));
@@ -383,7 +500,7 @@
   function bindChips(node, key) {
     node.addEventListener('click', (e) => {
       const b = e.target.closest('.chip'); if (!b) return;
-      state[key] = b.dataset.v; renderChips(); renderGrid();
+      state[key] = b.dataset.v; state.auto[key] = false; renderChips(); renderGrid();
     });
   }
   bindChips(el.chipsClass, 'cls'); bindChips(el.chipsSubject, 'subject');
@@ -399,7 +516,7 @@
   });
   el.subjects.addEventListener('click', (e) => {
     const b = e.target.closest('[data-subject]'); if (!b) return;
-    state.subject = b.dataset.subject; renderChips(); renderGrid();
+    state.subject = b.dataset.subject; state.auto.subject = false; renderChips(); renderGrid();
     requestAnimationFrame(() => $('#library').scrollIntoView({ behavior: 'smooth' }));
   });
 
@@ -452,7 +569,9 @@
     state.sort = store.get('icse:sort', 'new');
     renderQuick();
     if (!(await load())) return;
+    readStartFilters();
     renderAll();
+    document.documentElement.classList.add('js-ready');
     syncFromUrl(true);
     loadCounts();
   })();
