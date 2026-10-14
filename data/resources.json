@@ -2174,6 +2174,35 @@
         "cost",
         "safety"
       ]
+    },
+    {
+      "id": "commercialstudies-2022-specimen-paper",
+      "title": "ICSE 2022 Semester 2 Specimen Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2022,
+      "file": "/pdfs/commercialstudies-2022-specimen-paper.pdf",
+      "pages": 6,
+      "size_kb": 35,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Specimen paper of Commercial Studies 2022",
+      "tags": [
+        "insurance",
+        "particulars amount",
+        "profit",
+        "central bank",
+        "loss account",
+        "ending march",
+        "bills payable",
+        "bills receivable",
+        "external recruitment",
+        "sales",
+        "budget",
+        "cash"
+      ]
     }
   ]
 }
