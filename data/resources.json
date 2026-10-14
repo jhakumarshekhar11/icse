@@ -2449,6 +2449,33 @@
         "lakh",
         "factors"
       ]
+    },
+    {
+      "id": "commercialstudies-2023-previous-year-paper",
+      "title": "ICSE 2023 Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/commercialstudies-2023-previous-year-paper.pdf",
+      "pages": 7,
+      "size_kb": 63,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Commercial Studies 2023",
+      "tags": [
+        "insurance",
+        "advertising",
+        "e commerce",
+        "revenue expenditure",
+        "capital expenditure",
+        "budget",
+        "bank",
+        "sales",
+        "product",
+        "warehouses"
+      ]
     }
   ]
 }
