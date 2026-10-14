@@ -2092,6 +2092,35 @@
         "states",
         "indian"
       ]
+    },
+    {
+      "id": "economics-2022-specimen-paper",
+      "title": "ICSE SPECIMEN QP ECONOMIC APPLICATIONS 1",
+      "subject": "economics",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2022,
+      "file": "/pdfs/economics-2022-specimen-paper.pdf",
+      "pages": 10,
+      "size_kb": 175,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Specimen paper of Economic Applications 2022",
+      "tags": [
+        "price",
+        "demand",
+        "supply",
+        "market",
+        "elasticity",
+        "gdp",
+        "economic growth",
+        "labour productivity",
+        "quantity supplied",
+        "monopolistically competitive",
+        "capital",
+        "increase"
+      ]
     }
   ]
 }
