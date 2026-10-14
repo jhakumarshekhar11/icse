@@ -4,7 +4,7 @@ window.ICSE_CONFIG = {
   dataUrl: "/data/resources.json",
 
   // Public path of this page, used when building share links and QR codes
-  basePath: "/resource",
+  basePath: "/",
 
   // Link back to your portfolio
   portfolioUrl: "https://shekharjha.tech",
