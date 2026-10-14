@@ -2977,6 +2977,35 @@
         "british",
         "understanding"
       ]
+    },
+    {
+      "id": "biology-2025-question-bank",
+      "title": "ICSE Biology X",
+      "subject": "biology",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/biology-2025-question-bank.pdf",
+      "pages": 20,
+      "size_kb": 905,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Question bank for Biology with answer key. Covers blood, pollution, population and photosynthesis.",
+      "tags": [
+        "answer key",
+        "human anatomy",
+        "mcq",
+        "physiology",
+        "analysis",
+        "blood",
+        "pollution",
+        "population",
+        "photosynthesis",
+        "transpiration",
+        "cell division",
+        "human evolution"
+      ]
     }
   ]
 }
