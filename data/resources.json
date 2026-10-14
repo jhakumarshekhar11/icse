@@ -2121,6 +2121,30 @@
         "capital",
         "increase"
       ]
+    },
+    {
+      "id": "economics-2022-specimen-paper-2",
+      "title": "ICSE 2022 Semester 2 Specimen Economic Applications",
+      "subject": "economics",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2022,
+      "file": "/pdfs/economics-2022-specimen-paper-2.pdf",
+      "pages": 5,
+      "size_kb": 28,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Specimen paper of Economic Applications 2022",
+      "tags": [
+        "taxation",
+        "inflation",
+        "central bank",
+        "credit",
+        "type",
+        "pair",
+        "india"
+      ]
     }
   ]
 }
