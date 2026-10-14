@@ -2145,6 +2145,35 @@
         "pair",
         "india"
       ]
+    },
+    {
+      "id": "commercialstudies-2022-previous-year-paper",
+      "title": "ICSE 2022 Commercial Studies",
+      "subject": "commercialstudies",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2022,
+      "file": "/pdfs/commercialstudies-2022-previous-year-paper.pdf",
+      "pages": 10,
+      "size_kb": 62,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Commercial Studies 2022",
+      "tags": [
+        "advertising",
+        "revenue expenditure",
+        "marketing",
+        "e commerce",
+        "capital receipts",
+        "capital expenditure",
+        "consumer",
+        "sales promotion",
+        "deferred revenue",
+        "revenue receipts",
+        "cost",
+        "safety"
+      ]
     }
   ]
 }
