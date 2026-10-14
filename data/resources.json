@@ -2421,6 +2421,34 @@
         "advertising",
         "consumer protection"
       ]
+    },
+    {
+      "id": "economics-2020-previous-year-paper",
+      "title": "ICSE 2020 Economic Applications",
+      "subject": "economics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2020,
+      "file": "/pdfs/economics-2020-previous-year-paper.pdf",
+      "pages": 5,
+      "size_kb": 126,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Economic Applications 2020",
+      "tags": [
+        "price",
+        "demand",
+        "inflation",
+        "interest rate",
+        "bank",
+        "india",
+        "savings",
+        "labour",
+        "capital",
+        "lakh",
+        "factors"
+      ]
     }
   ]
 }
