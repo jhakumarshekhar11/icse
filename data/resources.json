@@ -2476,6 +2476,35 @@
         "product",
         "warehouses"
       ]
+    },
+    {
+      "id": "economics-2023-previous-year-paper",
+      "title": "ICSE 2023 Economic Application",
+      "subject": "economics",
+      "class": "X",
+      "type": "Previous Year Papers",
+      "year": 2023,
+      "file": "/pdfs/economics-2023-previous-year-paper.pdf",
+      "pages": 8,
+      "size_kb": 39,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "PYQ of Economic Applications 2023",
+      "tags": [
+        "price",
+        "supply",
+        "market",
+        "inflation",
+        "demand",
+        "money",
+        "elasticity",
+        "taxation",
+        "factors of production",
+        "capital",
+        "labour",
+        "curve"
+      ]
     }
   ]
 }
