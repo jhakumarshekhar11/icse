@@ -3237,6 +3237,35 @@
         "revenue expenditure",
         "preference shares"
       ]
+    },
+    {
+      "id": "economics-2027-sample-paper",
+      "title": "Economic Applications Sample Paper",
+      "subject": "economics",
+      "class": "X",
+      "type": "Sample Papers",
+      "year": 2027,
+      "file": "/pdfs/economics-2027-sample-paper.pdf",
+      "pages": 7,
+      "size_kb": 330,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Sample paper of Economic Applications 2027",
+      "tags": [
+        "price",
+        "supply",
+        "market",
+        "demand",
+        "inflation",
+        "elasticity",
+        "money",
+        "loanable funds",
+        "bank",
+        "credit control",
+        "quantity demanded",
+        "curve"
+      ]
     }
   ]
 }
