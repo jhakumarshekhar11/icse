@@ -12,7 +12,7 @@
     savedBtn: $('#savedBtn'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
     spot: $('#spot'), page: $('#page'),
     dlg: $('#shareDlg'), shName: $('#shName'), shLink: $('#shLink'), shQr: $('#shQr'),
-    shCopy: $('#shCopy'), shNative: $('#shNative'), shReport: $('#shReport'), shClose: $('#shClose'),
+    shCopy: $('#shCopy'), shNative: $('#shNative'), shWa: $('#shWa'), shReport: $('#shReport'), shClose: $('#shClose'),
     toasts: $('#toasts'), note: $('#autoNote')
   };
 
@@ -399,6 +399,7 @@
     el.shLink.value = link;
     el.shQr.innerHTML = qrSvg(link);
     el.shReport.href = reportHref(r);
+    el.shWa.href = 'https://wa.me/?text=' + encodeURIComponent(r.title + ' (ICSE Class 10)\n' + link);
     el.shNative.hidden = !navigator.share;
     const host = Viewer.fullscreenHost();
     if (el.dlg.parentNode !== host) host.appendChild(el.dlg);
@@ -577,6 +578,27 @@
   // Public hooks used by viewer.js
   window.App = { fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, shareOpen: () => !el.dlg.hidden };
 
+  /* ---------- exam countdown (edit data/exams.json) ---------- */
+  async function loadExams() {
+    const box = $('#exams'); if (!box) return;
+    try {
+      const r = await fetch('/data/exams.json', { cache: 'no-cache' });
+      if (!r.ok) return;
+      const d = await r.json();
+      const [y, m, dd] = String(d.date).split('-').map(Number);
+      const when = new Date(y, (m || 1) - 1, dd || 1);
+      if (isNaN(when)) return;
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const days = Math.round((when - today) / 864e5);
+      if (days < 0) return;                       // the date has passed: hide the strip
+      const dateText = when.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      $('#hExams').textContent = d.title || 'Board exams';
+      $('#examNext').innerHTML = `${esc(d.label || 'Starts')} <b>${esc(dateText)}</b>`;
+      $('#examDays').innerHTML = days === 0 ? '<b>Today</b>' : days === 1 ? '<b>Tomorrow</b>' : `<b>${days}</b><span>days to go</span>`;
+      box.hidden = false;
+    } catch (e) { /* no countdown if the file is missing or invalid */ }
+  }
+
   /* ---------- init ---------- */
   (async function init() {
     $('#backLink').href = CFG.portfolioUrl;
@@ -589,5 +611,6 @@
     document.documentElement.classList.add('js-ready');
     syncFromUrl(true);
     loadCounts();
+    loadExams();
   })();
 })();

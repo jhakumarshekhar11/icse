@@ -335,3 +335,36 @@ section[id] { scroll-margin-top: 84px; }
 .seo-browse b { color: var(--muted); font-weight: 600; min-width: 112px; }
 .seo-browse a { color: var(--muted); text-decoration: none; }
 .seo-browse a:hover, .seo-browse a[aria-current] { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+
+.foot .disclaimer { margin: 14px 4px 0; max-width: 80ch; color: var(--dim); font-size: 0.78rem; line-height: 1.6; }
+
+/* About link in the top bar */
+.nav-about { text-decoration: none; }
+@media (max-width: 560px) { .nav-about { display: none; } }
+
+/* Exam countdown */
+.exams { padding-top: 0; padding-bottom: 8px; }
+.exam-card { border-radius: var(--r-lg); padding: 16px 20px; }
+.exam-main { display: flex; align-items: center; gap: 14px; }
+.exam-main > .ic { width: 26px; height: 26px; flex: none; color: var(--muted); }
+.exam-main > div:nth-child(2) { flex: 1; min-width: 0; }
+.exam-title { color: var(--dim); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.exam-next { margin-top: 2px; color: var(--muted); }
+.exam-next b { color: #fff; font-weight: 600; }
+.exam-days { text-align: right; line-height: 1.1; }
+.exam-days b { display: block; font-family: var(--font-display); font-size: clamp(1.8rem, 5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; text-shadow: 0 0 30px rgba(255, 255, 255, 0.35); }
+.exam-days span { color: var(--dim); font-size: 0.8rem; }
+.is-filtering #exams { display: none; }
+@media (max-width: 560px) { 
+/* About page */
+.about { padding: clamp(40px, 8vh, 90px) 0 20px; max-width: 760px; }
+.about h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 6vw, 3.2rem); letter-spacing: -0.035em; line-height: 1.05; }
+.about .lead { margin-top: 18px; color: var(--muted); font-size: clamp(1.02rem, 2vw, 1.18rem); }
+.about section { margin-top: 34px; }
+.about h2 { font-family: var(--font-display); font-weight: 650; font-size: 1.25rem; letter-spacing: -0.02em; margin-bottom: 10px; }
+.about p, .about li { color: var(--muted); }
+.about ul { padding-left: 1.2em; display: grid; gap: 6px; }
+.about a { color: #fff; text-underline-offset: 3px; }
+.about .glass { padding: 18px 22px; border-radius: var(--r-lg); }
+.about .back-cta { margin-top: 34px; display: inline-flex; }
+}

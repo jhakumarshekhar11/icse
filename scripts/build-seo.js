@@ -13,7 +13,7 @@ const path = require('path');
 const ROOT = process.env.ROOT || path.join(__dirname, '..');
 const SITE = (process.env.SITE_URL || 'https://icse.shekharjha.tech').replace(/\/$/, '');
 const OWNER = 'Shekhar Jha';
-const RESERVED = new Set(['assets', 'data', 'pdfs', 'admin', 'scripts', 'public', 'tools']);
+const RESERVED = new Set(['assets', 'data', 'pdfs', 'admin', 'scripts', 'public', 'tools', 'about']);
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -115,7 +115,12 @@ function main() {
       `<meta property="og:description" content="${esc(meta.desc)}">`,
       '<meta property="og:type" content="website">',
       `<meta property="og:url" content="${esc(canon)}">`,
-      '<meta name="twitter:card" content="summary">',
+      '<meta property="og:site_name" content="ICSE Class 10 Resources">',
+      `<meta property="og:image" content="${SITE}/assets/og.png">`,
+      '<meta property="og:image:width" content="1200">',
+      '<meta property="og:image:height" content="630">',
+      '<meta name="twitter:card" content="summary_large_image">',
+      `<meta name="twitter:image" content="${SITE}/assets/og.png">`,
       meta.preset ? `<script>window.__PRESET=${JSON.stringify(meta.preset).replace(/</g, '\\u003c')};</script>` : '',
       ...meta.ld.map(jsonLd)
     ].filter(Boolean).join('\n  ');
@@ -161,6 +166,7 @@ function main() {
   // sitemap
   const latest = (items) => items.map((r) => String(r.added)).sort().pop() || '';
   const urls = [{ loc: SITE + '/', lm: latest(live) }];
+  urls.push({ loc: SITE + '/about/', lm: '' });
   pages.forEach((g, url) => urls.push({ loc: SITE + url, lm: latest(g.items) }));
   live.forEach((r) => urls.push({ loc: abs(r.file), lm: String(r.added) }));
   const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

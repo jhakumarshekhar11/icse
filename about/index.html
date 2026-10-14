@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>About | ICSE Class 10 Resources</title>
+  <meta name="description" content="About ICSE Class 10 Resources: a free, independent library of ICSE Class X papers, specimen papers, question banks and formula sheets by Shekhar Jha.">
+  <link rel="canonical" href="https://icse.shekharjha.tech/about/">
+  <meta property="og:title" content="About ICSE Class 10 Resources">
+  <meta property="og:description" content="A free, independent library of ICSE Class X papers, specimen papers, question banks and formula sheets.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://icse.shekharjha.tech/about/">
+  <meta property="og:site_name" content="ICSE Class 10 Resources">
+  <meta property="og:image" content="https://icse.shekharjha.tech/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<div class="ambient" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+</svg>
+<div class="page">
+  <header class="nav wrap">
+    <div class="nav-in glass">
+      <a class="back" id="backLink" href="https://shekharjha.tech"><svg class="ic"><use href="#i-left"/></svg><span class="t">shekharjha.tech</span></a>
+      <a class="brand" href="/">ICSE <span>Resources</span></a>
+      <a class="pill" href="/">Library</a>
+    </div>
+  </header>
+
+  <main class="wrap about">
+    <h1>About ICSE Resources</h1>
+    <p class="lead">A free library of ICSE Class X study material in one place: previous year papers, specimen and sample papers, question banks and formula sheets. Made by Shekhar Jha for students preparing for the board exams.</p>
+
+    <section>
+      <h2>Finding what you need</h2>
+      <ul>
+        <li>Type what you want in the search bar, for example <a href="/?q=computer%20specimen%202025">computer specimen 2025</a>. The subject, type and year are picked for you.</li>
+        <li>Use the filter chips to choose several subjects, types or years at once.</li>
+        <li>Open any file to read it right in the page, or download the PDF.</li>
+        <li>Bookmark files with the ribbon icon and find them under Saved.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Found a mistake?</h2>
+      <p>Files are uploaded by hand and errors can slip in. Use the flag icon on any resource to report it, or email <a id="mail" href="#">me</a>.</p>
+    </section>
+
+    <section>
+      <h2>Disclaimer</h2>
+      <div class="glass">
+        <p>ICSE Resource is an independent educational reference project and is NOT officially affiliated with, endorsed by, or sponsored by the Council for the Indian School Certificate Examinations (CISCE). All exam names, and specimen materials are the intellectual property of their respective governing bodies.</p>
+      </div>
+    </section>
+
+    <a class="btn btn-primary back-cta" href="/">Browse the resources</a>
+  </main>
+
+  <footer class="foot wrap">
+    <div class="glass"><span id="notice">Free for personal study. If you share these, please credit Shekhar Jha.</span></div>
+  </footer>
+</div>
+<script src="/assets/js/config.js"></script>
+<script>
+  (function () {
+    var c = window.ICSE_CONFIG || {};
+    if (c.portfolioUrl) document.getElementById('backLink').href = c.portfolioUrl;
+    if (c.notice) document.getElementById('notice').textContent = c.notice;
+    if (c.reportEmail) { var m = document.getElementById('mail'); m.href = 'mailto:' + c.reportEmail; m.textContent = c.reportEmail; }
+  })();
+</script>
+</body>
+</html>

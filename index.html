@@ -11,7 +11,12 @@
   <meta property="og:description" content="Free ICSE Class 10 papers, notes, solutions and formula sheets. Read online or download.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://icse.shekharjha.tech/">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:site_name" content="ICSE Class 10 Resources">
+  <meta property="og:image" content="https://icse.shekharjha.tech/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://icse.shekharjha.tech/assets/og.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"ICSE Class 10 Resources","url":"https://icse.shekharjha.tech/","potentialAction":{"@type":"SearchAction","target":"https://icse.shekharjha.tech/?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
   <!--/seo:head-->
   <meta name="theme-color" content="#000000">
@@ -42,6 +47,8 @@
   <symbol id="i-exit" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
   <symbol id="i-read" viewBox="0 0 24 24"><path d="M3 5.5C5.5 4 9 4 12 6c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 6v13.5"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 20l1.4-4.2A8 8 0 1 1 8.3 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.3-1.3-2-1-.9.8c-1-.4-1.9-1.3-2.3-2.3l.8-.9-1-2z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
 </svg>
 
 <div class="ambient" aria-hidden="true">
@@ -56,6 +63,7 @@
         <svg class="ic"><use href="#i-left"/></svg><span class="t">shekharjha.tech</span>
       </a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
+      <a class="pill nav-about" href="/about/">About</a>
       <button class="pill" id="savedBtn" type="button" aria-pressed="false" title="Show only saved resources">
         <svg class="ic"><use href="#i-bookmark"/></svg>Saved <span class="n" id="savedCount">0</span>
       </button>
@@ -76,6 +84,19 @@
       </form>
       <div class="quick" id="quick" aria-label="Quick searches"></div>
       <p class="auto-note" id="autoNote" hidden></p>
+    </section>
+
+    <section class="block exams" id="exams" aria-labelledby="hExams" hidden>
+      <div class="exam-card glass">
+        <div class="exam-main">
+          <svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg>
+          <div>
+            <p class="exam-title" id="hExams"></p>
+            <p class="exam-next" id="examNext"></p>
+          </div>
+          <div class="exam-days" id="examDays" aria-hidden="true"></div>
+        </div>
+      </div>
     </section>
 
     <section class="block" id="recent" aria-labelledby="hRecent">
@@ -113,7 +134,7 @@
     <!--seo:browse--><!--/seo:browse-->
     <div class="glass">
       <span id="notice">Free for personal study. If you share these, please credit Shekhar Jha.</span>
-      <span>Found a mistake? Use the flag on any resource to tell me.</span>
+      <span>Found a mistake? Use the flag on any resource to tell me. <a href="/about/">About this site</a></span>
     </div>
     <p class="disclaimer">ICSE Resource is an independent educational reference project and is NOT officially affiliated with, endorsed by, or sponsored by the Council for the Indian School Certificate Examinations (CISCE). All exam names, and specimen materials are the intellectual property of their respective governing bodies.</p>
   </footer>
@@ -168,6 +189,7 @@
       <button class="btn btn-primary" id="shCopy" type="button"><svg class="ic"><use href="#i-copy"/></svg>Copy</button>
     </div>
     <div class="dlg-acts">
+      <a class="btn" id="shWa" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>WhatsApp</a>
       <button class="btn" id="shNative" type="button" hidden><svg class="ic"><use href="#i-share"/></svg>Share</button>
       <a class="btn" id="shReport" target="_blank" rel="noopener"><svg class="ic"><use href="#i-flag"/></svg>Report an error</a>
     </div>
