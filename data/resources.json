@@ -88,7 +88,6 @@
   "types": [
     "Previous Year Papers",
     "Question Banks",
-    "Formula Sheets",
     "Sample Papers",
     "Specimen Papers",
     "Maps",
@@ -2035,7 +2034,7 @@
     },
     {
       "id": "geography-2027-map",
-      "title": "INDIA MAJOR RIVERS",
+      "title": "INDIA MAJOR RIVERS MAP",
       "subject": "geography",
       "class": "X",
       "type": "Maps",
@@ -2044,7 +2043,7 @@
       "pages": 1,
       "size_kb": 2269,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-14",
       "downloads": 0,
       "description": "River Maps for Geography.",
       "tags": [
@@ -2077,7 +2076,7 @@
     },
     {
       "id": "geography-2027-map-2",
-      "title": "INDIAN STATE",
+      "title": "INDIAN STATE MAP",
       "subject": "geography",
       "class": "X",
       "type": "Maps",
@@ -2480,7 +2479,7 @@
     },
     {
       "id": "economics-2023-previous-year-paper",
-      "title": "ICSE 2023 Economic Application",
+      "title": "ICSE 2023 Economic Applications",
       "subject": "economics",
       "class": "X",
       "type": "Previous Year Papers",
@@ -2489,7 +2488,7 @@
       "pages": 8,
       "size_kb": 39,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-15",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2023",
       "tags": [
@@ -3237,6 +3236,35 @@
         "trading account",
         "revenue expenditure",
         "preference shares"
+      ]
+    },
+    {
+      "id": "economics-2027-sample-paper",
+      "title": "Economic Applications Sample Paper",
+      "subject": "economics",
+      "class": "X",
+      "type": "Sample Papers",
+      "year": 2027,
+      "file": "/pdfs/economics-2027-sample-paper.pdf",
+      "pages": 7,
+      "size_kb": 330,
+      "added": "2026-10-14",
+      "updated": "2026-10-14",
+      "downloads": 0,
+      "description": "Sample paper of Economic Applications 2027",
+      "tags": [
+        "price",
+        "supply",
+        "market",
+        "demand",
+        "inflation",
+        "elasticity",
+        "money",
+        "loanable funds",
+        "bank",
+        "credit control",
+        "quantity demanded",
+        "curve"
       ]
     }
   ]
