@@ -366,9 +366,16 @@ section[id] { scroll-margin-top: 84px; }
 
 .foot .disclaimer { margin: 14px 4px 0; max-width: 80ch; color: var(--dim); font-size: 0.78rem; line-height: 1.6; }
 
-/* About link in the top bar */
+/* About link in the top bar: stays visible on phones, the bar is tightened to make room */
 .nav-about { text-decoration: none; }
-@media (max-width: 560px) { .nav-about { display: none; } }
+@media (max-width: 560px) {
+  .nav-in { gap: 6px; padding: 6px 6px 6px 12px; }
+  .brand { font-size: 0.95rem; }
+  .nav-about { padding: 0 11px; font-size: 0.85rem; }
+  #savedBtn { padding: 0 11px; }
+  #savedBtn .lbl { display: none; } /* bookmark icon + count only */
+}
+@media (max-width: 350px) { .brand span { display: none; } } /* very small phones: just "ICSE" */
 
 /* Exam countdown */
 .exams { padding-top: 0; padding-bottom: 8px; }
