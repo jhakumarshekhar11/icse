@@ -116,11 +116,14 @@ function main() {
       '<meta property="og:type" content="website">',
       `<meta property="og:url" content="${esc(canon)}">`,
       '<meta property="og:site_name" content="ICSE Class 10 Resources">',
-      `<meta property="og:image" content="${SITE}/assets/og.png">`,
+      `<meta property="og:image" content="${SITE}/assets/og.jpg">`,
+      `<meta property="og:image:secure_url" content="${SITE}/assets/og.jpg">`,
+      '<meta property="og:image:type" content="image/jpeg">',
+      '<meta property="og:image:alt" content="ICSE Class 10 Resources: papers, specimen papers, question banks and formula sheets">',
       '<meta property="og:image:width" content="1200">',
       '<meta property="og:image:height" content="630">',
       '<meta name="twitter:card" content="summary_large_image">',
-      `<meta name="twitter:image" content="${SITE}/assets/og.png">`,
+      `<meta name="twitter:image" content="${SITE}/assets/og.jpg">`,
       meta.preset ? `<script>window.__PRESET=${JSON.stringify(meta.preset).replace(/</g, '\\u003c')};</script>` : '',
       ...meta.ld.map(jsonLd)
     ].filter(Boolean).join('\n  ');
