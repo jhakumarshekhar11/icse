@@ -190,7 +190,12 @@
       popular: (a, b) => dlCount(b) - dlCount(a),
       az: (a, b) => a.title.localeCompare(b.title)
     }[state.sort];
-    return list.sort(by);
+    // With no filter or search active, group by subject in the order set in config.js (subjectOrder).
+    // The chosen sort (Newest / Most downloaded / A to Z) still applies inside each subject.
+    const order = CFG.subjectOrder || [];
+    const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
+    const grouped = !filtering();
+    return list.sort((a, b) => (grouped ? rank(a) - rank(b) : 0) || by(a, b));
   }
   const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
 

@@ -605,6 +605,17 @@
       return tokens.every((t) => hay.includes(t));
     });
     const { key, dir } = state.sort;
+    if (key === 'upload' || key === 'site') {
+      // Upload order = position in resources.json (new uploads are appended, so this is the true sequence).
+      // Site order = subjects in the order set in config.js, then newest upload first, as on the public page.
+      const pos = new Map(state.data.resources.map((r, i) => [r.id, i]));
+      const order = CFG.subjectOrder || [];
+      const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
+      list.sort(key === 'upload'
+        ? (a, b) => pos.get(a.id) - pos.get(b.id)
+        : (a, b) => rank(a) - rank(b) || pos.get(b.id) - pos.get(a.id));
+      return list;
+    }
     const get = { title: (r) => r.title.toLowerCase(), subject: (r) => sub(r).toLowerCase(), type: (r) => String(r.type), year: (r) => Number(r.year) || 0, downloads: dlTotal, updated: (r) => r.updated || r.added || '' }[key];
     list.sort((a, b) => { const x = get(a), y = get(b); return (x < y ? -1 : x > y ? 1 : 0) * dir; });
     return list;
@@ -735,7 +746,7 @@
     const k = b.dataset.sort; state.sort = { key: k, dir: state.sort.key === k ? -state.sort.dir : (k === 'title' || k === 'subject' || k === 'type' ? 1 : -1) };
     renderLibrary();
   });
-  const SORTS = { updated: { key: 'updated', dir: -1 }, title: { key: 'title', dir: 1 }, year: { key: 'year', dir: -1 }, downloads: { key: 'downloads', dir: -1 } };
+  const SORTS = { upload: { key: 'upload', dir: 1 }, site: { key: 'site', dir: 1 }, updated: { key: 'updated', dir: -1 }, title: { key: 'title', dir: 1 }, year: { key: 'year', dir: -1 }, downloads: { key: 'downloads', dir: -1 } };
   $('#fSort').addEventListener('change', (e) => { state.sort = Object.assign({}, SORTS[e.target.value]); renderLibrary(); });
   $('#selAll').addEventListener('change', (e) => { filtered().forEach((r) => (e.target.checked ? state.selected.add(r.id) : state.selected.delete(r.id))); renderLibrary(); });
   $('#rows').addEventListener('click', (e) => {

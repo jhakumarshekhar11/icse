@@ -31,6 +31,9 @@ window.ICSE_CONFIG = {
     cacheMinutes: 10
   },
 
+  // Order of subjects in the library when no filter is selected (use the subject ids from resources.json)
+  subjectOrder: ["englishlang", "englishlit", "hindi", "history", "geography", "maths", "physics", "chemistry", "biology", "commercialstudies", "computer", "economics"],
+
   // Quick-search suggestions under the search bar
-  quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022, 2020"],
+  quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
 };

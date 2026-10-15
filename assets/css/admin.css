@@ -88,7 +88,7 @@
 .prev .card .acts a, .prev .card .acts button { opacity: 0.95; }
 
 /* library */
-.lib-tools { display: grid; grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(120px, 1fr)); gap: 10px; padding: 12px; border-radius: var(--r-lg); margin-bottom: 14px; }
+.lib-tools { display: grid; grid-template-columns: minmax(200px, 2fr) repeat(5, minmax(120px, 1fr)); gap: 10px; padding: 12px; border-radius: var(--r-lg); margin-bottom: 14px; }
 .search-s { position: relative; }
 .search-s .ic { position: absolute; left: 13px; top: 12px; color: var(--dim); }
 .search-s input { padding-left: 38px !important; }
