@@ -12,7 +12,7 @@ const path = require('path');
 
 const ROOT = process.env.ROOT || path.join(__dirname, '..');
 const SITE = (process.env.SITE_URL || 'https://icse.shekharjha.tech').replace(/\/$/, '');
-const OWNER = 'Shekhar Jha';
+const OWNER = 'Shekhar Kumar Jha';
 const RESERVED = new Set(['assets', 'data', 'pdfs', 'admin', 'scripts', 'public', 'tools', 'about']);
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
