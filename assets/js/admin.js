@@ -213,7 +213,6 @@
     [/specimen/, ['Specimen Papers']],
     [/question[ -]?bank|\bqb\b/, ['Question Banks']],
     [/sample|mock|practice/, ['Sample Papers']],
-    [/formula|formulae|cheat/, ['Formula Sheets']],
     [/solution|answers?\b|answer key/, ['Solutions']],
     [/previous[ -]?year|pyqs?\b|\bboard\b|past paper/, ['Previous Year Papers', 'Question Papers']],
     [/notes?\b|summary|revision|chapter/, ['Notes']],

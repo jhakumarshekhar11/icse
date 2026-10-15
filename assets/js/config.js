@@ -32,5 +32,5 @@ window.ICSE_CONFIG = {
   },
 
   // Quick-search suggestions under the search bar
-  quickSearches: ["Board paper","Specimen Paper" , "Formula sheet", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
+  quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022, 2020"],
 };

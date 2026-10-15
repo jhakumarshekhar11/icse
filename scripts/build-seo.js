@@ -119,7 +119,7 @@ function main() {
       `<meta property="og:image" content="${SITE}/assets/og.jpg">`,
       `<meta property="og:image:secure_url" content="${SITE}/assets/og.jpg">`,
       '<meta property="og:image:type" content="image/jpeg">',
-      '<meta property="og:image:alt" content="ICSE Class 10 Resources: papers, specimen papers, question banks and formula sheets">',
+      '<meta property="og:image:alt" content="ICSE Class 10 Resources: papers, specimen papers and question banks.">',
       '<meta property="og:image:width" content="1200">',
       '<meta property="og:image:height" content="630">',
       '<meta name="twitter:card" content="summary_large_image">',
@@ -155,8 +155,8 @@ function main() {
   // main library page keeps its hand-written title/description, plus the list and the search action
   const homeMeta = {
     title: 'ICSE Class 10 Papers, Specimen Papers, Notes and Solutions | ' + OWNER,
-    desc: 'Free ICSE Class 10 previous year papers, specimen papers, sample papers, notes, solutions and formula sheets. Read them online or download the PDF.',
-    heading: 'ICSE Class 10 resources', intro: `Free ICSE Class ${classLabel} papers, specimen papers, notes and formula sheets by ${OWNER}.`,
+    desc: 'Free ICSE Class 10 previous year papers, specimen papers, sample papers, notes and solutions. Read them online or download the PDF.',
+    heading: 'ICSE Class 10 resources', intro: `Free ICSE Class ${classLabel} papers, specimen papers and notes by ${OWNER}.`,
     list: listHtml(live),
     ld: [
       { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ICSE Class 10 Resources', url: SITE + '/',

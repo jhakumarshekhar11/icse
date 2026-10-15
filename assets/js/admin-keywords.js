@@ -151,7 +151,6 @@
     else if (/specimen/i.test(t)) head = `Specimen paper of ${subj}${y}`;
     else if (/sample/i.test(t)) head = `Sample paper of ${subj}${y}`;
     else if (/question bank/i.test(t)) head = `Question bank for ${subj}`;
-    else if (/formula/i.test(t)) head = `Formula sheet for ${subj}`;
     else if (/solution/i.test(t)) head = `Solutions for ${subj}${y}`;
     else if (/note/i.test(t)) head = `Notes for ${subj}`;
     else head = `${t || 'Resource'} for ${subj}${y}`;
