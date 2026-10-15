@@ -516,7 +516,12 @@
   function bindChips(node, key) {
     node.addEventListener('click', (e) => {
       const b = e.target.closest('.chip'); if (!b) return;
+      // Re-rendering can show or hide sections above the filters (e.g. "Just added") and
+      // replaces the clicked chip, so keep the filter row exactly where it was on screen.
+      const before = node.getBoundingClientRect().top;
       toggleFilter(key, b.dataset.v); state.auto[key] = false; renderChips(); renderGrid();
+      const shift = node.getBoundingClientRect().top - before;
+      if (shift) window.scrollBy({ top: shift, left: 0, behavior: 'instant' });
     });
   }
   bindChips(el.chipsClass, 'cls'); bindChips(el.chipsSubject, 'subject');
