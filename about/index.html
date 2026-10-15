@@ -35,7 +35,7 @@
 <div class="page">
   <header class="nav wrap">
     <div class="nav-in glass">
-      <a class="back" id="backLink" href="https://icse.shekharjha.tech"><svg class="ic"><use href="#i-left"/></svg><span class="t">icse.shekharjha.tech</span></a>
+      <a class="back" id="backLink" href="/"><svg class="ic"><use href="#i-left"/></svg><span class="t">icse.shekharjha.tech</span></a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
       <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
       <a class="pill" href="/">Library</a>
@@ -102,7 +102,6 @@
 <script>
   (function () {
     var c = window.ICSE_CONFIG || {};
-    if (c.portfolioUrl) document.getElementById('backLink').href = c.portfolioUrl;
     if (c.notice) document.getElementById('notice').textContent = c.notice;
     if (c.reportEmail) { var m = document.getElementById('mail'); m.href = 'mailto:' + c.reportEmail; m.textContent = c.reportEmail; }
   })();
