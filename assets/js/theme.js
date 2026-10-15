@@ -13,12 +13,25 @@
       btn.title = light ? 'Switch to dark mode' : 'Switch to light mode';
     }
   }
-  if (btn) btn.addEventListener('click', () => {
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+  function apply(next) {
     root.dataset.theme = next;
     try { localStorage.setItem('icse:theme', next); } catch (e) { /* storage unavailable */ }
     paint();
+  }
+  // The new theme is painted over the old one from the top of the screen to the bottom.
+  // Browsers without the View Transitions API (and people who prefer reduced motion) just switch.
+  if (btn) btn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.startViewTransition && !still) {
+      root.classList.add('theme-wiping');
+      const t = document.startViewTransition(() => apply(next));
+      t.finished.finally(() => root.classList.remove('theme-wiping'));
+    } else {
+      apply(next);
+    }
   });
+
   // Until the visitor picks a theme themselves, follow the device setting live
   const mq = window.matchMedia ? matchMedia('(prefers-color-scheme: light)') : null;
   if (mq && mq.addEventListener) mq.addEventListener('change', (e) => {
