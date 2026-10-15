@@ -452,7 +452,7 @@ html[data-theme="light"] .exam-days b, html[data-theme="light"] .hero h1 { text-
 html[data-theme="light"] .btn-primary { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 html[data-theme="light"] .btn-primary:hover { box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.45); }
 
-/* ---------- Theme change: paint the new theme from top to bottom ---------- */
+/* ---------- Theme change: light to dark paints from top to bottom, dark to light from bottom to top ---------- */
 html.theme-wiping *, html.theme-wiping *::before, html.theme-wiping *::after { transition: none !important; }
 html.theme-wiping::view-transition-old(root),
 html.theme-wiping::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
@@ -467,4 +467,14 @@ html.theme-wiping::view-transition-new(root) {
 @keyframes theme-wipe {
   from { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
   to { -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
+/* dark to light: the same wipe, running from the bottom to the top */
+html.theme-wiping.theme-wipe-up::view-transition-new(root) {
+  animation-name: theme-wipe-up;
+  -webkit-mask-image: linear-gradient(to top, #000 0, #000 41.7%, transparent 58.3%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0, #000 41.7%, transparent 58.3%, transparent 100%);
+}
+@keyframes theme-wipe-up {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
 }

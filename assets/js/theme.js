@@ -18,15 +18,17 @@
     try { localStorage.setItem('icse:theme', next); } catch (e) { /* storage unavailable */ }
     paint();
   }
-  // The new theme is painted over the old one from the top of the screen to the bottom.
+  // The new theme is painted over the old one: light to dark sweeps from the top of the screen to the
+  // bottom, dark to light sweeps from the bottom to the top.
   // Browsers without the View Transitions API (and people who prefer reduced motion) just switch.
   if (btn) btn.addEventListener('click', () => {
     const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (document.startViewTransition && !still) {
       root.classList.add('theme-wiping');
+      root.classList.toggle('theme-wipe-up', next === 'light');
       const t = document.startViewTransition(() => apply(next));
-      t.finished.finally(() => root.classList.remove('theme-wiping'));
+      t.finished.finally(() => root.classList.remove('theme-wiping', 'theme-wipe-up'));
     } else {
       apply(next);
     }
