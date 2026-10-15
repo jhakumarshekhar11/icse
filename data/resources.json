@@ -2076,7 +2076,7 @@
     },
     {
       "id": "geography-2027-map-2",
-      "title": "INDIAN STATE MAP",
+      "title": "Indian State Boundary Map",
       "subject": "geography",
       "class": "X",
       "type": "Maps",
@@ -2085,7 +2085,7 @@
       "pages": 1,
       "size_kb": 3225,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-15",
       "downloads": 0,
       "description": "State Boundary Maps for Geography 2027",
       "tags": [
