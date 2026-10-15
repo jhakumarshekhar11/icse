@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>try{var t=localStorage.getItem('icse:theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <!--seo:head-->
   <title>ICSE Class 10 Papers, Specimen Papers, Notes and Solutions | Shekhar Jha</title>
@@ -36,6 +37,8 @@
   <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
   <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4m0 0h11l-2 4 2 4H5"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
@@ -64,6 +67,7 @@
       </a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
       <a class="pill nav-about" href="/about/">About</a>
+      <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
       <button class="pill" id="savedBtn" type="button" aria-pressed="false" title="Show only saved resources">
         <svg class="ic"><use href="#i-bookmark"/></svg>Saved <span class="n" id="savedCount">0</span>
       </button>
@@ -201,6 +205,7 @@
 <script src="/assets/vendor/pdf.min.js"></script>
 <script src="/assets/vendor/qrcode.min.js"></script>
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/theme.js"></script>
 <script src="/assets/js/viewer.js"></script>
 <script src="/assets/js/app.js"></script>
 </body>

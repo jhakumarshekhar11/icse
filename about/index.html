@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>try{var t=localStorage.getItem('icse:theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About | ICSE Class 10 Resources</title>
   <meta name="description" content="About ICSE Class 10 Resources: a free, independent library of ICSE Class X papers, specimen papers, question banks and formula sheets by Shekhar Jha.">
@@ -23,6 +24,8 @@
 <body>
 <div class="ambient" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
 </svg>
 <div class="page">
@@ -30,6 +33,7 @@
     <div class="nav-in glass">
       <a class="back" id="backLink" href="https://shekharjha.tech"><svg class="ic"><use href="#i-left"/></svg><span class="t">shekharjha.tech</span></a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
+      <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
       <a class="pill" href="/">Library</a>
     </div>
   </header>
@@ -68,6 +72,7 @@
   </footer>
 </div>
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/theme.js"></script>
 <script>
   (function () {
     var c = window.ICSE_CONFIG || {};
