@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>try{var t=localStorage.getItem('icse:theme');document.documentElement.dataset.theme=(t==='light')?'light':'dark';}catch(e){document.documentElement.dataset.theme='dark';}</script>
+  <script>(function(){var t=null;try{t=localStorage.getItem('icse:theme');}catch(e){}if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.dataset.theme=t;})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About | ICSE Class 10 Resources</title>
   <meta name="description" content="About ICSE Class 10 Resources: a free, independent library of ICSE Class X papers, specimen papers, question banks and formula sheets by Shekhar Jha.">
