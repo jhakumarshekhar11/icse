@@ -3316,6 +3316,29 @@
         "tone",
         "mood"
       ]
+    },
+    {
+      "id": "englishlit-2027-note-7",
+      "title": "The Elevator Handwritten Notes",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Notes",
+      "year": 2027,
+      "file": "/pdfs/englishlit-2027-note-7.pdf",
+      "pages": 3,
+      "size_kb": 1099,
+      "added": "2026-10-15",
+      "updated": "2026-10-15",
+      "downloads": 0,
+      "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
+      "tags": [
+        "theme",
+        "fear and anxiety",
+        "fear of the unknown",
+        "horrors of everyday life",
+        "the consequences of fear",
+        "parental influence and support"
+      ]
     }
   ]
 }
