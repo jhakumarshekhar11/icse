@@ -2,7 +2,7 @@
 window.ADMIN_CONFIG = {
   owner: "jhakumarshekhar11",
   repo: "icse",
-  branch: "main",
+  branch: "website",
 
   // GitHub accounts allowed to use the admin page
   allowedUsers: ["jhakumarshekhar11"],
