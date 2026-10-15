@@ -3982,6 +3982,28 @@
         "even",
         "creativity"
       ]
+    },
+    {
+      "id": "englishlit-2025-question-bank-2",
+      "title": "Frank English Literature Papers",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2025,
+      "file": "/pdfs/englishlit-2025-question-bank-2.pdf",
+      "pages": 54,
+      "size_kb": 4248,
+      "added": "2026-10-15",
+      "updated": "2026-10-15",
+      "downloads": 0,
+      "description": "Frank Test Papers",
+      "tags": [
+        "frank",
+        "model",
+        "test",
+        "papers",
+        "solved"
+      ]
     }
   ]
 }
