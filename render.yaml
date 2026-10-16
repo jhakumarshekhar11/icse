@@ -1,7 +1,7 @@
 # Render Blueprint for a static site. Connect the GitHub repo in Render and it picks this up.
 services:
   - type: web
-    name: icse-resources
+    name: icseresourcesexammode
     runtime: static
     branch: website
     buildCommand: node scripts/build-seo.js
