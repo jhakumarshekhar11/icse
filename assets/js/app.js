@@ -205,6 +205,8 @@
   }
   function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
 
+  const examOk = (r) => !!(window.Exam && Exam.eligible(r));
+
   function cardHtml(r) {
     const saved = state.saved.has(r.id);
     return `
@@ -227,7 +229,7 @@
         <a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>
       </div>
       <div class="more">
-        <span></span>
+        <span>${examOk(r) ? `<button class="x-start" type="button" data-act="exam" aria-label="Start a timed exam: ${esc(r.title)}">${icon('timer')}Timed exam</button>` : ''}</span>
         <span>
           <button class="ib" data-act="share" aria-label="Share ${esc(r.title)}" title="Share">${icon('share')}</button>
           <a class="ib" href="${esc(reportHref(r))}" target="_blank" rel="noopener" aria-label="Report an error in ${esc(r.title)}" title="Report an error">${icon('flag')}</a>
@@ -439,15 +441,21 @@
   });
 
   /* ---------- reader + deep links ---------- */
-  function openReader(r, page) {
+  function openReader(r, page, exam) {
     const u = new URL(location.href);
     u.searchParams.set('file', r.id);
     page ? u.searchParams.set('page', page) : u.searchParams.delete('page');
     if (!Viewer.isOpen()) { history.pushState({ reader: true }, '', u); state.pushed = true; }
     else history.replaceState(history.state, '', u);
     Viewer.open(r, page);
+    if (exam && window.Exam) Exam.prompt(r);
   }
+  // While a timed exam is running on this paper, closing asks for confirmation first
   function closeReader() {
+    if (window.Exam && Exam.confirmLeave(closeReaderNow)) return;
+    closeReaderNow();
+  }
+  function closeReaderNow() {
     if (state.shareFor) closeShare();
     Viewer.close();
     if (history.state && history.state.reader) { state.pushed = false; history.back(); }
@@ -473,6 +481,11 @@
     if (!r) { toast('That file could not be found'); cleanUrl(); return; }
     if (initial && !history.state) history.replaceState({ reader: false }, '', location.href);
     Viewer.open(r, parseInt(p.get('page'), 10) || 0);
+    if (p.get('exam') === '1') {   // ?file=ID&exam=1 opens the paper with the timer dialog
+      const u = new URL(location.href); u.searchParams.delete('exam');
+      history.replaceState(history.state, '', u);
+      if (window.Exam) Exam.prompt(r);
+    }
   }
   addEventListener('popstate', () => syncFromUrl(false));
 
@@ -555,6 +568,7 @@
       case 'read':
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let the browser open a new tab
         e.preventDefault(); openReader(r); break;
+      case 'exam': e.preventDefault(); openReader(r, 0, true); break;
       case 'download': download(r); break;           // native download proceeds
       case 'save': toggleSave(r.id); break;
       case 'share': share(r); break;
@@ -586,7 +600,11 @@
   });
 
   // Public hooks used by viewer.js
-  window.App = { fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, shareOpen: () => !el.dlg.hidden };
+  window.App = {
+    fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, toast, openReader,
+    byId: (id) => state.byId.get(id),
+    shareOpen: () => !el.dlg.hidden || !!(window.Exam && Exam.dialogOpen())
+  };
 
   /* ---------- exam countdown (edit data/exams.json) ----------
      The time comes from the web server's clock (the HTTP Date header), not from the

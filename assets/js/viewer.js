@@ -36,6 +36,7 @@
     clearTimeout(S.hideTimer);
     teardown();
     S.res = res; S.open = true; S.lastFocus = document.activeElement;
+    window.dispatchEvent(new CustomEvent('viewer:open', { detail: res }));
     el.root.hidden = false;
     document.documentElement.classList.add('no-scroll');
     requestAnimationFrame(() => el.root.classList.add('on'));
@@ -90,6 +91,7 @@
     S.hideTimer = setTimeout(() => { el.root.hidden = true; }, reduced ? 0 : 200);
     if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({ preventScroll: true });
     S.res = null;
+    window.dispatchEvent(new CustomEvent('viewer:close'));
   }
 
   function teardown() {

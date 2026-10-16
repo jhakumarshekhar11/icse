@@ -133,6 +133,7 @@ function main() {
     <p class="lead">${esc(lead)}</p>
     <div class="paper-cta">
       <a class="btn btn-primary" href="/?file=${encodeURIComponent(r.id)}">Read online</a>
+      ${PAPER_TYPES.has(r.type) ? `<a class="btn" href="/?file=${encodeURIComponent(r.id)}&amp;exam=1">Timed exam</a>` : ''}
       <a class="btn" id="dl" data-id="${esc(r.id)}" href="${esc(r.file)}" download="${esc(downloadName)}">Download PDF</a>
     </div>
     <section>
