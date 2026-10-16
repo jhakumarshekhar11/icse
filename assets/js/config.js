@@ -37,7 +37,7 @@ window.ICSE_CONFIG = {
   // Timed exam mode (the timer on papers)
   exam: {
     types: ["Previous Year Papers", "Specimen Papers", "Sample Papers"],   // resource types that get a timer
-    minutes: { default: 120, maths: 150 },   // writing time per subject id. Check the "Time allowed" printed on each paper
+    minutes: { default: 120, maths: 180, hindi: 180 },   // writing time per subject id. Check the "Time allowed" printed on each paper
     readingMinutes: 15,                      // optional reading time before writing starts (0 to remove)
     schemeFromYear: 2025                     // specimen papers from this year have the marking scheme at the end of the PDF
   },
