@@ -206,6 +206,15 @@
   function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
 
   const examOk = (r) => !!(window.Exam && Exam.eligible(r));
+  // While a timed exam with a hidden marking scheme runs on a paper, its Download button is switched off
+  const dlLocked = (r) => !!(window.Exam && Exam.locksDownload && Exam.locksDownload(r));
+  const LOCK_TIP = 'Available when your exam ends';
+  const dlBtn = (r) => dlLocked(r)
+    ? `<button class="btn" type="button" disabled title="${LOCK_TIP}">${icon('download')}Download</button>`
+    : `<a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>`;
+  const dlMini = (r) => dlLocked(r)
+    ? `<button class="btn" style="height:36px;padding:0 12px" type="button" disabled title="${LOCK_TIP}">${icon('download')}PDF</button>`
+    : `<a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>`;
 
   function cardHtml(r) {
     const saved = state.saved.has(r.id);
@@ -226,7 +235,7 @@
       </div>
       <div class="acts">
         <a class="btn" href="${esc(readHref(r))}" data-act="read">${icon('read')}Read</a>
-        <a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>
+        ${dlBtn(r)}
       </div>
       <div class="more">
         <span>${examOk(r) ? `<button class="x-start" type="button" data-act="exam" aria-label="Start a timed exam: ${esc(r.title)}">${icon('timer')}Timed exam</button>` : ''}</span>
@@ -245,7 +254,7 @@
       <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
       <div class="row">
         <span class="when">${esc(when(r))}</span>
-        <a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>
+        ${dlMini(r)}
       </div>
     </article>`;
   }
@@ -488,6 +497,7 @@
     }
   }
   addEventListener('popstate', () => syncFromUrl(false));
+  addEventListener('exam:change', () => { if (state.byId.size) { renderGrid(); renderStrip(); } });
 
   /* ---------- search + filters ---------- */
   // ?q= is kept in the address bar so a search can be shared or bookmarked

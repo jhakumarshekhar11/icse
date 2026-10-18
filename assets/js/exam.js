@@ -51,7 +51,26 @@
   // Specimen papers from this year on carry the marking scheme at the end of the same PDF
   function hasScheme(res, c) { return res.type === 'Specimen Papers' && Number(res.year) >= (c.schemeFromYear || 9999); }
 
-  const api = { MIN, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme };
+  // ----- marking scheme detection -----
+  const SCHEME_WORDS = ['marking scheme', 'answer key', 'answer keys', 'marking guidelines'];
+  function schemeRegex(words) {
+    const esc = (w) => w.trim().split(/\s+/).map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+');
+    return new RegExp('\\b(?:' + (words && words.length ? words : SCHEME_WORDS).map(esc).join('|') + ')\\b', 'i');
+  }
+  // First page (from page 2) whose opening text names the marking scheme, or 0 when there is none.
+  // Page 1 is skipped because instructions there can mention it. Returns -1 if stale() turns true mid-scan.
+  async function detectScheme(doc, words, stale) {
+    const re = schemeRegex(words);
+    for (let i = 2; i <= doc.numPages; i++) {
+      const tc = await (await doc.getPage(i)).getTextContent();
+      if (stale && stale()) return -1;
+      const head = tc.items.map((t) => t.str).join(' ').replace(/\s+/g, ' ').trim().slice(0, 500);
+      if (re.test(head)) return i;
+    }
+    return 0;
+  }
+
+  const api = { MIN, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -71,7 +90,7 @@
 
   let S = null;        // the running exam, or null
   let away = null;     // an exam that ended while the paper was closed
-  let timer = 0, last = 0, cancelFn = null, lastFocus = null, bannerMode = '';
+  let timer = 0, last = 0, cancelFn = null, lastFocus = null, bannerMode = '', dlgToken = 0, lockSig = '';
 
   // If storage is unavailable (private mode) the exam still runs, it just cannot be resumed after a reload.
   function load() {
@@ -109,6 +128,7 @@
     const host = root.Viewer && root.Viewer.fullscreenHost ? root.Viewer.fullscreenHost() : document.body;
     if (el.dlg.parentNode !== host) host.appendChild(el.dlg);
     lastFocus = document.activeElement;
+    dlgToken++;
     el.card.textContent = '';
     build(el.card);
     cancelFn = cancel || closeDialog;
@@ -145,6 +165,8 @@
     let writing = defaultMinutes(res, c);
     const rm = c.readingMinutes || 0;
     let reading = rm > 0;
+    const det = findScheme(res);   // scans the PDF while the dialog is open
+    let mine = 0;
     openDialog((card) => {
       const input = h('input', { id: 'xMin', type: 'number', min: 5, max: 360, step: 5, value: writing, inputmode: 'numeric', 'aria-label': 'Writing time in minutes' });
       const sum = h('p', { class: 'x-sum' });
@@ -174,15 +196,73 @@
         card.append(h('div', { class: 'x-row' }, h('label', { class: 'x-check', for: 'xRead' }, chk, 'Add ' + rm + ' min reading time')));
       }
       card.append(sum);
-      if (hasScheme(res, c)) card.append(h('p', { class: 'x-note warn' }, 'This file has the marking scheme at the end. Do not scroll to the last pages until you finish.'));
+      const note = h('p', { class: 'x-note' });
+      if (hasScheme(res, c) && !Number.isInteger(res.msFrom)) note.textContent = 'Checking the file for a marking scheme\u2026';
+      card.append(note);
+      det.then((d) => {
+        if (mine !== dlgToken || el.dlg.hidden) return;
+        if (d.from >= 2) { note.className = 'x-note'; note.textContent = 'The marking scheme (from page ' + d.from + ') stays hidden until your exam ends.'; }
+        else if (d.expected) { note.className = 'x-note warn'; note.textContent = 'No marking scheme was found in this file. If it has one at the end, avoid those pages until you finish.'; }
+        else note.textContent = '';
+      });
+      const startBtn = primary('Start exam', async () => {
+        startBtn.disabled = true; startBtn.textContent = 'Preparing\u2026';
+        const d = await det;
+        if (mine !== dlgToken || el.dlg.hidden) return;
+        begin(res, writing, reading ? rm : 0, d.from >= 2 ? d.from : 0);
+      }, { 'data-first': true });
       card.append(
         h('p', { class: 'x-note' }, 'The timer keeps running if you close the paper or this page. You can come back and resume.'),
-        h('div', { class: 'dlg-acts' }, btn('Cancel', closeDialog), primary('Start exam', () => begin(res, writing, reading ? rm : 0), { 'data-first': true })));
+        h('div', { class: 'dlg-acts' }, btn('Cancel', closeDialog), startBtn));
     });
+    mine = dlgToken;
   }
 
-  function begin(res, writingMin, readingMin) {
+  /* ---------- marking scheme: where it starts, and what to hide ---------- */
+  const cacheKey = (id) => 'icse:scheme:' + id;
+  const CACHE_V = 1;
+  function readCache(id, total) {
+    try { const v = JSON.parse(localStorage.getItem(cacheKey(id))); return v && v.v === CACHE_V && v.n === total && v.p >= 2 ? v.p : 0; } catch (e) { return 0; }
+  }
+  function writeCache(id, p, total) { try { localStorage.setItem(cacheKey(id), JSON.stringify({ v: CACHE_V, p, n: total })); } catch (e) { /* ignore */ } }
+
+  // {from, expected}: from = first page of the scheme (0 = none found); expected = this paper should have one
+  async function findScheme(res) {
+    const c = CFG(), V = root.Viewer;
+    if (Number.isInteger(res.msFrom)) return { from: res.msFrom, expected: false };   // set by hand in resources.json (0 = no scheme)
+    if (!hasScheme(res, c)) return { from: 0, expected: false };
+    const run = (async () => {
+      if (!(V && V.ready && await V.ready(res.id))) return 0;
+      const doc = V.pdf();
+      const cached = readCache(res.id, doc.numPages);
+      if (cached) return cached;
+      const p = await detectScheme(doc, c.schemeWords, () => { const cur = viewerRes(); return !cur || cur.id !== res.id; });
+      if (p >= 2) writeCache(res.id, p, doc.numPages);
+      return Math.max(0, p);
+    })().catch(() => 0);
+    const from = await Promise.race([run, new Promise((r) => setTimeout(() => r(0), 8000))]);
+    return { from, expected: true };
+  }
+  // Pages an exam in progress allows on this paper (0 = all of them)
+  const lockPages = (res) => (S && res && S.id === res.id && S.lockFrom >= 2 ? S.lockFrom - 1 : 0);
+  const locksDownload = (res) => !!(S && res && S.id === res.id && S.lockFrom >= 2);
+
+  // Keeps the reader, the Download buttons and the library in line with the running exam
+  function syncLock() {
+    const V = root.Viewer, cur = viewerRes();
+    const active = !!(S && S.lockFrom >= 2);
+    document.documentElement.toggleAttribute('data-exam-lock', active && !!cur && cur.id === S.id);
+    if (V && V.setLimit && V.unlock && cur) {   // an older viewer.js without these is simply left alone
+      const want = lockPages(cur);
+      if (want) V.setLimit(want); else V.unlock();
+    }
+    const sig = active ? S.id : '';
+    if (sig !== lockSig) { lockSig = sig; root.dispatchEvent(new Event('exam:change')); }
+  }
+
+  function begin(res, writingMin, readingMin, lockFrom) {
     S = makeSession(res, { writingMin, readingMin, scale: debugScale() }, Date.now());
+    S.lockFrom = lockFrom >= 2 ? lockFrom : 0;   // first page of the marking scheme, hidden until the exam ends
     away = null; last = 0;
     save(); closeDialog(); refresh();
     toast(readingMin ? 'Reading time started' : 'Exam started. Good luck!');
@@ -242,8 +322,9 @@
           ? 'Put your pen down. You had ' + fmt(s.writingMs * sc) + ' of writing time.'
           : 'You used ' + fmt(usedMs) + ' of ' + fmt(s.writingMs * sc) + '.'),
         h('div', { class: 'dlg-acts' },
-          btn('Keep reading', closeDialog, { 'data-first': true }),
-          primary('Close paper', () => { closeDialog(); if (root.App) root.App.closeReader(); })));
+          s.lockFrom >= 2 ? primary('View marking scheme', () => { closeDialog(); if (root.Viewer) root.Viewer.goTo(s.lockFrom); }, { 'data-first': true }) : null,
+          btn('Keep reading', closeDialog, s.lockFrom >= 2 ? null : { 'data-first': true }),
+          btn('Close paper', () => { closeDialog(); if (root.App) root.App.closeReader(); }, s.lockFrom >= 2 ? null : { class: 'btn btn-primary' })));
     });
   }
 
@@ -312,6 +393,7 @@
     el.chip.hidden = !(S && cur && cur.id === S.id);
     el.start.hidden = !(cur && !S && eligible(cur, CFG()));
     banner();
+    syncLock();
     if (S && !timer) timer = setInterval(tick, 250);
     if (!S && timer) { clearInterval(timer); timer = 0; document.title = baseTitle; }
     if (S) tick();
@@ -335,7 +417,8 @@
   root.Exam = Object.assign({}, api, {
     eligible: (r) => eligible(r, CFG()),
     hasScheme: (r) => hasScheme(r, CFG()),
-    prompt, confirmLeave,
+    prompt, confirmLeave, lockPages, locksDownload,
+    detect: (doc) => detectScheme(doc, CFG().schemeWords),   // console check: Exam.detect(await pdfjsLib.getDocument(url).promise)
     dialogOpen: () => !el.dlg.hidden,
     active: () => S
   });

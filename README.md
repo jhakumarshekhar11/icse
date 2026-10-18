@@ -104,3 +104,25 @@ Bookmarks and last-read page are stored in the visitor's browser.
 
 PDF.js needs a web server (not file://). The page expects `/resource`, so for local testing open
 `http://localhost:8000/?file=maths-2024` after `python3 -m http.server 8000` in this folder.
+
+### Hiding the marking scheme
+
+Specimen papers from `exam.schemeFromYear` have the marking scheme at the end of the same PDF. When an exam
+starts, the reader scans each page from page 2 for one whose opening text contains a word from `exam.schemeWords`,
+and hides that page and everything after it until the exam ends. The Download and Share buttons are hidden too
+(reader, library cards and the paper page). This stops the obvious ways to peek. It is self-discipline, not
+proctoring: the PDF address itself is still public.
+
+If a paper is detected wrongly, set it by hand in `data/resources.json`:
+
+```json
+"msFrom": 13      // the marking scheme starts on page 13
+"msFrom": 0       // this file has no marking scheme, so nothing is hidden
+```
+
+To check every 2025+ specimen paper at once, open the live site and paste this in the browser console:
+
+```js
+const list = (await (await fetch('/data/resources.json')).json()).resources.filter(r => r.type === 'Specimen Papers' && r.year >= 2025);
+for (const r of list) { const doc = await pdfjsLib.getDocument(r.file).promise; console.log(r.id, '| pages', doc.numPages, '| scheme from', (await Exam.detect(doc)) || 'NOT FOUND'); }
+```

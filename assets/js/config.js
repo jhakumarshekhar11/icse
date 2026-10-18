@@ -39,7 +39,8 @@ window.ICSE_CONFIG = {
     types: ["Previous Year Papers", "Specimen Papers", "Sample Papers"],   // resource types that get a timer
     minutes: { default: 120, maths: 180, hindi: 180 },   // writing time per subject id. Check the "Time allowed" printed on each paper
     readingMinutes: 15,                      // optional reading time before writing starts (0 to remove)
-    schemeFromYear: 2025                     // specimen papers from this year have the marking scheme at the end of the PDF
+    schemeFromYear: 2025,                    // specimen papers from this year have the marking scheme at the end of the PDF
+    schemeWords: ["marking scheme", "answer key", "marking guidelines"]   // a page whose opening text has one of these starts the scheme
   },
 
   // Quick-search suggestions under the search bar

@@ -106,6 +106,8 @@ function main() {
     const headRe = /<title>[\s\S]*?(?=<meta name="theme-color")/, mainRe = /<main class="wrap about">[\s\S]*?<\/main>/;
     if (!headRe.test(shell) || !mainRe.test(shell)) throw new Error('about/index.html shape not recognised');
     const hit = "<script>(function(){var b=document.getElementById('dl');if(!b)return;b.addEventListener('click',function(){var c=(window.ICSE_CONFIG||{}).counter,id=b.getAttribute('data-id');if(!c||!c.enabled||!id)return;try{if(sessionStorage.getItem('icse:hit:'+id))return;sessionStorage.setItem('icse:hit:'+id,'1');}catch(e){}fetch(c.baseUrl+'/hit/'+c.namespace+'/'+encodeURIComponent(id),{keepalive:true}).catch(function(){});});})();</script>";
+    // While a timed exam with a hidden marking scheme runs on this paper, the Download button is switched off
+    const lock = "<script>(function(){try{var s=JSON.parse(localStorage.getItem('icse:exam:active')),b=document.getElementById('dl');if(s&&b&&s.lockFrom>1&&Date.now()<s.writingEnd&&s.id===b.getAttribute('data-id')){b.removeAttribute('href');b.removeAttribute('download');b.setAttribute('aria-disabled','true');b.textContent='Download opens when your exam ends';b.style.opacity='.5';b.style.pointerEvents='none';}}catch(e){}})();</script>";
     let made = 0;
     live.forEach((r) => {
       const url = paperUrls.get(r), heading = headings.get(r), subj = subjName(r), one = singular(r.type), canon = SITE + url;
@@ -163,6 +165,7 @@ function main() {
     </section>
     <a class="btn btn-primary back-cta" href="/">Browse all resources</a>
     ${hit}
+    ${lock}
   </main>`;
       const ld = [
         { '@context': 'https://schema.org', '@type': 'LearningResource', name: heading, description: r.description || undefined, url: canon,

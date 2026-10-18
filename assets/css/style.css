@@ -537,3 +537,8 @@ html.theme-wiping.theme-wipe-up::view-transition-new(root) {
 .x-start { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 10px; border: 1px solid transparent; background: none; color: var(--dim); font: inherit; font-size: 0.82rem; cursor: pointer; }
 .x-start .ic { width: 15px; height: 15px; }
 .x-start:hover { color: var(--strong); border-color: var(--line-hi); }
+
+/* ---------- Marking scheme lock (timed exam) ---------- */
+.v-lock { width: min(100%, 460px); margin-top: 8px; padding: 26px 22px; text-align: center; border: 1px dashed var(--line-hi); border-radius: 18px; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+.v-lock strong { display: block; margin-bottom: 4px; color: var(--strong); font-family: var(--font-display); font-size: 1.05rem; font-weight: 620; }
+html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v-status a { display: none !important; }
