@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'new', savedOnly: false,
+    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false,
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -186,12 +186,14 @@
       (!state.year.length || state.year.includes(String(r.year))) &&
       tokens.every((t) => r._hay.includes(t)));
     const by = {
-      new: (a, b) => b._date - a._date || a.title.localeCompare(b.title),
-      popular: (a, b) => dlCount(b) - dlCount(a),
-      az: (a, b) => a.title.localeCompare(b.title)
-    }[state.sort];
+      // By year: oldest year first (2020, 2022, 2023 ... 2027, and any earlier year sorts to the front)
+      year: (a, b) => Number(a.year) - Number(b.year) || a._date - b._date || a.title.localeCompare(b.title),
+      // Oldest first: earliest upload date first
+      old: (a, b) => a._date - b._date || a.title.localeCompare(b.title),
+      popular: (a, b) => dlCount(b) - dlCount(a) || a.title.localeCompare(b.title)
+    }[state.sort] || ((a, b) => Number(a.year) - Number(b.year) || a.title.localeCompare(b.title));
     // With no filter or search active, group by subject in the order set in config.js (subjectOrder).
-    // The chosen sort (Newest / Most downloaded / A to Z) still applies inside each subject.
+    // The chosen sort (By year / Oldest first / Most downloaded) still applies inside each subject.
     const order = CFG.subjectOrder || [];
     const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
     const grouped = !filtering();
@@ -670,7 +672,8 @@
   (async function init() {
     $('#backLink').href = CFG.portfolioUrl;
     $('#notice').textContent = CFG.notice;
-    state.sort = store.get('icse:sort', 'new');
+    state.sort = store.get('icse:sort', 'year');
+    if (!['year', 'old', 'popular'].includes(state.sort)) state.sort = 'year'; // old saved choices (Newest, A to Z) no longer exist
     renderQuick();
     if (!(await load())) return;
     readStartFilters();
