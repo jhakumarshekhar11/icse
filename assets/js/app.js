@@ -341,7 +341,7 @@
     el.quick.innerHTML = list.length ? '<span>Try</span>' + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('') : '';
   }
 
-  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); }
+  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); renderHistory(); }
 
   function refreshSavedUI() {
     el.savedCount.textContent = state.saved.size;
@@ -610,6 +610,60 @@
     else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey) { e.preventDefault(); focusSearch(); }
     else if (e.key === 'Escape' && e.target === el.q) { if (state.q) setQuery(''); else el.q.blur(); }
   });
+
+  /* ---------- exam history (attempts are kept by exam.js, in this browser) ---------- */
+  const hist = { box: $('#history'), list: $('#histList'), sub: $('#histSub'), btn: $('#histBtn'), count: $('#histCount'), clear: $('#histClear'), close: $('#histClose') };
+  function histCard(a) {
+    const sub = state.subjects.get(a.subject);
+    const pct = a.score != null && a.max > 0 ? Math.round((a.score / a.max) * 1000) / 10 : null;
+    const known = state.byId.has(a.rid);
+    const title = known ? `<a href="/?file=${encodeURIComponent(a.rid)}" data-hopen="${esc(a.rid)}">${esc(a.title)}</a>` : esc(a.title);
+    const label = [sub ? sub.name : '', a.year, a.type].filter(Boolean).map(esc).join(' &middot; ');
+    return `<article class="hist glass" style="--accent:${esc(sub ? sub.accent : '#9aa0a6')};--p:${pct == null ? 0 : Math.min(1, pct / 100)}">
+      <div class="h-main">
+        <div class="tl"><i class="dot"></i><span>${label}</span><span class="h-when">${esc(Exam.fmtAt(a.at))}</span></div>
+        <h3>${title}</h3>
+        <p class="h-meta">Used ${esc(Exam.fmtMin(a.usedMs))} of ${esc(Exam.fmtMin(a.allowedMs))} &middot; ${a.reason === 'timeup' ? 'Time was up' : 'Finished early'}</p>
+      </div>
+      <div class="h-score">
+        ${pct == null ? '' : `<span class="h-pct">${pct}%</span><span class="h-marks">${a.score} / ${a.max}</span>`}
+        <button class="btn h-edit" type="button" data-hedit="${esc(a.id)}">${pct == null ? 'Add score' : 'Edit'}</button>
+      </div>
+      <i class="h-bar"></i>
+    </article>`;
+  }
+  function renderHistory() {
+    if (!hist.box || !window.Exam || !Exam.history) return;
+    const items = Exam.history();
+    hist.count.textContent = items.length;
+    hist.sub.textContent = items.length ? plural(items.length, 'attempt') : '';
+    hist.clear.hidden = !items.length;
+    if (hist.box.hidden) return;
+    hist.list.innerHTML = items.length ? items.map(histCard).join('')
+      : '<div class="empty glass"><h3>No exams yet</h3><p>Start a timed exam from any paper. When it ends, it is saved here with your score.</p></div>';
+  }
+  function showHistory(on) {
+    if (!hist.box) return;
+    hist.box.hidden = !on;
+    hist.btn.setAttribute('aria-pressed', on);
+    if (on) { renderHistory(); hist.box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  if (hist.btn) {
+    hist.btn.addEventListener('click', () => showHistory(hist.box.hidden));
+    hist.close.addEventListener('click', () => showHistory(false));
+    hist.clear.addEventListener('click', () => { if (window.Exam) Exam.confirmClear(); });
+    hist.list.addEventListener('click', (e) => {
+      const ed = e.target.closest('[data-hedit]');
+      if (ed) { if (window.Exam) Exam.editAttempt(ed.dataset.hedit); return; }
+      const op = e.target.closest('[data-hopen]');
+      if (op && !(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) {
+        e.preventDefault();
+        const r = state.byId.get(op.dataset.hopen);
+        if (r) openReader(r);
+      }
+    });
+    addEventListener('exam:history', renderHistory);
+  }
 
   // Public hooks used by viewer.js
   window.App = {

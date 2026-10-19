@@ -137,9 +137,16 @@
   // Saved when an exam ends (finished or time up). Cancelled exams and timer test runs (speed flag) are not saved.
   function record(s, reason, usedMs) {
     if ((s.scale || 1) !== 1) return null;
+    // Another tab may have saved this same exam a moment ago: reload the list and do not add it twice.
+    try {
+      const v = JSON.parse(localStorage.getItem(HKEY));
+      if (Array.isArray(v)) hist = v.filter((x) => x && x.id && x.rid);
+    } catch (e) { /* storage unavailable: use this visit's list */ }
+    const dup = hist.find((x) => x.sid === s.startedAt && x.rid === s.id);
+    if (dup) return dup;
     const now = Date.now();
     const a = {
-      id: now + '-' + Math.random().toString(36).slice(2, 6), rid: s.id, title: s.title, subject: s.subject || '', year: s.year, type: s.type,
+      id: now + '-' + Math.random().toString(36).slice(2, 6), sid: s.startedAt, rid: s.id, title: s.title, subject: s.subject || '', year: s.year, type: s.type,
       at: now, usedMs: Math.round(usedMs), allowedMs: s.writingMs, reason, score: null, max: null
     };
     hist.unshift(a);
@@ -301,7 +308,8 @@
       card.append(note);
       det.then((d) => {
         if (mine !== dlgToken || el.dlg.hidden) return;
-        if (d.from >= 2) { note.className = 'x-note'; note.textContent = 'The marking scheme (from page ' + d.from + ') stays hidden until your exam ends.'; }
+        if (d.failed) { note.className = 'x-note warn'; note.textContent = 'Could not check this file for a marking scheme. If it has one at the end, avoid those pages until you finish.'; }
+        else if (d.from >= 2) { note.className = 'x-note'; note.textContent = 'The marking scheme (from page ' + d.from + ') stays hidden until your exam ends.'; }
         else if (d.expected) { note.className = 'x-note warn'; note.textContent = 'No marking scheme was found in this file. If it has one at the end, avoid those pages until you finish.'; }
         else note.textContent = '';
       });
@@ -331,17 +339,20 @@
     const c = CFG(), V = root.Viewer;
     if (Number.isInteger(res.msFrom)) return { from: res.msFrom, expected: false };   // set by hand in resources.json (0 = no scheme)
     if (!hasScheme(res, c)) return { from: 0, expected: false };
+    const FAIL = -2;   // the file could not be checked (not loaded, closed mid-scan, or too slow)
     const run = (async () => {
-      if (!(V && V.ready && await V.ready(res.id))) return 0;
+      if (!(V && V.ready && await V.ready(res.id))) return FAIL;
       const doc = V.pdf();
+      if (!doc) return FAIL;
       const cached = readCache(res.id, doc.numPages);
       if (cached) return cached;
       const p = await detectScheme(doc, c.schemeWords, () => { const cur = viewerRes(); return !cur || cur.id !== res.id; });
+      if (p < 0) return FAIL;
       if (p >= 2) writeCache(res.id, p, doc.numPages);
-      return Math.max(0, p);
-    })().catch(() => 0);
-    const from = await Promise.race([run, new Promise((r) => setTimeout(() => r(0), 8000))]);
-    return { from, expected: true };
+      return p;
+    })().catch(() => FAIL);
+    const from = await Promise.race([run, new Promise((r) => setTimeout(() => r(FAIL), 8000))]);
+    return from === FAIL ? { from: 0, expected: true, failed: true } : { from, expected: true };
   }
   // Pages an exam in progress allows on this paper (0 = all of them)
   const lockPages = (res) => (S && res && S.id === res.id && S.lockFrom >= 2 ? S.lockFrom - 1 : 0);
@@ -573,8 +584,10 @@
   S = load();
   if (S) armPrime();
   if (S && status(S, Date.now()).phase === 'done') {   // ended while the page was closed
-    away = { id: S.id, title: S.title };
+    const gone = S;
+    away = { id: gone.id, title: gone.title };
     S = null; save();
+    record(gone, 'timeup', gone.writingMs * (gone.scale || 1));
   }
   refresh();
 
@@ -582,7 +595,7 @@
     eligible: (r) => eligible(r, CFG()),
     hasScheme: (r) => hasScheme(r, CFG()),
     prompt, confirmLeave, lockPages, locksDownload,
-    history: () => hist.slice(), editAttempt, confirmClear,
+    history: () => hist.slice(), editAttempt, confirmClear, fmtAt, fmtMin,
     beep,   // console check for your sound file: Exam.beep()
     detect: (doc) => detectScheme(doc, CFG().schemeWords),   // console check: Exam.detect(await pdfjsLib.getDocument(url).promise)
     dialogOpen: () => !el.dlg.hidden,
