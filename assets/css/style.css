@@ -372,10 +372,8 @@ section[id] { scroll-margin-top: 84px; }
   .nav-in { gap: 6px; padding: 6px 6px 6px 12px; }
   .brand { font-size: 0.95rem; }
   .nav-about { padding: 0 11px; font-size: 0.85rem; }
-  #savedBtn { padding: 0 11px; }
-  #savedBtn .lbl { display: none; } /* bookmark icon + count only */
 }
-@media (max-width: 350px) { .brand span { display: none; } } /* very small phones: just "ICSE" */
+@media (max-width: 420px) { .brand span { display: none; } } /* small phones: just "ICSE" */
 
 /* Exam countdown */
 .exams { padding-top: 0; padding-bottom: 8px; }
@@ -542,3 +540,64 @@ html.theme-wiping.theme-wipe-up::view-transition-new(root) {
 .v-lock { width: min(100%, 460px); margin-top: 8px; padding: 26px 22px; text-align: center; border: 1px dashed var(--line-hi); border-radius: 18px; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
 .v-lock strong { display: block; margin-bottom: 4px; color: var(--strong); font-family: var(--font-display); font-size: 1.05rem; font-weight: 620; }
 html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v-status a { display: none !important; }
+
+/* ---------- Timed exam: history, scores, beep, phone fit ---------- */
+.x-chip[data-phase="reading"] .x-ph { color: #60a5fa; }
+.x-chip[data-phase="writing"] .x-ph { color: #4ade80; }
+:root[data-theme="light"] .x-chip[data-phase="reading"] .x-ph { color: #2563eb; }
+:root[data-theme="light"] .x-chip[data-phase="writing"] .x-ph { color: #15803d; }
+
+.x-score { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 12px 0 2px; border-top: 1px solid var(--line); }
+.x-score label { font-weight: 550; }
+.x-in { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.x-score input { width: 4.4em; height: 36px; text-align: center; border-radius: 10px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); color: inherit; font: inherit; outline: 0; -moz-appearance: textfield; }
+.x-score input::-webkit-outer-spin-button, .x-score input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.x-score input:focus { border-color: var(--strong); box-shadow: 0 0 0 3px rgba(var(--w), 0.12); }
+.x-score input[aria-invalid="true"] { border-color: #ff7b7b; }
+.x-danger { color: #ff7b7b; }
+:root[data-theme="light"] .x-danger { color: #c62828; }
+
+.hist-list { display: flex; flex-direction: column; gap: 12px; }
+.hist { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 22px 21px; border-radius: 22px; }
+.hist::after { content: ""; position: absolute; left: 22px; right: 22px; bottom: 0; height: 3px; border-radius: 3px; background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.hist .h-bar { position: absolute; z-index: 1; left: 22px; bottom: 0; height: 3px; width: calc((100% - 44px) * var(--p, 0)); border-radius: 3px; background: var(--accent); box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 60%, transparent); transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.hist .h-main { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.hist .tl { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 0.84rem; }
+.hist .h-when { color: var(--dim); }
+.hist .h-when::before { content: "\00b7"; margin-right: 8px; }
+.hist h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; line-height: 1.25; overflow-wrap: anywhere; }
+.hist h3 a { color: inherit; text-decoration: none; }
+.hist h3 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.hist .h-meta { margin: 0; color: var(--dim); font-size: 0.86rem; }
+.hist .h-score { display: flex; align-items: center; gap: 14px; flex: none; }
+.hist .h-pct { font-family: var(--font-display); font-weight: 650; font-size: 1.9rem; line-height: 1; letter-spacing: -0.04em; color: var(--accent); }
+.hist .h-marks { color: var(--muted); font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+.hist .h-edit { height: 36px; padding: 0 14px; }
+:root[data-theme="light"] .hist .h-pct { color: color-mix(in srgb, var(--accent) 78%, #000); }
+:root[data-theme="light"] .hist .h-bar { background: color-mix(in srgb, var(--accent) 78%, #000); box-shadow: none; }
+.h-tools { display: inline-flex; gap: 8px; margin-left: auto; }
+.h-tools .btn { height: 36px; padding: 0 14px; }
+.block-head .sub:not(:empty) + .h-tools { margin-left: 0; }
+
+/* Phone fit: Saved and History become icon pills with a count badge, and the timer chip and toolbar tighten up */
+@media (max-width: 560px) {
+  #savedBtn, #histBtn { position: relative; width: 40px; padding: 0; justify-content: center; }
+  #savedBtn .lbl, #histBtn .lbl { display: none; }
+  #savedBtn .n, #histBtn .n { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 5px; font-size: 0.68rem; background: var(--strong); color: var(--paper); }
+  #savedBtn[aria-pressed="true"] .n, #histBtn[aria-pressed="true"] .n { background: var(--paper); color: var(--strong); }
+  .hist { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px 18px 20px; }
+  .hist::after { left: 18px; right: 18px; }
+  .hist .h-bar { left: 18px; width: calc((100% - 36px) * var(--p, 0)); }
+  .hist .h-score { justify-content: space-between; }
+  .block-head { flex-wrap: wrap; }
+  .h-tools { width: 100%; justify-content: flex-end; }
+
+  .v-bar { gap: 8px 6px; }
+  .x-chip { height: 36px; padding: 0 4px 0 10px; gap: 6px; border-radius: 11px; }
+  .x-ph { font-size: 0; width: 9px; height: 9px; border-radius: 50%; background: currentColor; flex: none; }   /* phase shown as a coloured dot */
+  .x-time { font-size: 1rem; }
+  .x-fin { height: 26px; padding: 0 8px; }
+}
+@media (max-width: 760px) {
+  html[data-exam-on] #vSave, html[data-exam-on] #vReport { display: none; }   /* room for the timer while an exam runs */
+}

@@ -126,3 +126,9 @@ To check every 2025+ specimen paper at once, open the live site and paste this i
 const list = (await (await fetch('/data/resources.json')).json()).resources.filter(r => r.type === 'Specimen Papers' && r.year >= 2025);
 for (const r of list) { const doc = await pdfjsLib.getDocument(r.file).promise; console.log(r.id, '| pages', doc.numPages, '| scheme from', (await Exam.detect(doc)) || 'NOT FOUND'); }
 ```
+
+### History, scores, beep and screen
+
+- **History:** every exam that ends (finished or time up) is saved on the device and listed under the **History** pill in the top bar, as one chip per attempt. The coloured line at the bottom of a chip fills to the score. Tap **Add score** or **Edit** to enter marks scored out of a total (the last total used for a subject is remembered). Cancelled exams and speed-flag test runs are not saved. History stays in this browser, it does not sync between devices.
+- **Beep:** put your sound at `assets/beep.mp3` (or change `exam.beep.src` in `config.js`). It plays when the exam starts, when writing time begins and when time is up. Students can switch it off in the start dialog. Test the sound from the console with `Exam.beep()`.
+- **Screen:** `exam.keepAwake` keeps a phone screen on while an exam runs, on browsers that support it.

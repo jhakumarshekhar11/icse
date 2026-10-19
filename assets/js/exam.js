@@ -15,7 +15,7 @@
     const readingMs = Math.max(0, Math.round((o.readingMin || 0) * MIN / scale));
     const writingMs = Math.max(Math.round(MIN / scale), Math.round(o.writingMin * MIN / scale));
     return {
-      v: 1, id: res.id, title: res.title, startedAt: now, scale,
+      v: 1, id: res.id, title: res.title, subject: res.subject, year: res.year, type: res.type, startedAt: now, scale,
       readingMs, writingMs, readingEnd: now + readingMs, writingEnd: now + readingMs + writingMs
     };
   }
@@ -70,7 +70,10 @@
     return 0;
   }
 
-  const api = { MIN, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
+  // A score is valid when 0 <= marks <= max and max > 0
+  function validScore(marks, max) { return Number.isFinite(marks) && Number.isFinite(max) && max > 0 && marks >= 0 && marks <= max; }
+
+  const api = { MIN, validScore, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -91,6 +94,7 @@
   let S = null;        // the running exam, or null
   let away = null;     // an exam that ended while the paper was closed
   let timer = 0, last = 0, cancelFn = null, lastFocus = null, bannerMode = '', dlgToken = 0, lockSig = '';
+  let hist = [], audio = null, primed = false, wlock = null, waking = false;
 
   // If storage is unavailable (private mode) the exam still runs, it just cannot be resumed after a reload.
   function load() {
@@ -104,6 +108,96 @@
   }
   function debugScale() {
     try { return Number(localStorage.getItem('icse:exam:speed')) || 1; } catch (e) { return 1; }
+  }
+
+  /* ---------- history and scores (kept in this browser) ---------- */
+  const HKEY = 'icse:exam:history', HCAP = 200;
+  function loadHist() {
+    try { const v = JSON.parse(localStorage.getItem(HKEY)); return Array.isArray(v) ? v.filter((a) => a && a.id && a.rid) : []; } catch (e) { return []; }
+  }
+  function saveHist() {
+    try { localStorage.setItem(HKEY, JSON.stringify(hist)); } catch (e) { /* storage unavailable: kept for this visit only */ }
+    root.dispatchEvent(new Event('exam:history'));
+  }
+  const maxKey = (subject) => 'icse:exam:max:' + (subject || 'any');
+  function lastMax(subject) {
+    try { const v = Number(localStorage.getItem(maxKey(subject))); if (v > 0) return v; } catch (e) { /* ignore */ }
+    return CFG().maxMarks || 80;
+  }
+  function rememberMax(subject, max) { try { localStorage.setItem(maxKey(subject), String(max)); } catch (e) { /* ignore */ } }
+  const findAttempt = (id) => hist.find((a) => a.id === id);
+  const fmtAt = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+  const fmtMin = (ms) => {
+    const m = Math.round(ms / MIN);
+    if (m < 1) return 'under a minute';
+    const hr = Math.floor(m / 60), mm = m % 60;
+    return hr && mm ? hr + 'h ' + mm + 'm' : hr ? hr + 'h' : mm + 'm';
+  };
+
+  // Saved when an exam ends (finished or time up). Cancelled exams and timer test runs (speed flag) are not saved.
+  function record(s, reason, usedMs) {
+    if ((s.scale || 1) !== 1) return null;
+    const now = Date.now();
+    const a = {
+      id: now + '-' + Math.random().toString(36).slice(2, 6), rid: s.id, title: s.title, subject: s.subject || '', year: s.year, type: s.type,
+      at: now, usedMs: Math.round(usedMs), allowedMs: s.writingMs, reason, score: null, max: null
+    };
+    hist.unshift(a);
+    if (hist.length > HCAP) hist.length = HCAP;
+    saveHist();
+    return a;
+  }
+  // marks = null clears the score. An invalid pair is ignored.
+  function setScore(id, marks, max) {
+    const a = findAttempt(id);
+    if (!a) return;
+    if (marks == null) { a.score = null; a.max = null; }
+    else if (validScore(marks, max)) { a.score = marks; a.max = max; rememberMax(a.subject, max); }
+    else return;
+    saveHist();
+  }
+  function removeAttempt(id) {
+    const i = hist.findIndex((a) => a.id === id);
+    if (i >= 0) { hist.splice(i, 1); saveHist(); }
+  }
+
+  /* ---------- beep (the sound file is set in config.js) ---------- */
+  const beepCfg = () => CFG().beep || {};
+  function beepPref() {
+    try { const v = localStorage.getItem('icse:exam:beep'); return v === null ? beepCfg().default !== false : v === '1'; } catch (e) { return true; }
+  }
+  function setBeepPref(on) { try { localStorage.setItem('icse:exam:beep', on ? '1' : '0'); } catch (e) { /* ignore */ } }
+  function getAudio() {
+    if (!beepCfg().src) return null;
+    if (!audio) { try { audio = new root.Audio(beepCfg().src); audio.preload = 'auto'; } catch (e) { audio = null; } }
+    return audio;
+  }
+  function beep() {
+    if (!beepPref()) return;
+    const a = getAudio();
+    if (!a) return;
+    try { a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => { /* blocked or file missing: stay silent */ }); } catch (e) { /* no sound is fine */ }
+  }
+  // Browsers only allow sound after a tap. Starting an exam is a tap. After a reload, the first tap unlocks it.
+  function armPrime() {
+    if (primed || !getAudio()) return;
+    document.addEventListener('pointerdown', () => {
+      primed = true;
+      const a = getAudio();
+      const done = () => { try { a.pause(); a.currentTime = 0; } catch (e) { /* ignore */ } a.muted = false; };
+      try { a.muted = true; const p = a.play(); if (p && p.then) p.then(done, () => { a.muted = false; }); else done(); } catch (e) { a.muted = false; }
+    }, { once: true, capture: true });
+  }
+
+  /* ---------- keep the screen awake while an exam runs ---------- */
+  async function wake(on) {
+    try {
+      if (!on) { const l = wlock; wlock = null; if (l) await l.release(); return; }
+      if (CFG().keepAwake === false || wlock || waking || !root.navigator.wakeLock || document.visibilityState !== 'visible') return;
+      waking = true;
+      wlock = await root.navigator.wakeLock.request('screen');
+      wlock.addEventListener('release', () => { wlock = null; });
+    } catch (e) { wlock = null; } finally { waking = false; }
   }
 
   // Small DOM builder. Text is always set as text, never as HTML.
@@ -195,6 +289,12 @@
         chk.addEventListener('change', () => { reading = chk.checked; upd(); });
         card.append(h('div', { class: 'x-row' }, h('label', { class: 'x-check', for: 'xRead' }, chk, 'Add ' + rm + ' min reading time')));
       }
+      if (beepCfg().src) {
+        const bchk = h('input', { type: 'checkbox', id: 'xBeep' });
+        bchk.checked = beepPref();
+        bchk.addEventListener('change', () => setBeepPref(bchk.checked));
+        card.append(h('div', { class: 'x-row' }, h('label', { class: 'x-check', for: 'xBeep' }, bchk, 'Beep at the start, when writing begins and at the end')));
+      }
       card.append(sum);
       const note = h('p', { class: 'x-note' });
       if (hasScheme(res, c) && !Number.isInteger(res.msFrom)) note.textContent = 'Checking the file for a marking scheme\u2026';
@@ -252,6 +352,7 @@
     const V = root.Viewer, cur = viewerRes();
     const active = !!(S && S.lockFrom >= 2);
     document.documentElement.toggleAttribute('data-exam-lock', active && !!cur && cur.id === S.id);
+    document.documentElement.toggleAttribute('data-exam-on', !!(S && cur && cur.id === S.id));
     if (V && V.setLimit && V.unlock && cur) {   // an older viewer.js without these is simply left alone
       const want = lockPages(cur);
       if (want) V.setLimit(want); else V.unlock();
@@ -265,6 +366,7 @@
     S.lockFrom = lockFrom >= 2 ? lockFrom : 0;   // first page of the marking scheme, hidden until the exam ends
     away = null; last = 0;
     save(); closeDialog(); refresh();
+    primed = true; beep();   // exam start
     toast(readingMin ? 'Reading time started' : 'Exam started. Good luck!');
   }
 
@@ -274,6 +376,7 @@
     const now = Date.now(), st = status(S, now);
     if (st.phase === 'done') { end('timeup'); return; }
     const hits = last ? crossings(S, last, now) : [];
+    if (hits.includes('writing-start')) beep();
     if (hits.length) announce(hits[hits.length - 1]);   // after a long absence, only the latest milestone
     last = now;
     paint(st);
@@ -302,10 +405,11 @@
     const used = Math.min(s.writingMs, Math.max(0, Date.now() - s.readingEnd)) * sc;
     S = null; save(); refresh();
     if (reason === 'cancelled') { toast('Exam cancelled'); return; }
-    showEnd(s, reason, used);
+    if (reason === 'timeup') beep();   // writing time is over
+    showEnd(s, reason, used, record(s, reason, used));
   }
 
-  function showEnd(s, reason, usedMs) {
+  function showEnd(s, reason, usedMs, att) {
     const cur = viewerRes();
     if (!cur || cur.id !== s.id) {
       away = { id: s.id, title: s.title };
@@ -321,6 +425,7 @@
         h('p', { class: 'x-note' }, reason === 'timeup'
           ? 'Put your pen down. You had ' + fmt(s.writingMs * sc) + ' of writing time.'
           : 'You used ' + fmt(usedMs) + ' of ' + fmt(s.writingMs * sc) + '.'),
+        att ? scoreRow(att) : null,
         h('div', { class: 'dlg-acts' },
           s.lockFrom >= 2 ? primary('View marking scheme', () => { closeDialog(); if (root.Viewer) root.Viewer.goTo(s.lockFrom); }, { 'data-first': true }) : null,
           btn('Keep reading', closeDialog, s.lockFrom >= 2 ? null : { 'data-first': true }),
@@ -340,6 +445,59 @@
         h('div', { class: 'dlg-acts' },
           btn('Keep going', closeDialog, { 'data-first': true }),
           primary(reading ? 'Cancel exam' : 'Finish', () => { closeDialog(); end(reading ? 'cancelled' : 'finished'); })));
+    });
+  }
+
+  // Marks scored / out of. Saves as you type once the pair is valid; a blank marks box clears the score.
+  function scoreRow(a) {
+    const marks = h('input', { type: 'number', min: 0, step: 'any', inputmode: 'decimal', id: 'xMarks', 'aria-label': 'Marks scored', placeholder: '--' });
+    const max = h('input', { type: 'number', min: 1, step: 'any', inputmode: 'decimal', id: 'xMax', 'aria-label': 'Out of' });
+    if (a.score != null) marks.value = a.score;
+    max.value = a.max || lastMax(a.subject);
+    const upd = () => {
+      const m = marks.value.trim() === '' ? null : Number(marks.value), x = Number(max.value);
+      const bad = m != null && !validScore(m, x);
+      marks.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      max.setAttribute('aria-invalid', bad ? 'true' : 'false');
+      if (!bad) setScore(a.id, m, x);
+    };
+    marks.addEventListener('input', upd);
+    max.addEventListener('input', upd);
+    return h('div', { class: 'x-score' }, h('label', { for: 'xMarks' }, 'Your score'), h('span', { class: 'x-in' }, marks, ' / ', max));
+  }
+
+  // From the history list: change the score or remove the attempt
+  function editAttempt(id) {
+    const a = findAttempt(id);
+    if (!a) return;
+    let armed = false, t = 0;
+    openDialog((card) => {
+      const rm = btn('Remove attempt', () => {
+        if (!armed) {
+          armed = true; rm.textContent = 'Tap again to remove';
+          clearTimeout(t); t = setTimeout(() => { armed = false; rm.textContent = 'Remove attempt'; }, 3000);
+          return;
+        }
+        clearTimeout(t); removeAttempt(id); closeDialog(); toast('Attempt removed');
+      }, { class: 'btn x-danger' });
+      card.append(
+        h('h3', { id: 'xTitle' }, 'Exam score'),
+        h('p', { class: 'nm' }, a.title),
+        h('p', { class: 'x-note' }, fmtAt(a.at) + ' \u00b7 used ' + fmtMin(a.usedMs) + ' of ' + fmtMin(a.allowedMs)),
+        scoreRow(a),
+        h('div', { class: 'dlg-acts' }, rm, primary('Done', closeDialog, { 'data-first': true })));
+    });
+  }
+
+  function confirmClear() {
+    if (!hist.length) return;
+    openDialog((card) => {
+      card.append(
+        h('h3', { id: 'xTitle' }, 'Clear all history?'),
+        h('p', { class: 'x-note' }, 'This removes ' + (hist.length === 1 ? '1 attempt' : hist.length + ' attempts') + ' and their scores from this device.'),
+        h('div', { class: 'dlg-acts' },
+          btn('Keep', closeDialog, { 'data-first': true }),
+          primary('Clear all', () => { hist = []; saveHist(); closeDialog(); toast('History cleared'); })));
     });
   }
 
@@ -394,6 +552,7 @@
     el.start.hidden = !(cur && !S && eligible(cur, CFG()));
     banner();
     syncLock();
+    wake(!!S);
     if (S && !timer) timer = setInterval(tick, 250);
     if (!S && timer) { clearInterval(timer); timer = 0; document.title = baseTitle; }
     if (S) tick();
@@ -403,11 +562,16 @@
   el.fin.addEventListener('click', finishDialog);
   root.addEventListener('viewer:open', refresh);
   root.addEventListener('viewer:close', refresh);
-  document.addEventListener('visibilitychange', tick);
-  root.addEventListener('storage', (e) => { if (e.key === KEY) { S = load(); last = 0; refresh(); } });
+  document.addEventListener('visibilitychange', () => { tick(); if (S) wake(true); });   // the wake lock is released when the tab is hidden
+  root.addEventListener('storage', (e) => {
+    if (e.key === KEY) { S = load(); last = 0; refresh(); }
+    else if (e.key === HKEY) { hist = loadHist(); root.dispatchEvent(new Event('exam:history')); }
+  });
 
   /* ---------- start up ---------- */
+  hist = loadHist();
   S = load();
+  if (S) armPrime();
   if (S && status(S, Date.now()).phase === 'done') {   // ended while the page was closed
     away = { id: S.id, title: S.title };
     S = null; save();
@@ -418,6 +582,8 @@
     eligible: (r) => eligible(r, CFG()),
     hasScheme: (r) => hasScheme(r, CFG()),
     prompt, confirmLeave, lockPages, locksDownload,
+    history: () => hist.slice(), editAttempt, confirmClear,
+    beep,   // console check for your sound file: Exam.beep()
     detect: (doc) => detectScheme(doc, CFG().schemeWords),   // console check: Exam.detect(await pdfjsLib.getDocument(url).promise)
     dialogOpen: () => !el.dlg.hidden,
     active: () => S

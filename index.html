@@ -75,6 +75,9 @@
       <button class="pill" id="savedBtn" type="button" aria-pressed="false" aria-label="Saved resources" title="Show only saved resources">
         <svg class="ic"><use href="#i-bookmark"/></svg><span class="lbl">Saved</span> <span class="n" id="savedCount">0</span>
       </button>
+      <button class="pill" id="histBtn" type="button" aria-pressed="false" aria-label="Exam history" title="Your timed exam attempts and scores">
+        <svg class="ic"><use href="#i-timer"/></svg><span class="lbl">History</span> <span class="n" id="histCount">0</span>
+      </button>
     </div>
   </header>
 
@@ -111,6 +114,15 @@
           <div class="exam-days" id="examDays" aria-hidden="true"></div>
         </div>
       </div>
+    </section>
+
+    <section class="block" id="history" aria-labelledby="hHist" hidden>
+      <div class="block-head">
+        <h2 id="hHist">Exam history</h2>
+        <span class="sub" id="histSub"></span>
+        <span class="h-tools"><button class="btn" id="histClear" type="button" hidden>Clear all</button><button class="btn" id="histClose" type="button">Hide</button></span>
+      </div>
+      <div class="hist-list" id="histList"></div>
     </section>
 
     <section class="block" id="recent" aria-labelledby="hRecent">
