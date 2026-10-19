@@ -25,17 +25,23 @@
   const S = {
     res: null, doc: null, task: null, pages: [], n: 0, cur: 1, scale: 1, base: 1,
     pw: 595, ratio: 1.414, io: null, open: false, token: 0, fitMode: true,
+    total: 0, locked: false, readyP: null, resolveReady: null,
     lastFocus: null, raf: 0, rerender: 0, saveTimer: 0, hideTimer: 0
   };
   const App = () => window.App;
+  // Pages an exam in progress allows on this paper (0 = all of them). The marking scheme stays out of reach.
+  const lockPages = (res) => (window.Exam && window.Exam.lockPages ? window.Exam.lockPages(res) : 0);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
   /* ---------- open / close ---------- */
   async function open(res, page) {
     if (S.open && S.res && S.res.id === res.id) { if (page) goTo(page, false); return; }
     clearTimeout(S.hideTimer);
+    if (S.resolveReady) S.resolveReady(false);
     teardown();
     S.res = res; S.open = true; S.lastFocus = document.activeElement;
+    S.readyP = new Promise((r) => { S.resolveReady = r; });
+    window.dispatchEvent(new CustomEvent('viewer:open', { detail: res }));
     el.root.hidden = false;
     document.documentElement.classList.add('no-scroll');
     requestAnimationFrame(() => el.root.classList.add('on'));
@@ -58,7 +64,9 @@
       task.onProgress = (p) => { if (token === S.token && p.total) setStatus('loading', 'Loading ' + Math.round((p.loaded / p.total) * 100) + '%'); };
       const doc = await task.promise;
       if (token !== S.token) { doc.destroy(); return; }
-      S.doc = doc; S.n = doc.numPages;
+      S.doc = doc; S.total = doc.numPages;
+      const lim = lockPages(res);
+      S.n = lim > 0 && lim < S.total ? lim : S.total; S.locked = S.n < S.total;
       const p1 = await doc.getPage(1);
       const v = p1.getViewport({ scale: 1 });
       S.pw = v.width; S.ratio = v.height / v.width;
@@ -66,13 +74,16 @@
       S.fitMode = true;
       S.scale = fitScale(false); S.base = S.scale;
       build();
+      if (S.locked) addNote();
       setStatus('');
       const saved = store.get('icse:page:' + res.id, 1);
       const start = clamp(parseInt(page || saved, 10) || 1, 1, S.n);
       el.scroll.scrollTop = S.pages[start - 1].offsetTop - 8;
       S.cur = 0; setCur(start, true);
+      S.resolveReady(true);
     } catch (err) {
       if (token !== S.token) return;
+      if (S.resolveReady) S.resolveReady(false);
       console.warn('PDF load failed', err);
       setStatus('error');
     }
@@ -81,6 +92,7 @@
   function close() {
     if (!S.open) return;
     S.open = false;
+    if (S.resolveReady) S.resolveReady(false);
     flushPage();
     document.removeEventListener('keydown', onKey, true);
     if (document.fullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
@@ -90,6 +102,7 @@
     S.hideTimer = setTimeout(() => { el.root.hidden = true; }, reduced ? 0 : 200);
     if (S.lastFocus && S.lastFocus.focus) S.lastFocus.focus({ preventScroll: true });
     S.res = null;
+    window.dispatchEvent(new CustomEvent('viewer:close'));
   }
 
   function teardown() {
@@ -98,7 +111,7 @@
     S.pages.forEach((p) => { try { p._task && p._task.cancel(); } catch { /* already done */ } });
     if (S.io) { S.io.disconnect(); S.io = null; }
     if (S.task) { try { S.task.destroy(); } catch { /* ignore */ } S.task = null; }
-    S.doc = null; S.pages = []; S.n = 0;
+    S.doc = null; S.pages = []; S.n = 0; S.total = 0; S.locked = false;
     el.pages.textContent = '';
     el.pages.style.transform = '';
   }
@@ -204,6 +217,44 @@
       S.io.disconnect();
       S.pages.forEach((p) => S.io.observe(p));
     }, 150);
+  }
+
+  /* ---------- page limit (marking scheme lock during an exam) ---------- */
+  function addNote() {
+    removeNote();
+    const d = document.createElement('div');
+    d.className = 'v-lock'; d.setAttribute('role', 'note');
+    const t = document.createElement('strong'); t.textContent = 'Marking scheme locked';
+    d.append(t, 'It opens when your exam ends.');
+    el.pages.appendChild(d);
+  }
+  function removeNote() { const n = el.pages.querySelector('.v-lock'); if (n) n.remove(); }
+
+  // Show only the first n pages of the document (n = S.total shows everything again)
+  function resize(n) {
+    if (!S.doc || !S.pages.length || n === S.n) return;
+    removeNote();
+    const from = S.n;
+    if (n < from) {
+      for (let i = from - 1; i >= n; i--) {
+        const p = S.pages[i];
+        if (S.io) S.io.unobserve(p);
+        release(p); p.remove();
+      }
+      S.pages.length = n;
+    } else {
+      for (let i = from + 1; i <= n; i++) {
+        const d = document.createElement('div');
+        d.className = 'pg'; d.dataset.n = i;
+        el.pages.appendChild(d); S.pages.push(d);
+      }
+    }
+    S.n = n; S.locked = n < S.total;
+    layout();
+    if (n > from && S.io) S.pages.slice(from).forEach((p) => S.io.observe(p));
+    if (S.locked) addNote();
+    el.total.textContent = S.n; el.page.max = S.n;
+    if (S.cur > S.n) goTo(S.n, false); else setCur(S.cur, true);
   }
 
   /* ---------- zoom / navigation ---------- */
@@ -383,5 +434,14 @@
     el.save.setAttribute('aria-label', on ? 'Remove bookmark' : 'Save to bookmarks');
   }
 
-  window.Viewer = { open, close, goTo, syncSave, isOpen: () => S.open, current: () => S.res, fullscreenHost: () => document.fullscreenElement || document.body };
+  window.Viewer = {
+    open, close, goTo, syncSave, isOpen: () => S.open, current: () => S.res,
+    fullscreenHost: () => document.fullscreenElement || document.body,
+    // for the exam timer: wait for the document, read it, and limit or restore the visible pages
+    ready: (id) => (S.res && S.res.id === id && S.readyP ? S.readyP : Promise.resolve(false)),
+    pdf: () => S.doc,
+    setLimit: (n) => { if (S.doc) resize(clamp(Math.round(n) || 1, 1, S.total)); },
+    unlock: () => { if (S.doc && S.n < S.total) resize(S.total); },
+    limited: () => S.locked
+  };
 })();

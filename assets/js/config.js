@@ -34,6 +34,18 @@ window.ICSE_CONFIG = {
   // Order of subjects in the library when no filter is selected (use the subject ids from resources.json)
   subjectOrder: ["englishlang", "englishlit", "hindi", "history", "geography", "maths", "physics", "chemistry", "biology", "commercialstudies", "computer", "economics"],
 
+  // Timed exam mode (the timer on papers)
+  exam: {
+    types: ["Previous Year Papers", "Specimen Papers", "Sample Papers"],   // resource types that get a timer
+    minutes: { default: 120, maths: 180, hindi: 180 },   // writing time per subject id. Check the "Time allowed" printed on each paper
+    readingMinutes: 15,                      // optional reading time before writing starts (0 to remove)
+    schemeFromYear: 2025,                    // specimen papers from this year have the marking scheme at the end of the PDF
+    schemeWords: ["marking scheme", "answer key", "marking guidelines"],  // a page whose opening text has one of these starts the scheme
+    maxMarks: 80,                            // default "out of" in the score box (the last value used for a subject is remembered)
+    keepAwake: true,                         // keep the phone screen on while an exam runs
+    beep: { src: "/assets/beep.mp3", default: true }   // played at the start, when writing begins and when time is up. Put the sound file at assets/beep.mp3
+  },
+
   // Quick-search suggestions under the search bar
   quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
 };

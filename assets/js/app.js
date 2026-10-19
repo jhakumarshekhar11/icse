@@ -207,6 +207,17 @@
   }
   function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
 
+  const examOk = (r) => !!(window.Exam && Exam.eligible(r));
+  // While a timed exam with a hidden marking scheme runs on a paper, its Download button is switched off
+  const dlLocked = (r) => !!(window.Exam && Exam.locksDownload && Exam.locksDownload(r));
+  const LOCK_TIP = 'Available when your exam ends';
+  const dlBtn = (r) => dlLocked(r)
+    ? `<button class="btn" type="button" disabled title="${LOCK_TIP}">${icon('download')}Download</button>`
+    : `<a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>`;
+  const dlMini = (r) => dlLocked(r)
+    ? `<button class="btn" style="height:36px;padding:0 12px" type="button" disabled title="${LOCK_TIP}">${icon('download')}PDF</button>`
+    : `<a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>`;
+
   function cardHtml(r) {
     const saved = state.saved.has(r.id);
     return `
@@ -226,10 +237,10 @@
       </div>
       <div class="acts">
         <a class="btn" href="${esc(readHref(r))}" data-act="read">${icon('read')}Read</a>
-        <a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>
+        ${dlBtn(r)}
       </div>
       <div class="more">
-        <span></span>
+        <span>${examOk(r) ? `<button class="x-start" type="button" data-act="exam" aria-label="Start a timed exam: ${esc(r.title)}">${icon('timer')}Timed exam</button>` : ''}</span>
         <span>
           <button class="ib" data-act="share" aria-label="Share ${esc(r.title)}" title="Share">${icon('share')}</button>
           <a class="ib" href="${esc(reportHref(r))}" target="_blank" rel="noopener" aria-label="Report an error in ${esc(r.title)}" title="Report an error">${icon('flag')}</a>
@@ -245,7 +256,7 @@
       <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
       <div class="row">
         <span class="when">${esc(when(r))}</span>
-        <a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>
+        ${dlMini(r)}
       </div>
     </article>`;
   }
@@ -330,7 +341,7 @@
     el.quick.innerHTML = list.length ? '<span>Try</span>' + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('') : '';
   }
 
-  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); }
+  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); renderHistory(); }
 
   function refreshSavedUI() {
     el.savedCount.textContent = state.saved.size;
@@ -441,15 +452,21 @@
   });
 
   /* ---------- reader + deep links ---------- */
-  function openReader(r, page) {
+  function openReader(r, page, exam) {
     const u = new URL(location.href);
     u.searchParams.set('file', r.id);
     page ? u.searchParams.set('page', page) : u.searchParams.delete('page');
     if (!Viewer.isOpen()) { history.pushState({ reader: true }, '', u); state.pushed = true; }
     else history.replaceState(history.state, '', u);
     Viewer.open(r, page);
+    if (exam && window.Exam) Exam.prompt(r);
   }
+  // While a timed exam is running on this paper, closing asks for confirmation first
   function closeReader() {
+    if (window.Exam && Exam.confirmLeave(closeReaderNow)) return;
+    closeReaderNow();
+  }
+  function closeReaderNow() {
     if (state.shareFor) closeShare();
     Viewer.close();
     if (history.state && history.state.reader) { state.pushed = false; history.back(); }
@@ -475,8 +492,14 @@
     if (!r) { toast('That file could not be found'); cleanUrl(); return; }
     if (initial && !history.state) history.replaceState({ reader: false }, '', location.href);
     Viewer.open(r, parseInt(p.get('page'), 10) || 0);
+    if (p.get('exam') === '1') {   // ?file=ID&exam=1 opens the paper with the timer dialog
+      const u = new URL(location.href); u.searchParams.delete('exam');
+      history.replaceState(history.state, '', u);
+      if (window.Exam) Exam.prompt(r);
+    }
   }
   addEventListener('popstate', () => syncFromUrl(false));
+  addEventListener('exam:change', () => { if (state.byId.size) { renderGrid(); renderStrip(); } });
 
   /* ---------- search + filters ---------- */
   // ?q= is kept in the address bar so a search can be shared or bookmarked
@@ -557,6 +580,7 @@
       case 'read':
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return; // let the browser open a new tab
         e.preventDefault(); openReader(r); break;
+      case 'exam': e.preventDefault(); openReader(r, 0, true); break;
       case 'download': download(r); break;           // native download proceeds
       case 'save': toggleSave(r.id); break;
       case 'share': share(r); break;
@@ -587,8 +611,66 @@
     else if (e.key === 'Escape' && e.target === el.q) { if (state.q) setQuery(''); else el.q.blur(); }
   });
 
+  /* ---------- exam history (attempts are kept by exam.js, in this browser) ---------- */
+  const hist = { box: $('#history'), list: $('#histList'), sub: $('#histSub'), btn: $('#histBtn'), count: $('#histCount'), clear: $('#histClear'), close: $('#histClose') };
+  function histCard(a) {
+    const sub = state.subjects.get(a.subject);
+    const pct = a.score != null && a.max > 0 ? Math.round((a.score / a.max) * 1000) / 10 : null;
+    const known = state.byId.has(a.rid);
+    const title = known ? `<a href="/?file=${encodeURIComponent(a.rid)}" data-hopen="${esc(a.rid)}">${esc(a.title)}</a>` : esc(a.title);
+    const label = [sub ? sub.name : '', a.year, a.type].filter(Boolean).map(esc).join(' &middot; ');
+    return `<article class="hist glass" style="--accent:${esc(sub ? sub.accent : '#9aa0a6')};--p:${pct == null ? 0 : Math.min(1, pct / 100)}">
+      <div class="h-main">
+        <div class="tl"><i class="dot"></i><span>${label}</span><span class="h-when">${esc(Exam.fmtAt(a.at))}</span></div>
+        <h3>${title}</h3>
+        <p class="h-meta">Used ${esc(Exam.fmtMin(a.usedMs))} of ${esc(Exam.fmtMin(a.allowedMs))} &middot; ${a.reason === 'timeup' ? 'Time was up' : 'Finished early'}</p>
+      </div>
+      <div class="h-score">
+        ${pct == null ? '' : `<span class="h-pct">${pct}%</span><span class="h-marks">${a.score} / ${a.max}</span>`}
+        <button class="btn h-edit" type="button" data-hedit="${esc(a.id)}">${pct == null ? 'Add score' : 'Edit'}</button>
+      </div>
+      <i class="h-bar"></i>
+    </article>`;
+  }
+  function renderHistory() {
+    if (!hist.box || !window.Exam || !Exam.history) return;
+    const items = Exam.history();
+    hist.count.textContent = items.length;
+    hist.sub.textContent = items.length ? plural(items.length, 'attempt') : '';
+    hist.clear.hidden = !items.length;
+    if (hist.box.hidden) return;
+    hist.list.innerHTML = items.length ? items.map(histCard).join('')
+      : '<div class="empty glass"><h3>No exams yet</h3><p>Start a timed exam from any paper. When it ends, it is saved here with your score.</p></div>';
+  }
+  function showHistory(on) {
+    if (!hist.box) return;
+    hist.box.hidden = !on;
+    hist.btn.setAttribute('aria-pressed', on);
+    if (on) { renderHistory(); hist.box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  if (hist.btn) {
+    hist.btn.addEventListener('click', () => showHistory(hist.box.hidden));
+    hist.close.addEventListener('click', () => showHistory(false));
+    hist.clear.addEventListener('click', () => { if (window.Exam) Exam.confirmClear(); });
+    hist.list.addEventListener('click', (e) => {
+      const ed = e.target.closest('[data-hedit]');
+      if (ed) { if (window.Exam) Exam.editAttempt(ed.dataset.hedit); return; }
+      const op = e.target.closest('[data-hopen]');
+      if (op && !(e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)) {
+        e.preventDefault();
+        const r = state.byId.get(op.dataset.hopen);
+        if (r) openReader(r);
+      }
+    });
+    addEventListener('exam:history', renderHistory);
+  }
+
   // Public hooks used by viewer.js
-  window.App = { fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, shareOpen: () => !el.dlg.hidden };
+  window.App = {
+    fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, toast, openReader,
+    byId: (id) => state.byId.get(id),
+    shareOpen: () => !el.dlg.hidden || !!(window.Exam && Exam.dialogOpen())
+  };
 
   /* ---------- exam countdown (edit data/exams.json) ----------
      The time comes from the web server's clock (the HTTP Date header), not from the
