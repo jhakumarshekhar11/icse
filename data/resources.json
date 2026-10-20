@@ -504,7 +504,7 @@
       "pages": 6,
       "size_kb": 225,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen Paper of English Language 2026",
       "tags": [
@@ -512,7 +512,9 @@
         "language",
         "specimen",
         "paper"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "englishlang-2027-specimen-paper",
