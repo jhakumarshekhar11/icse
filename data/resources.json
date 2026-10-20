@@ -1636,7 +1636,9 @@
         "element",
         "process",
         "solution"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "chemistry-2024-specimen-paper",
