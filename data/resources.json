@@ -3404,7 +3404,7 @@
       "pages": 6,
       "size_kb": 217,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Sample paper of Commercial Studies 2026. Covers insurance, advertising, marketing and e-commerce.",
       "tags": [
@@ -3420,7 +3420,9 @@
         "trading account",
         "revenue expenditure",
         "preference shares"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "economics-2027-sample-paper",
