@@ -1902,7 +1902,7 @@
       "pages": 16,
       "size_kb": 1281,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Mathematics 2026",
       "tags": [
@@ -1918,7 +1918,9 @@
         "geometric progression",
         "arithmetic progression",
         "𝑥"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80
     },
     {
       "id": "maths-2023-previous-year-paper",
