@@ -1428,7 +1428,7 @@
       "pages": 25,
       "size_kb": 715,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Physics 2027",
       "tags": [
@@ -1442,7 +1442,10 @@
         "light",
         "refractive index",
         "total internal reflection"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 20
     },
     {
       "id": "chemistry-2026-previous-year-paper",
