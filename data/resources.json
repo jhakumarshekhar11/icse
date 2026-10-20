@@ -660,15 +660,29 @@
       "pages": 10,
       "size_kb": 217,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of Geography 2023",
+      "description": "PYQ of Geography 2023. Covers transport, irrigation, monsoon and map of india.",
       "tags": [
         "board",
         "geography",
         "paper",
-        "PYQ"
-      ]
+        "PYQ",
+        "transport",
+        "irrigation",
+        "monsoon",
+        "map of india",
+        "survey of india",
+        "agriculture",
+        "map work",
+        "waste management",
+        "natural vegetation",
+        "soil",
+        "india map sheet",
+        "industry"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "geography-2024-previous-year-paper",
