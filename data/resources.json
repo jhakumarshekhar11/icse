@@ -2472,7 +2472,7 @@
       "pages": 8,
       "size_kb": 237,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications.",
       "tags": [
@@ -2488,7 +2488,9 @@
         "board pattern",
         "new pattern",
         "competency based"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "commercialstudies-2023-specimen-paper",
