@@ -4045,6 +4045,35 @@
         "solved",
         "unsolved"
       ]
+    },
+    {
+      "id": "englishlang-2027-question-bank",
+      "title": "Grammer Question Bank",
+      "subject": "englishlang",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/englishlang-2027-question-bank.pdf",
+      "pages": 26,
+      "size_kb": 286,
+      "added": "2026-10-20",
+      "updated": "2026-10-20",
+      "downloads": 0,
+      "description": "Question bank for English Language.",
+      "tags": [
+        "ran away",
+        "said",
+        "every day",
+        "late",
+        "never",
+        "unless",
+        "many times",
+        "serial order",
+        "teacher",
+        "sooner",
+        "well",
+        "phrase appropriate"
+      ]
     }
   ]
 }
