@@ -865,11 +865,23 @@
       "added": "2026-10-13",
       "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of History & Civics 2023",
+      "description": "PYQ of History & Civics 2023. Covers president, parliament, high court and muslim league.",
       "tags": [
         "board",
         "paper",
-        "history"
+        "history",
+        "president",
+        "parliament",
+        "high court",
+        "muslim league",
+        "lok sabha",
+        "first world war",
+        "second world war",
+        "council of ministers",
+        "quit india",
+        "supreme court",
+        "united nations",
+        "revolt of 1857"
       ],
       "minutes": 120,
       "marks": 80
