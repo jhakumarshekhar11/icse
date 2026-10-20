@@ -2013,12 +2013,14 @@
       "pages": 10,
       "size_kb": 357,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Hindi 2023.",
       "tags": [
         "sahitya sagar"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80
     },
     {
       "id": "maths-2026-previous-year-paper",
