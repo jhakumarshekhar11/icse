@@ -1636,7 +1636,7 @@
       "pages": 16,
       "size_kb": 1105,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Biology 2025",
       "tags": [
@@ -1652,7 +1652,9 @@
         "water",
         "heart",
         "fruits"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "biology-2023-specimen-paper",
