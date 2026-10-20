@@ -2273,7 +2273,7 @@
       "pages": 23,
       "size_kb": 3158,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2026.",
       "tags": [
@@ -2291,7 +2291,10 @@
         "𝑥",
         "analysis evaluation",
         "application evaluation"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80,
+      "msFrom": 15
     },
     {
       "id": "maths-2027-specimen-paper",
