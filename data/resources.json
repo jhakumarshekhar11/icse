@@ -931,14 +931,28 @@
       "pages": 12,
       "size_kb": 952,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of History & Civics 2025",
+      "description": "PYQ of History & Civics 2025. Covers president, lok sabha, high court and parliament.",
       "tags": [
         "board",
         "paper",
-        "history"
-      ]
+        "history",
+        "president",
+        "lok sabha",
+        "high court",
+        "parliament",
+        "rajya sabha",
+        "judiciary",
+        "quit india",
+        "united nations",
+        "prime minister",
+        "muslim league",
+        "supreme court",
+        "revolt of 1857"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "history-2023-specimen-paper",
