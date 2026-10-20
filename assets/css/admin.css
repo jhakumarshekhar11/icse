@@ -297,3 +297,49 @@
   .xdrow .fld > span { display: block; margin-bottom: 4px; color: var(--dim); font-size: 0.8rem; }
 }
 .xd-list { max-width: 640px; }
+
+/* ---------- light mode ---------- */
+html[data-theme="light"] .adm option { background: #fff; color: #111; }
+html[data-theme="light"] .adm input[type="text"], html[data-theme="light"] .adm input[type="password"], html[data-theme="light"] .adm input[type="number"],
+html[data-theme="light"] .adm input[type="date"], html[data-theme="light"] .adm input[type="search"], html[data-theme="light"] .adm select, html[data-theme="light"] .adm textarea { background: rgba(0, 0, 0, 0.04); }
+html[data-theme="light"] .adm input:hover, html[data-theme="light"] .adm select:hover, html[data-theme="light"] .adm textarea:hover { border-color: rgba(0, 0, 0, 0.28); }
+html[data-theme="light"] .adm input:focus, html[data-theme="light"] .adm select:focus, html[data-theme="light"] .adm textarea:focus { border-color: rgba(0, 0, 0, 0.6); background: #fff; box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.06); }
+html[data-theme="light"] .adm input[type="checkbox"] { accent-color: #000; }
+html[data-theme="light"] .adm input[type="color"] { background: rgba(0, 0, 0, 0.04); }
+html[data-theme="light"] .adm input[aria-invalid="true"], html[data-theme="light"] .adm select[aria-invalid="true"] { border-color: #ef4444; }
+html[data-theme="light"] .err, html[data-theme="light"] .btn.danger { color: #c62828; }
+html[data-theme="light"] .btn.danger:hover { border-color: #ef4444; box-shadow: 0 6px 18px -8px rgba(239, 68, 68, 0.5); }
+html[data-theme="light"] .login-card { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 50px -20px rgba(0, 0, 0, 0.2); }
+html[data-theme="light"] .login-card h1 { text-shadow: none; }
+html[data-theme="light"] .how summary, html[data-theme="light"] .tabs button:hover, html[data-theme="light"] .tbl th .th:hover, html[data-theme="light"] .tbl th .th.on,
+html[data-theme="light"] .tbl .c-act .ib:hover, html[data-theme="light"] .act a:hover { color: var(--strong); }
+html[data-theme="light"] .adm-bar { background: rgba(255, 255, 255, 0.72); }
+html[data-theme="light"] .tabs button[aria-selected="true"] { background: #000; color: #fff; box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5); }
+html[data-theme="light"] .tabs .n { background: rgba(0, 0, 0, 0.1); }
+html[data-theme="light"] .tabs button[aria-selected="true"] .n { background: rgba(255, 255, 255, 0.22); }
+html[data-theme="light"] .drop { border-color: rgba(0, 0, 0, 0.25); }
+html[data-theme="light"] .drop:hover, html[data-theme="light"] .drop.over { border-color: #000; box-shadow: 0 10px 28px -14px rgba(0, 0, 0, 0.3); }
+html[data-theme="light"] .note { background: rgba(0, 0, 0, 0.04); }
+html[data-theme="light"] .field .sub.ok, html[data-theme="light"] .badge.live, html[data-theme="light"] .badge.xt.fixed, html[data-theme="light"] .done .ic { color: #15803d; }
+html[data-theme="light"] .field .sub.bad, html[data-theme="light"] .trow .ib.del:hover, html[data-theme="light"] .tbl .c-act .ib.del:hover { color: #c62828; border-color: #ef4444; }
+html[data-theme="light"] .issues .e { border-color: rgba(239, 68, 68, 0.45); background: rgba(239, 68, 68, 0.09); color: #991b1b; }
+html[data-theme="light"] .issues .w { border-color: rgba(245, 158, 11, 0.5); background: rgba(245, 158, 11, 0.1); color: #92400e; }
+html[data-theme="light"] .badge.live, html[data-theme="light"] .badge.xt.fixed { border-color: rgba(21, 128, 61, 0.4); background: rgba(34, 197, 94, 0.1); }
+html[data-theme="light"] .badge.xt { color: #1d4ed8; border-color: rgba(37, 99, 235, 0.4); background: rgba(59, 130, 246, 0.09); }
+html[data-theme="light"] .tbl td { border-bottom-color: rgba(0, 0, 0, 0.07); }
+html[data-theme="light"] .tbl tbody tr:hover { background: rgba(0, 0, 0, 0.035); }
+html[data-theme="light"] .tbl tr.sel { background: rgba(0, 0, 0, 0.06); }
+html[data-theme="light"] .act:hover { background: rgba(0, 0, 0, 0.035); }
+html[data-theme="light"] .xbox { background: rgba(0, 0, 0, 0.025); }
+@media (max-width: 760px) {
+  html[data-theme="light"] .bulk { background: rgba(255, 255, 255, 0.96); box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.25); }
+  html[data-theme="light"] .trow:not(.type) { background: rgba(0, 0, 0, 0.03); }
+}
+html[data-theme="light"] .dlg-card.wide { background: rgba(255, 255, 255, 0.96); }
+@media (max-width: 760px) {
+  html[data-theme="light"] .dlg-card.wide .sheet-head { background: rgba(255, 255, 255, 0.96); }
+}
+@media (max-width: 760px) {
+  html[data-theme="light"] .ed-actions { background: rgba(255, 255, 255, 0.96); }
+  html[data-theme="light"] .tax-save { background: rgba(255, 255, 255, 0.96); box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.25); }
+}
