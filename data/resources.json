@@ -4494,5 +4494,11 @@
         "sooner"
       ]
     }
-  ]
+  ],
+  "examDefaults": {
+    "marks": {
+      "computer": 100,
+      "economics": 100
+    }
+  }
 }
