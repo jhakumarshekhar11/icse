@@ -1933,7 +1933,7 @@
       "pages": 11,
       "size_kb": 416,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Mathematics 2023",
       "tags": [
@@ -1949,7 +1949,9 @@
         "𝑥",
         "axis",
         "number"
-      ]
+      ],
+      "minutes": 150,
+      "marks": 80
     },
     {
       "id": "maths-2024-previous-year-paper",
