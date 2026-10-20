@@ -95,6 +95,7 @@
   let away = null;     // an exam that ended while the paper was closed
   let timer = 0, last = 0, cancelFn = null, lastFocus = null, bannerMode = '', dlgToken = 0, lockSig = '';
   let hist = [], audio = null, primed = false, wlock = null, waking = false;
+  let pending = null;   // the score box in the open dialog: () => {ok, m, x}
 
   // If storage is unavailable (private mode) the exam still runs, it just cannot be resumed after a reload.
   function load() {
@@ -135,7 +136,7 @@
   };
 
   // Saved when an exam ends (finished or time up). Cancelled exams and timer test runs (speed flag) are not saved.
-  function record(s, reason, usedMs) {
+  function record(s, reason, usedMs, at) {
     if ((s.scale || 1) !== 1) return null;
     // Another tab may have saved this same exam a moment ago: reload the list and do not add it twice.
     try {
@@ -144,7 +145,7 @@
     } catch (e) { /* storage unavailable: use this visit's list */ }
     const dup = hist.find((x) => x.sid === s.startedAt && x.rid === s.id);
     if (dup) return dup;
-    const now = Date.now();
+    const now = at || Date.now();
     const a = {
       id: now + '-' + Math.random().toString(36).slice(2, 6), sid: s.startedAt, rid: s.id, title: s.title, subject: s.subject || '', year: s.year, type: s.type,
       at: now, usedMs: Math.round(usedMs), allowedMs: s.writingMs, reason, score: null, max: null
@@ -238,7 +239,7 @@
     if (f) f.focus({ preventScroll: true });
   }
   function closeDialog() {
-    el.dlg.hidden = true; el.card.textContent = ''; cancelFn = null;
+    el.dlg.hidden = true; el.card.textContent = ''; cancelFn = null; pending = null;
     if (lastFocus && lastFocus.focus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
     lastFocus = null;
   }
@@ -423,9 +424,9 @@
   function showEnd(s, reason, usedMs, att) {
     const cur = viewerRes();
     if (!cur || cur.id !== s.id) {
-      away = { id: s.id, title: s.title };
+      away = { id: s.id, title: s.title, saved: !!att };
       banner();
-      toast(reason === 'timeup' ? 'Time is up on ' + s.title : 'Exam finished');
+      toast(reason === 'timeup' ? 'Time is up on ' + s.title + (att ? '. Saved to History.' : '') : 'Exam finished');
       return;
     }
     const sc = s.scale || 1;
@@ -436,12 +437,12 @@
         h('p', { class: 'x-note' }, reason === 'timeup'
           ? 'Put your pen down. You had ' + fmt(s.writingMs * sc) + ' of writing time.'
           : 'You used ' + fmt(usedMs) + ' of ' + fmt(s.writingMs * sc) + '.'),
-        att ? scoreRow(att) : null,
+        att ? scoreRow(att) : (sc !== 1 ? h('p', { class: 'x-note' }, 'This was a timer test run (speed flag is on), so it is not saved to History.') : null),
         h('div', { class: 'dlg-acts' },
-          s.lockFrom >= 2 ? primary('View marking scheme', () => { closeDialog(); if (root.Viewer) root.Viewer.goTo(s.lockFrom); }, { 'data-first': true }) : null,
-          btn('Keep reading', closeDialog, s.lockFrom >= 2 ? null : { 'data-first': true }),
-          btn('Close paper', () => { closeDialog(); if (root.App) root.App.closeReader(); }, s.lockFrom >= 2 ? null : { class: 'btn btn-primary' })));
-    });
+          s.lockFrom >= 2 ? primary('View marking scheme', guard(() => { closeDialog(); if (root.Viewer) root.Viewer.goTo(s.lockFrom); }), { 'data-first': true }) : null,
+          btn('Keep reading', guard(closeDialog), s.lockFrom >= 2 ? null : { 'data-first': true }),
+          btn('Close paper', guard(() => { closeDialog(); if (root.App) root.App.closeReader(); }), s.lockFrom >= 2 ? null : { class: 'btn btn-primary' })));
+    }, guard(closeDialog));
   }
 
   function finishDialog() {
@@ -459,22 +460,51 @@
     });
   }
 
-  // Marks scored / out of. Saves as you type once the pair is valid; a blank marks box clears the score.
+  // Marks scored / out of. Saves as you type once the pair is valid, and says so. A blank marks box clears the score.
   function scoreRow(a) {
     const marks = h('input', { type: 'number', min: 0, step: 'any', inputmode: 'decimal', id: 'xMarks', 'aria-label': 'Marks scored', placeholder: '--' });
     const max = h('input', { type: 'number', min: 1, step: 'any', inputmode: 'decimal', id: 'xMax', 'aria-label': 'Out of' });
+    const msg = h('span', { class: 'x-msg', role: 'status', 'aria-live': 'polite' });
+    let touched = false;   // true once this dialog has saved something
     if (a.score != null) marks.value = a.score;
     max.value = a.max || lastMax(a.subject);
-    const upd = () => {
+    const check = () => {
       const m = marks.value.trim() === '' ? null : Number(marks.value), x = Number(max.value);
       const bad = m != null && !validScore(m, x);
       marks.setAttribute('aria-invalid', bad ? 'true' : 'false');
       max.setAttribute('aria-invalid', bad ? 'true' : 'false');
-      if (!bad) setScore(a.id, m, x);
+      if (bad) {
+        msg.className = 'x-msg bad';
+        msg.textContent = m > x && x > 0
+          ? 'Marks can\u2019t be more than ' + x + '. Change \u201cout of\u201d if the paper has more marks.'
+          : 'Enter marks from 0 up to the total.';
+      } else {
+        const changed = m == null ? a.score != null : (a.score !== m || a.max !== x);
+        if (changed) { setScore(a.id, m, x); touched = true; }
+        msg.className = 'x-msg ok';
+        msg.textContent = m == null ? '' : 'Saved to History';
+      }
+      return { ok: !bad, m, x, touched };
     };
-    marks.addEventListener('input', upd);
-    max.addEventListener('input', upd);
-    return h('div', { class: 'x-score' }, h('label', { for: 'xMarks' }, 'Your score'), h('span', { class: 'x-in' }, marks, ' / ', max));
+    marks.addEventListener('input', check);
+    max.addEventListener('input', check);
+    pending = check;
+    return h('div', { class: 'x-scorebox' },
+      h('div', { class: 'x-score' }, h('label', { for: 'xMarks' }, 'Your score'), h('span', { class: 'x-in' }, marks, ' / ', max)),
+      msg);
+  }
+
+  // Wraps a dialog action so typed marks are never lost: a bad entry stays on screen with its message,
+  // a good one is confirmed with a toast before the dialog closes.
+  function guard(fn) {
+    return () => {
+      if (pending) {
+        const r = pending();
+        if (!r.ok) { const f = el.card.querySelector('#xMarks'); if (f) f.focus(); return; }
+        if (r.m != null && r.touched) toast('Saved to History: ' + r.m + ' / ' + r.x + ' (' + Math.round(r.m / r.x * 100) + '%)');
+      }
+      fn();
+    };
   }
 
   // From the history list: change the score or remove the attempt
@@ -496,8 +526,8 @@
         h('p', { class: 'nm' }, a.title),
         h('p', { class: 'x-note' }, fmtAt(a.at) + ' \u00b7 used ' + fmtMin(a.usedMs) + ' of ' + fmtMin(a.allowedMs)),
         scoreRow(a),
-        h('div', { class: 'dlg-acts' }, rm, primary('Done', closeDialog, { 'data-first': true })));
-    });
+        h('div', { class: 'dlg-acts' }, rm, primary('Done', guard(closeDialog), { 'data-first': true })));
+    }, guard(closeDialog));
   }
 
   function confirmClear() {
@@ -539,7 +569,7 @@
       el.bText.textContent = 'Exam in progress: ' + S.title + '. ' + fmt(status(S, Date.now()).left) + ' left.';
       el.bA.textContent = 'Resume'; el.bB.textContent = 'End exam';
     } else if (mode === 'away') {
-      el.bText.textContent = 'Time is up on ' + away.title + '.';
+      el.bText.textContent = 'Time is up on ' + away.title + '.' + (away.saved ? ' It is saved in History, where you can add your score.' : '');
       el.bA.textContent = 'Open paper'; el.bB.textContent = 'Dismiss';
     }
   }
@@ -585,9 +615,8 @@
   if (S) armPrime();
   if (S && status(S, Date.now()).phase === 'done') {   // ended while the page was closed
     const gone = S;
-    away = { id: gone.id, title: gone.title };
     S = null; save();
-    record(gone, 'timeup', gone.writingMs * (gone.scale || 1));
+    away = { id: gone.id, title: gone.title, saved: !!record(gone, 'timeup', gone.writingMs * (gone.scale || 1), gone.writingEnd) };
   }
   refresh();
 

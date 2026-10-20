@@ -601,3 +601,12 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 @media (max-width: 760px) {
   html[data-exam-on] #vSave, html[data-exam-on] #vReport { display: none; }   /* room for the timer while an exam runs */
 }
+
+/* score box feedback */
+.x-scorebox { margin-top: 14px; border-top: 1px solid var(--line); }
+.x-scorebox .x-score { margin-top: 0; border-top: 0; }
+.x-msg { display: block; min-height: 1.3em; padding-bottom: 2px; font-size: 0.84rem; line-height: 1.4; color: var(--muted); }
+.x-msg.ok { color: #4ade80; }
+.x-msg.bad { color: #ff7b7b; }
+:root[data-theme="light"] .x-msg.ok { color: #15803d; }
+:root[data-theme="light"] .x-msg.bad { color: #c62828; }
