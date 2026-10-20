@@ -1099,7 +1099,7 @@
       "pages": 20,
       "size_kb": 715,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2027",
       "tags": [
@@ -1115,7 +1115,10 @@
         "prime minister",
         "civil disobedience",
         "council of ministers"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 14
     },
     {
       "id": "physics-2026-previous-year-paper",
