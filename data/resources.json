@@ -363,7 +363,7 @@
       "pages": 8,
       "size_kb": 311,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of English Language 2024",
       "tags": [
@@ -372,7 +372,9 @@
         "english",
         "language",
         "previous year papers"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "englishlang-2025-previous-year-paper",
