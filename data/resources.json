@@ -1574,7 +1574,7 @@
       "pages": 11,
       "size_kb": 497,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Biology 2023",
       "tags": [
@@ -1590,7 +1590,9 @@
         "atrio ventricular valves",
         "plant",
         "phase"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "biology-2024-previous-year-paper",
