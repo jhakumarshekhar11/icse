@@ -73,25 +73,51 @@
   // ----- reading "Time allowed" and "Maximum Marks" from the opening text of a paper -----
   const WORD_NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
   const NUM = '(?:\\d+(?:\\.\\d+)?|one|two|three|four|five|six)';
-  const HALF = '(?:\\s*(?:and\\s+a\\s+half|and\\s+half|\\u00bd|1\\/2))?';
+  // "and a half", "and half", "and one-half", "1/2", or the half sign, straight after the number
+  const HALF = '(?:\\s*(?:and\\s+(?:a\\s+|one[-\\s]+)?half|\\u00bd|1\\/2))?';
+  const UNIT = '(hours?|hrs?\\.?|minutes?|mins?\\.?)';
+  // "...hours 30 minutes", "...hours and thirty minutes", "...hours and a half"
+  const TAIL = '(?:\\s*(?:and\\s*)?(?:(\\d{1,2})\\s*(?:minutes?|mins?)\\b|(a\\s+half|half)\\b))?';
   // "Time allowed: Two hours", "(Time: 2 hours 30 minutes)", "Time allowed: Two and a half hours", "Duration: 90 minutes"
-  const TIME_RE = new RegExp('(?:time(?:\\s+(?:allowed|given))?|duration)\\s*[:\\-\\u2013\\u2014=]?\\s*\\(?\\s*(' + NUM + ')(' + HALF + ')\\s*(hours?|hrs?|minutes?|mins?)\\b(?:\\s*(?:and\\s*)?(\\d{1,2})\\s*(?:minutes?|mins?)\\b)?', 'i');
+  const TIME_RE = new RegExp('(?:time(?:\\s+(?:allowed|given))?|duration)\\s*[:\\-\\u2013\\u2014=]?\\s*\\(?\\s*(' + NUM + ')(' + HALF + ')\\s*' + UNIT + TAIL, 'ig');
+  // The bare bracketed form printed under the subject name on CISCE papers: "(Two hours)", "(Two and a half hours)"
+  const PAREN_RE = new RegExp('\\(\\s*(' + NUM + ')(' + HALF + ')\\s*' + UNIT + TAIL + '\\s*\\)', 'ig');
   // "Maximum Marks: 80", "(Max. Marks: 80)", "Full Marks - 80". "Total marks: 80" counts only on the first page.
-  const MARKS_RE = /(?:maximum|max\.?|full)\s*marks?\s*[:\-\u2013\u2014=]?\s*\(?\s*(\d{1,3})\b/i;
-  const TOTAL_RE = /\btotal\s*marks?\s*[:\-\u2013\u2014=]\s*\(?\s*(\d{1,3})\b/i;
+  const MARKS_RE = /(?:maximum|max\.?|full)\s*marks?\s*[:\-–—=]?\s*\(?\s*(\d{1,3})\b/i;
+  const TOTAL_RE = /\btotal\s*marks?\s*[:\-–—=]\s*\(?\s*(\d{1,3})\b/i;
+
+  // First duration in the text that is plausible for an exam (20 to 300 minutes); the others are skipped
+  function findMinutes(t) {
+    for (const re of [TIME_RE, PAREN_RE]) {
+      re.lastIndex = 0;
+      let tm;
+      while ((tm = re.exec(t))) {
+        const w = tm[1].toLowerCase(), base = WORD_NUM[w] !== undefined ? WORD_NUM[w] : parseFloat(w);
+        const val = base + (tm[2] || tm[5] ? 0.5 : 0);
+        const hours = tm[3][0].toLowerCase() === 'h';
+        const min = hours ? Math.round(val * 60 + (tm[4] ? parseInt(tm[4], 10) : 0)) : Math.round(val);
+        if (min >= 20 && min <= 300) return min;
+        if (tm[0].length === 0) re.lastIndex++;
+      }
+    }
+    return 0;
+  }
+  // Some PDFs store letters one by one ("M a x i m u m  M a r k s : 8 0"): join those runs back up
+  const despace = (t) => t.replace(/(?:\S ){3,}\S(?!\S)/g, (m) => m.replace(/ /g, ''));
+
   // Returns {minutes, marks}; 0 means not found. Sanity limits keep stray numbers out.
   function parsePaperInfo(text, allowTotal) {
-    const t = String(text || '').replace(/\s+/g, ' ');
+    const raw = String(text || '').replace(/\s+/g, ' ');
     const out = { minutes: 0, marks: 0 };
-    const tm = TIME_RE.exec(t);
-    if (tm) {
-      const w = tm[1].toLowerCase(), base = WORD_NUM[w] !== undefined ? WORD_NUM[w] : parseFloat(w);
-      const val = base + (tm[2] ? 0.5 : 0);
-      const min = tm[3][0].toLowerCase() === 'h' ? Math.round(val * 60 + (tm[4] ? parseInt(tm[4], 10) : 0)) : Math.round(val);
-      if (min >= 20 && min <= 300) out.minutes = min;
-    }
-    const mm = MARKS_RE.exec(t) || (allowTotal ? TOTAL_RE.exec(t) : null);
-    if (mm) { const n = parseInt(mm[1], 10); if (n >= 10 && n <= 200) out.marks = n; }
+    const read = (t) => {
+      if (!out.minutes) out.minutes = findMinutes(t);
+      if (!out.marks) {
+        const mm = MARKS_RE.exec(t) || (allowTotal ? TOTAL_RE.exec(t) : null);
+        if (mm) { const n = parseInt(mm[1], 10); if (n >= 10 && n <= 200) out.marks = n; }
+      }
+    };
+    read(raw);
+    if (!out.minutes || !out.marks) read(despace(raw));
     return out;
   }
   // Looks at the first two pages for the time allowed and the maximum marks. Returns null if stale() turns true mid-scan.
@@ -101,7 +127,7 @@
     for (let i = 1; i <= last && !(out.minutes && out.marks); i++) {
       const tc = await (await doc.getPage(i)).getTextContent();
       if (stale && stale()) return null;
-      const f = parsePaperInfo(tc.items.map((x) => x.str).join(' ').replace(/\s+/g, ' ').trim().slice(0, 1500), i === 1);
+      const f = parsePaperInfo(tc.items.map((x) => x.str).join(' ').replace(/\s+/g, ' ').trim().slice(0, 2500), i === 1);
       if (!out.minutes) out.minutes = f.minutes;
       if (!out.marks) out.marks = f.marks;
     }
@@ -419,9 +445,9 @@
   /* ---------- time allowed and total marks of a paper ---------- */
   const metaKey = (id) => 'icse:meta:' + id;
   function readMeta(id, pages) {
-    try { const v = JSON.parse(localStorage.getItem(metaKey(id))); return v && v.v === 1 && v.n === pages ? { minutes: v.t || 0, marks: v.m || 0 } : null; } catch (e) { return null; }
+    try { const v = JSON.parse(localStorage.getItem(metaKey(id))); return v && v.v === 2 && v.n === pages ? { minutes: v.t || 0, marks: v.m || 0 } : null; } catch (e) { return null; }
   }
-  function writeMeta(id, f, pages) { try { localStorage.setItem(metaKey(id), JSON.stringify({ v: 1, n: pages, t: f.minutes, m: f.marks })); } catch (e) { /* ignore */ } }
+  function writeMeta(id, f, pages) { try { localStorage.setItem(metaKey(id), JSON.stringify({ v: 2, n: pages, t: f.minutes, m: f.marks })); } catch (e) { /* ignore */ } }
 
   // {minutes, marks}: 0 = not known, so the caller falls back to its defaults.
   // Order: set by hand in resources.json ("minutes", "marks"), then read from the PDF, then nothing.

@@ -135,7 +135,7 @@ for (const r of list) { const doc = await pdfjsLib.getDocument(r.file).promise; 
 
 ### Time allowed and total marks
 
-When an exam starts, the reader reads the first two pages of the PDF for the **time allowed** (for example "Time allowed: Two hours" or "Two and a half hours") and the **maximum marks** (for example "Maximum Marks: 80"). What it finds becomes the writing time and the total marks. Anything it cannot find falls back to the defaults in `config.js`: `exam.minutes` per subject for the time, and `exam.maxMarks` for the marks (a number, or `{ default: 80, computer: 100 }` per subject id).
+When an exam starts, the reader reads the first two pages of the PDF for the **time allowed** (for example "Time allowed: Two hours", the bracketed "(Two hours)" printed under the subject name, "Two and a half hours", "2½ hours" or "150 minutes") and the **maximum marks** (for example "Maximum Marks: 80"). What it finds becomes the writing time and the total marks. Anything it cannot find falls back to the defaults in `config.js`: `exam.minutes` per subject for the time, and `exam.maxMarks` for the marks (a number, or `{ default: 80, computer: 100 }` per subject id).
 
 The **total marks cannot be changed by the student**. The score box has only a "marks scored" field next to a fixed total, and marks above the total are refused. The writing time can still be adjusted in the start dialog.
 

@@ -451,8 +451,15 @@ html[data-theme="light"] .orb, html[data-theme="light"] .spot { display: none; }
 html[data-theme="light"] .glass { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 30px -16px rgba(0, 0, 0, 0.12); }
 html[data-theme="light"] .gh::before { display: none; }
 html[data-theme="light"] .gh:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), var(--glow); }
-html[data-theme="light"] .dot { background: color-mix(in srgb, var(--accent, #000) 78%, #000); box-shadow: none; }
-html[data-theme="light"] .subj:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 14px 34px -16px color-mix(in srgb, var(--accent) 60%, transparent); }
+/* Subject colours in light mode: keep the true, bright colour and let it tint the card softly (no darkening) */
+html[data-theme="light"] .dot { background: var(--accent, #000); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #000) 28%, transparent); }
+html[data-theme="light"] .subj {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 30%, #fff) 0%, color-mix(in srgb, var(--accent) 9%, #fff) 100%);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+html[data-theme="light"] .subj .cnt { color: var(--strong); }
+html[data-theme="light"] .subj::after { opacity: 1; height: 3px; }
+html[data-theme="light"] .subj:hover { border-color: color-mix(in srgb, var(--accent) 80%, transparent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 16px 36px -14px color-mix(in srgb, var(--accent) 75%, transparent); }
 html[data-theme="light"] .exam-days b, html[data-theme="light"] .hero h1 { text-shadow: none; }
 html[data-theme="light"] .btn-primary { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 html[data-theme="light"] .btn-primary:hover { box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.45); }
@@ -573,8 +580,9 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 .hist .h-pct { font-family: var(--font-display); font-weight: 650; font-size: 1.9rem; line-height: 1; letter-spacing: -0.04em; color: var(--accent); }
 .hist .h-marks { color: var(--muted); font-size: 0.86rem; font-variant-numeric: tabular-nums; }
 .hist .h-edit { height: 36px; padding: 0 14px; }
-:root[data-theme="light"] .hist .h-pct { color: color-mix(in srgb, var(--accent) 78%, #000); }
-:root[data-theme="light"] .hist .h-bar { background: color-mix(in srgb, var(--accent) 78%, #000); box-shadow: none; }
+:root[data-theme="light"] .hist .h-pct { color: var(--strong); }
+:root[data-theme="light"] .hist .h-bar { background: var(--accent); box-shadow: none; }
+:root[data-theme="light"] .hist::after { background: color-mix(in srgb, var(--accent) 35%, transparent); }
 .h-tools { display: inline-flex; gap: 8px; margin-left: auto; }
 .h-tools .btn { height: 36px; padding: 0 14px; }
 .block-head .sub:not(:empty) + .h-tools { margin-left: 0; }
