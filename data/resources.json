@@ -1367,7 +1367,7 @@
       "pages": 16,
       "size_kb": 473,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Chemistry 2025.",
       "tags": [
@@ -1383,7 +1383,9 @@
         "compound formed",
         "molecular formula",
         "organic compounds"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "chemistry-2023-specimen-paper",
