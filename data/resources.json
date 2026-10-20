@@ -1958,7 +1958,7 @@
       "pages": 19,
       "size_kb": 1782,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Biology 2026",
       "tags": [
@@ -1974,7 +1974,10 @@
         "hormone",
         "root hair",
         "semicircular canals"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 15
     },
     {
       "id": "biology-2027-specimen-paper",
