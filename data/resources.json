@@ -814,14 +814,28 @@
       "pages": 10,
       "size_kb": 174,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "Specimen paper of Geography 2024",
+      "description": "Specimen paper of Geography 2024. Covers monsoon, survey of india, map of india and natural vegetation.",
       "tags": [
         "specimen",
         "paper",
-        "geography"
-      ]
+        "geography",
+        "monsoon",
+        "survey of india",
+        "map of india",
+        "natural vegetation",
+        "map work",
+        "waste management",
+        "soil",
+        "india map sheet",
+        "map extract",
+        "label",
+        "ocean andaman sea",
+        "water"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "geography-2026-specimen-paper",
