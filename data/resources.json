@@ -811,11 +811,23 @@
       "added": "2026-10-13",
       "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of History & Civics 2026",
+      "description": "PYQ of History & Civics 2026. Covers president, united nations, prime minister and cabinet.",
       "tags": [
         "board",
         "paper",
-        "history"
+        "history",
+        "president",
+        "united nations",
+        "prime minister",
+        "cabinet",
+        "parliament",
+        "supreme court",
+        "second world war",
+        "partition",
+        "judiciary",
+        "high court",
+        "rajya sabha",
+        "muslim league"
       ],
       "minutes": 120,
       "marks": 80
