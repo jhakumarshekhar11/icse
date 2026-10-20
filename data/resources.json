@@ -2410,7 +2410,7 @@
       "pages": 10,
       "size_kb": 62,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies 2022",
       "tags": [
@@ -2426,7 +2426,9 @@
         "revenue receipts",
         "cost",
         "safety"
-      ]
+      ],
+      "minutes": 60,
+      "marks": 40
     },
     {
       "id": "commercialstudies-2022-semester-2-specimen-paper",
