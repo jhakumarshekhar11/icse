@@ -1050,14 +1050,16 @@
       "pages": 17,
       "size_kb": 997,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2025",
       "tags": [
         "board",
         "paper",
         "history"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "history-2026-specimen-paper",
