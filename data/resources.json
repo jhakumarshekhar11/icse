@@ -1370,7 +1370,7 @@
       "pages": 13,
       "size_kb": 293,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Physics 2024",
       "tags": [
@@ -1386,7 +1386,9 @@
         "water",
         "position",
         "temperature"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "physics-2026-specimen-paper",
