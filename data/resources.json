@@ -1678,7 +1678,7 @@
       "pages": 20,
       "size_kb": 875,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2026",
       "tags": [
@@ -1694,7 +1694,9 @@
         "dilute sulphuric",
         "application",
         "oxide"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "chemistry-2027-specimen-paper",
