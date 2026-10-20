@@ -2670,7 +2670,7 @@
       "pages": 11,
       "size_kb": 299,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2026",
       "tags": [
@@ -2686,7 +2686,9 @@
         "trial balance",
         "balance sheet",
         "trading account"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "economics-2026-previous-year-paper",
