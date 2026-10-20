@@ -106,14 +106,16 @@
       "pages": 19,
       "size_kb": 725,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper and Marking scheme of Computer Applications",
       "tags": [
         "specimen paper",
         "computer",
         "2025"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "icse-2024-specimen-861-cta",
