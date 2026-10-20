@@ -1543,7 +1543,7 @@
       "pages": 16,
       "size_kb": 784,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Biology 2026",
       "tags": [
@@ -1559,7 +1559,9 @@
         "colour blindness",
         "prostate gland",
         "ventricle lungs"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "biology-2023-previous-year-paper",
