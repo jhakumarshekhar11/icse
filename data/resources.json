@@ -1507,7 +1507,7 @@
       "pages": 11,
       "size_kb": 525,
       "added": "2026-10-13",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ for Biology 2024",
       "tags": [
@@ -1523,7 +1523,9 @@
         "leaves",
         "defect",
         "process"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "biology-2025-previous-year-paper",
