@@ -501,7 +501,8 @@
         "paper"
       ],
       "minutes": 120,
-      "marks": 80
+      "marks": 80,
+      "msFrom": 10
     },
     {
       "id": "englishlang-2026-specimen-paper",
