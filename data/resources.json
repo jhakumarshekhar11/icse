@@ -812,7 +812,8 @@
         "geography"
       ],
       "minutes": 120,
-      "marks": 80
+      "marks": 80,
+      "msFrom": 14
     },
     {
       "id": "geography-2024-specimen-paper",
