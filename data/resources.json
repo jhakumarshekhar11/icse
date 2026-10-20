@@ -2215,7 +2215,7 @@
       "pages": 11,
       "size_kb": 301,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2023",
       "tags": [
@@ -2231,7 +2231,9 @@
         "geometric progression",
         "arithmetic progression",
         "𝑥"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80
     },
     {
       "id": "maths-2025-specimen-paper",
