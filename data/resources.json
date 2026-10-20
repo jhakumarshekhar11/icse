@@ -264,7 +264,7 @@
       "pages": 11,
       "size_kb": 264,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of English Language 2026",
       "tags": [
@@ -273,7 +273,9 @@
         "english",
         "language",
         "previous year papers"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "englishlang-2024-specimen-paper",
