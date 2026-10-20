@@ -1070,7 +1070,7 @@
       "pages": 19,
       "size_kb": 1313,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2026",
       "tags": [
@@ -1086,7 +1086,10 @@
         "prime minister",
         "home rule",
         "cold war"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 14
     },
     {
       "id": "history-2027-specimen-paper",
