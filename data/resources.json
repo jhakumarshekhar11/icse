@@ -1312,7 +1312,7 @@
       "pages": 12,
       "size_kb": 391,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Physics 2023",
       "tags": [
@@ -1328,7 +1328,9 @@
         "water",
         "shown",
         "current"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "physics-2025-specimen-paper",
