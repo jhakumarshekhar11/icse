@@ -126,7 +126,7 @@
       "pages": 10,
       "size_kb": 89,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen of Computer Applications 2024",
       "tags": [
@@ -134,7 +134,9 @@
         "2024",
         "computer",
         "applications"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "computer-2023-specimen-paper",
