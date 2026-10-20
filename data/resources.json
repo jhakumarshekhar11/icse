@@ -2608,7 +2608,7 @@
       "pages": 7,
       "size_kb": 256,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2024",
       "tags": [
@@ -2624,7 +2624,9 @@
         "shares",
         "card",
         "stock"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "economics-2024-previous-year-paper",
