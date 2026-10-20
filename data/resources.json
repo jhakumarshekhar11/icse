@@ -2701,7 +2701,7 @@
       "pages": 12,
       "size_kb": 914,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2026",
       "tags": [
@@ -2717,7 +2717,9 @@
         "image",
         "production",
         "savings bank account"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "computer-2027-question-bank",
