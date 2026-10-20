@@ -3431,7 +3431,7 @@
       "pages": 7,
       "size_kb": 330,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Sample paper of Economic Applications 2027",
       "tags": [
@@ -3447,7 +3447,9 @@
         "credit control",
         "quantity demanded",
         "curve"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "englishlit-2027-note-5",
