@@ -1924,12 +1924,14 @@
       "pages": 12,
       "size_kb": 230,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of Hindi 2026",
+      "description": "PYQ of Hindi 2026.",
       "tags": [
         "sahitya sagar"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80
     },
     {
       "id": "hindi-2023-previous-year-paper",
