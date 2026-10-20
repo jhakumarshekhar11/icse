@@ -1929,7 +1929,7 @@
       "pages": 9,
       "size_kb": 157,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Biology 2024",
       "tags": [
@@ -1945,7 +1945,9 @@
         "renal",
         "girls",
         "plant"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "biology-2026-specimen-paper",
