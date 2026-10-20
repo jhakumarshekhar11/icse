@@ -482,7 +482,7 @@
       "pages": 12,
       "size_kb": 204,
       "added": "2026-10-11",
-      "updated": "2026-10-15",
+      "updated": "2026-10-20",
       "downloads": 0,
       "rev": 2,
       "description": "PYQ of English Literature 2026",
@@ -504,7 +504,9 @@
         "cassius",
         "trees fall",
         "short stories"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "englishlit-2025-previous-year-paper",
