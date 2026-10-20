@@ -2441,7 +2441,7 @@
       "pages": 6,
       "size_kb": 35,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies 2022",
       "tags": [
@@ -2457,7 +2457,9 @@
         "sales",
         "budget",
         "cash"
-      ]
+      ],
+      "minutes": 90,
+      "marks": 40
     },
     {
       "id": "economics-2023-specimen-paper",
