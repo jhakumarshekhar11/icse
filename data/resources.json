@@ -2384,7 +2384,7 @@
       "pages": 5,
       "size_kb": 28,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2022",
       "tags": [
@@ -2395,7 +2395,9 @@
         "type",
         "pair",
         "india"
-      ]
+      ],
+      "minutes": 90,
+      "marks": 50
     },
     {
       "id": "commercialstudies-2022-semester-1-specimen-paper",
