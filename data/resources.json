@@ -1707,7 +1707,7 @@
       "pages": 21,
       "size_kb": 602,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2027",
       "tags": [
@@ -1723,7 +1723,10 @@
         "oxide",
         "water",
         "understanding"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 17
     },
     {
       "id": "biology-2026-previous-year-paper",
