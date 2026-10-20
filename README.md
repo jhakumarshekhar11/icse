@@ -152,3 +152,10 @@ To see what the scan finds for every 2025+ specimen paper, paste this in the bro
 const list = (await (await fetch('/data/resources.json')).json()).resources.filter(r => r.type === 'Specimen Papers' && r.year >= 2025);
 for (const r of list) { const doc = await pdfjsLib.getDocument(r.file).promise; const i = await Exam.info(doc); console.log(r.id, '| time', i.minutes || 'not found', '| marks', i.marks || 'not found'); }
 ```
+
+### Timed exam settings in the admin
+
+- **Edit sheet, "Timed exam" box** (shown for paper types only): writing time, total marks and where the marking scheme starts ("Auto", "Starts on page N" or "This paper has none"). These are stored on the paper as `minutes`, `marks` and `msFrom`. Empty boxes are worked out by the site when a student starts the exam. **Read from the PDF** fills the boxes again from the file.
+- **Autoread on upload:** choosing a PDF reads its first two pages for the time allowed and maximum marks, and looks for the marking scheme page. The values land in the boxes (editable) and are saved with the paper. The scheme page is filled in only for papers the site hides it on (specimen papers from `exam.schemeFromYear`).
+- **Library:** a **Timer** badge marks every paper that gets the Timed exam button. Green means time and marks are both fixed on the paper, blue "auto" means the site works them out. Hover for the details. The status filter has a "Has a timer" choice.
+- **Subjects and types tab, "Timed exam defaults":** writing time and total marks per subject (and "All other subjects"). They are saved in `data/resources.json` as `examDefaults` and win over the numbers in `config.js`. A paper's own value still wins over both.

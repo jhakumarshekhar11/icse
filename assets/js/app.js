@@ -79,6 +79,7 @@
         });
       });
       state.res.forEach((r) => state.byId.set(r.id, r));
+      if (window.Exam && Exam.setDefaults) Exam.setDefaults(data.examDefaults);   // per-subject exam times and marks set in the admin
     } catch (e) {
       console.error(e);
       el.grid.innerHTML = `<div class="empty glass"><h3>Resources could not load</h3><p>Refresh the page. If it keeps happening, the resource list is missing or has a typo.</p></div>`;

@@ -38,6 +38,7 @@
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
   <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></symbol>
   <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 3h5M12 3v3M18.6 6.9l1.2-1.2"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></symbol>
@@ -104,7 +105,7 @@
           <select id="fYear" aria-label="Year"></select>
           <select id="fSort" aria-label="Sort by"><option value="updated">Recently updated</option><option value="upload">Upload order, oldest first</option><option value="site">Site order, by subject</option><option value="title">Title, A to Z</option><option value="year">Year, newest first</option><option value="downloads">Most downloaded</option></select>
           <select id="fStatus" aria-label="Status">
-            <option value="">All statuses</option><option value="live">Live</option><option value="draft">Draft</option>
+            <option value="">All statuses</option><option value="live">Live</option><option value="draft">Draft</option><option value="timer">Has a timer</option>
           </select>
         </div>
         <div class="bulk glass" id="bulkBar" hidden>
@@ -142,6 +143,12 @@
             <div class="tax-head"><h2>Types</h2><button class="btn" id="addType" type="button"><svg class="ic"><use href="#i-plus"/></svg>Add type</button></div>
             <div id="typeList" class="tax-list"></div>
           </div>
+        </div>
+        <div class="glass tax-card xd-card" id="xdCard">
+          <div class="tax-head"><h2>Timed exam defaults</h2></div>
+          <p class="hint xd-lead">Used when a paper does not state its own writing time or total marks, and the PDF cannot be read. Leave a box empty to keep the built-in value shown in grey. A paper's own value, set on its Edit sheet, always wins.</p>
+          <div id="xdList" class="xd-list"></div>
+          <div class="tax-save"><button class="btn btn-primary" id="xdSave" type="button" disabled>Save exam defaults</button><button class="btn" id="xdReset" type="button" disabled>Discard</button><span class="hint" id="xdHint"></span></div>
         </div>
         <div class="tax-save"><button class="btn btn-primary" id="taxSave" type="button" disabled>Save changes</button><button class="btn" id="taxReset" type="button" disabled>Discard</button><span class="hint" id="taxHint"></span></div>
       </section>
@@ -192,6 +199,7 @@
 
 <script src="/assets/vendor/pdf.min.js"></script>
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/exam.js"></script>
 <script src="/assets/js/admin-config.js"></script>
 <script src="/assets/js/admin-gh.js"></script>
 <script src="/assets/js/viewer.js"></script>

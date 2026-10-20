@@ -141,11 +141,39 @@
     return 80;
   }
 
+  // Same reading as scanPaperInfo + detectScheme, but from page text that is already extracted (the admin page uses this).
+  // pages = one string per page. Returns { minutes, marks, scheme }: 0 = not found; scheme = first page of the marking scheme.
+  function infoFromPages(pages, words) {
+    const norm = (t) => String(t || '').replace(/\s+/g, ' ').trim();
+    const out = { minutes: 0, marks: 0, scheme: 0 };
+    for (let i = 0; i < Math.min(2, pages.length) && !(out.minutes && out.marks); i++) {
+      const f = parsePaperInfo(norm(pages[i]).slice(0, 2500), i === 0);
+      if (!out.minutes) out.minutes = f.minutes;
+      if (!out.marks) out.marks = f.marks;
+    }
+    const re = schemeRegex(words);
+    for (let i = 1; i < pages.length; i++) { if (re.test(norm(pages[i]).slice(0, 500))) { out.scheme = i + 1; break; } }
+    return out;
+  }
+  // The config plus defaults saved from the admin page (data/resources.json "examDefaults": { minutes: {...}, marks: {...} })
+  function mergeConfig(base, remote) {
+    const b = base || {};
+    if (!remote || typeof remote !== 'object') return b;
+    const out = Object.assign({}, b);
+    if (remote.minutes && typeof remote.minutes === 'object') out.minutes = Object.assign({}, b.minutes, remote.minutes);
+    if (remote.marks && typeof remote.marks === 'object') {
+      const m = typeof b.maxMarks === 'number' ? { default: b.maxMarks } : Object.assign({}, b.maxMarks);
+      out.maxMarks = Object.assign(m, remote.marks);
+    }
+    return out;
+  }
+
   // A score is valid when 0 <= marks <= max and max > 0
   function validScore(marks, max) { return Number.isFinite(marks) && Number.isFinite(max) && max > 0 && marks >= 0 && marks <= max; }
 
-  const api = { MIN, validScore, parsePaperInfo, scanPaperInfo, defaultTotal, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
+  const api = { MIN, validScore, parsePaperInfo, scanPaperInfo, infoFromPages, mergeConfig, defaultTotal, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  try { root.ExamCore = api; } catch (e) { /* read-only global: fine */ }   // lets the admin page reuse the same reading logic
   if (typeof document === 'undefined') return;
 
   /* ================= interface ================= */
@@ -157,7 +185,8 @@
   if (!el.card || !el.chip) return;
 
   const KEY = 'icse:exam:active';
-  const CFG = () => (root.ICSE_CONFIG && root.ICSE_CONFIG.exam) || {};
+  let remote = null;   // default times and marks saved from the admin page (resources.json "examDefaults")
+  const CFG = () => mergeConfig((root.ICSE_CONFIG && root.ICSE_CONFIG.exam) || {}, remote);
   const baseTitle = document.title;
   const toast = (m) => { if (root.App && root.App.toast) root.App.toast(m); };
   const viewerRes = () => (root.Viewer && root.Viewer.current ? root.Viewer.current() : null);
@@ -735,6 +764,7 @@
     eligible: (r) => eligible(r, CFG()),
     hasScheme: (r) => hasScheme(r, CFG()),
     prompt, confirmLeave, lockPages, locksDownload,
+    setDefaults: (d) => { remote = d && typeof d === 'object' ? d : null; },
     history: () => hist.slice(), editAttempt, confirmClear, fmtAt, fmtMin,
     beep,   // console check for your sound file: Exam.beep()
     info: (doc) => scanPaperInfo(doc),   // console check: await Exam.info(await pdfjsLib.getDocument(url).promise)

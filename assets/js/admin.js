@@ -31,6 +31,13 @@
     selected: new Set(), tab: 'upload', last: Date.now(), tax: null, editor: null, urls: []
   };
   const subj = (id) => state.data.subjects.find((s) => s.id === id);
+  // Timed exam helpers. The reading logic is shared with the public site (exam.js exposes it as ExamCore).
+  const X = () => window.ExamCore || null;
+  const examCfg = () => (X() ? X().mergeConfig(CFG.exam || {}, state.data.examDefaults) : (CFG.exam || {}));
+  const isPaperType = (t) => !!t && Array.isArray((CFG.exam || {}).types) && CFG.exam.types.includes(t);
+  const MIN_OK = (n) => Number.isInteger(n) && n >= 20 && n <= 300;
+  const MARKS_OK = (n) => Number.isInteger(n) && n >= 10 && n <= 200;
+  const fmtMins = (m) => (m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + (m % 60) + 'm' : '') : m + 'm');
   const codeText = (s) => [s.code, s.altCode].filter(Boolean).join(', ');
   const dlTotal = (r) => (r.downloads || 0) + (state.live[r.id] || 0);
 
@@ -162,7 +169,7 @@
     b.title = ok ? 'Undo: ' + state.headMsg.replace(AC.commitPrefix, '').trim() : 'The latest commit was not made by this page';
   }
 
-  const ORDER = ['id', 'title', 'subject', 'class', 'type', 'year', 'file', 'pages', 'size_kb', 'added', 'updated', 'downloads', 'popular', 'draft', 'rev', 'description', 'tags'];
+  const ORDER = ['id', 'title', 'subject', 'class', 'type', 'year', 'file', 'pages', 'size_kb', 'added', 'updated', 'downloads', 'popular', 'draft', 'rev', 'description', 'tags', 'minutes', 'marks', 'msFrom'];
   function tidy(r) {
     const o = {};
     ORDER.forEach((k) => {
@@ -262,7 +269,9 @@
     const pages = doc.numPages;
     const text = await pagesText(doc);
     doc.destroy();
-    return { pages, text, size_kb: Math.max(1, Math.round(file.size / 1024)) };
+    let exam = null;
+    try { if (X()) exam = X().infoFromPages(text, (CFG.exam || {}).schemeWords); } catch { exam = null; }
+    return { pages, text, exam, size_kb: Math.max(1, Math.round(file.size / 1024)) };
   }
   // Reads the text of up to 60 pages. Scanned PDFs come back (almost) empty.
   async function pagesText(doc, max = 60) {
@@ -306,6 +315,17 @@
           <div class="field"><label>Popular badge</label><label class="switch"><input type="checkbox" data-f="popular"> Show the Popular badge</label></div>
           <div class="field full"><label>Link name (share link)</label><input type="text" data-f="id" maxlength="80" spellcheck="false" ${edit ? 'disabled' : ''}><div class="sub" data-el="idSub"></div></div>
           <div class="field full"><label>Description</label><textarea data-f="desc" maxlength="240" placeholder="One line about what is inside."></textarea><div class="sub" data-el="descSub"></div></div>
+          <div class="field full xbox" data-el="xbox" hidden>
+            <label>Timed exam</label>
+            <div class="xgrid">
+              <label class="xf"><span>Writing time (minutes)</span><input type="number" data-f="xmin" min="20" max="300" inputmode="numeric" placeholder="Auto"></label>
+              <label class="xf"><span>Total marks</span><input type="number" data-f="xmarks" min="10" max="200" inputmode="numeric" placeholder="Auto"></label>
+              <label class="xf"><span>Marking scheme</span><select data-f="xms"><option value="auto">Auto, the site finds it</option><option value="page">Starts on page</option><option value="none">This paper has none</option></select></label>
+              <label class="xf" data-el="xpg" hidden><span>Scheme starts on page</span><input type="number" data-f="xpage" min="2" inputmode="numeric" placeholder="e.g. 13"></label>
+            </div>
+            <div class="xrow"><button class="btn sm" type="button" data-el="xscan">${icon('timer')}Read from the PDF</button><span class="sub" data-el="xnote"></span></div>
+            <div class="sub">Filled boxes are fixed for students. Empty boxes are worked out when they start the exam: the site reads the PDF, then uses the subject defaults.</div>
+          </div>
           <div class="field full"><label>Tags</label><input type="text" data-f="tags" placeholder="board, paper, algebra"><div class="kw" data-el="kw"></div><div class="sub">Separate with commas. Tags make search find this resource.</div></div>
         </form>
         <ul class="issues" data-el="issues" aria-live="polite"></ul>
@@ -329,6 +349,8 @@
       if (res.type && !state.data.types.includes(res.type)) f.type.insertAdjacentHTML('beforeend', `<option value="${esc(res.type)}">${esc(res.type)} (missing)</option>`);
       f.title.value = res.title || ''; f.subject.value = res.subject || ''; f.type.value = res.type || '';
       f.year.value = res.year || ''; f.cls.value = res['class'] || 'X'; f.added.value = res.added || today();
+      f.xmin.value = res.minutes > 0 ? res.minutes : ''; f.xmarks.value = res.marks > 0 ? res.marks : '';
+      if (Number.isInteger(res.msFrom)) { f.xms.value = res.msFrom === 0 ? 'none' : 'page'; f.xpage.value = res.msFrom > 0 ? res.msFrom : ''; }
       f.popular.checked = !!res.popular; f.id.value = res.id; f.desc.value = res.description || ''; f.tags.value = (res.tags || []).join(', ');
       el('fname').textContent = res.file.split('/').pop();
       el('fmeta').textContent = [res.pages && plural(res.pages, 'page'), res.size_kb && fmtSize(res.size_kb)].filter(Boolean).join(', ');
@@ -337,8 +359,18 @@
     const val = () => ({
       title: f.title.value.trim(), subject: f.subject.value, type: f.type.value, year: parseInt(f.year.value, 10),
       cls: f.cls.value.trim() || 'X', added: f.added.value, popular: f.popular.checked, id: f.id.value.trim(),
-      description: f.desc.value.trim(), tags: f.tags.value.split(',').map((s) => s.trim()).filter(Boolean)
+      description: f.desc.value.trim(), tags: f.tags.value.split(',').map((s) => s.trim()).filter(Boolean),
+      xmin: parseInt(f.xmin.value, 10), xmarks: parseInt(f.xmarks.value, 10), xms: f.xms.value, xpage: parseInt(f.xpage.value, 10)
     });
+    // What gets stored on the resource. Anything left empty is simply not stored, so the site works it out itself.
+    const examFields = (v) => {
+      if (!isPaperType(v.type)) return { minutes: undefined, marks: undefined, msFrom: undefined };
+      return {
+        minutes: MIN_OK(v.xmin) ? v.xmin : undefined,
+        marks: MARKS_OK(v.xmarks) ? v.xmarks : undefined,
+        msFrom: v.xms === 'none' ? 0 : v.xms === 'page' && v.xpage >= 2 ? v.xpage : undefined
+      };
+    };
 
     function baseId(v) {
       const parts = [v.subject, isNaN(v.year) ? '' : v.year].filter(Boolean);
@@ -364,6 +396,15 @@
       if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(v.id)) errors.push('The link name can use lowercase letters, numbers and single hyphens.');
       else if (taken(v.id)) errors.push(`The link name “${v.id}” is already used by another resource.`);
       if (v.title && state.data.resources.some((r) => r.title.trim().toLowerCase() === v.title.toLowerCase() && (!edit || r.id !== res.id))) warnings.push('Another resource already has this title.');
+      if (isPaperType(v.type)) {
+        if (!isNaN(v.xmin) && !MIN_OK(v.xmin)) errors.push('Writing time must be a whole number of minutes from 20 to 300.');
+        if (!isNaN(v.xmarks) && !MARKS_OK(v.xmarks)) errors.push('Total marks must be a whole number from 10 to 200.');
+        if (v.xms === 'page') {
+          const last = st.pdf ? st.pdf.pages : res && res.pages;
+          if (!(v.xpage >= 2)) errors.push('Enter the page where the marking scheme starts (page 2 or later), or pick another option.');
+          else if (last && v.xpage > last) errors.push(`The marking scheme cannot start on page ${v.xpage}. The PDF has ${last} pages.`);
+        }
+      }
       if (!v.description) warnings.push('There is no description. Cards look better with one line.');
       if (!v.tags.length) warnings.push('There are no tags, so search will rely on the title only.');
       return { v, errors, warnings };
@@ -393,6 +434,13 @@
       else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(idv)) { sub.className = 'sub bad'; sub.textContent = 'Use lowercase letters, numbers and single hyphens.'; }
       else if (taken(idv)) { sub.className = 'sub bad'; sub.textContent = 'Already used. Pick another.'; }
       else { sub.className = 'sub ok'; sub.textContent = edit ? 'The link name cannot change, so shared links keep working.' : 'Available: ' + location.origin + CFG.basePath + '?file=' + idv; }
+      const paper = isPaperType(v.type), cfg = examCfg();
+      el('xbox').hidden = !paper;
+      el('xpg').hidden = f.xms.value !== 'page';
+      if (paper && X()) {
+        f.xmin.placeholder = 'Auto, default ' + X().defaultMinutes({ subject: v.subject }, cfg);
+        f.xmarks.placeholder = 'Auto, default ' + X().defaultTotal(v.subject, cfg);
+      }
       el('preview').innerHTML = previewHtml(val());
       // only show messages after the user has started typing or chose a file
       const list = touched ? errors.map((m) => `<li class="e">${icon('alert')}<span>${esc(m)}</span></li>`).concat(warnings.map((m) => `<li class="w">${icon('alert')}<span>${esc(m)}</span></li>`)) : [];
@@ -456,6 +504,37 @@
       } catch (e) { showError(e); }
     });
 
+    // ----- time allowed, total marks and marking scheme page, read from the PDF text -----
+    // Same reading as the public site, so what you see here is what a student's exam will use.
+    const xnote = el('xnote');
+    function applyExam(info, force) {
+      st.examInfo = info;
+      if (!info) { xnote.className = 'sub'; xnote.textContent = ''; return; }
+      const v = val(), cfg = examCfg();
+      const lockable = X() && X().hasScheme({ type: v.type, year: v.year }, cfg);
+      if (info.minutes && (force || !f.xmin.value)) f.xmin.value = info.minutes;
+      if (info.marks && (force || !f.xmarks.value)) f.xmarks.value = info.marks;
+      if (info.scheme && lockable && (force || f.xms.value === 'auto')) { f.xms.value = 'page'; f.xpage.value = info.scheme; }
+      const found = [], missing = [];
+      (info.minutes ? found : missing).push(info.minutes ? 'time ' + fmtMins(info.minutes) : 'time');
+      (info.marks ? found : missing).push(info.marks ? info.marks + ' marks' : 'marks');
+      if (info.scheme) found.push('marking scheme from page ' + info.scheme + (lockable ? '' : ' (not hidden: only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)'));
+      else if (lockable) missing.push('marking scheme');
+      xnote.className = 'sub ' + (missing.length ? 'bad' : 'ok');
+      xnote.textContent = (found.length ? 'Read from the PDF: ' + found.join(', ') + '. ' : '') + (missing.length ? 'Not found: ' + missing.join(', ') + '. Fill in by hand, or leave empty for the site to try.' : 'Check them against the paper.');
+      touched = true; render();
+    }
+    el('xscan').addEventListener('click', async () => {
+      try {
+        let pages = st.pdf && st.pdf.text;
+        if (!pages && !edit) { toast('Choose a PDF first.'); return; }
+        if (!pages) pages = await withBusy('Reading the PDF', async (step) => { step('Fetching it from GitHub'); return loadPdfText(await GH.fetchBlob(res.file)); });
+        applyExam(X() ? X().infoFromPages(pages, (CFG.exam || {}).schemeWords) : null, true);
+      } catch (e) { showError(e); }
+    });
+    f.xms.addEventListener('change', render);
+    ['type', 'year'].forEach((k) => f[k].addEventListener('change', () => { if (st.examInfo) applyExam(st.examInfo, false); }));
+
     el('form').addEventListener('submit', (e) => e.preventDefault());
 
     // file handling
@@ -494,6 +573,7 @@
         el('suggest').hidden = false;
         touched = true; render();
         analyze(info.text, false);
+        applyExam(info.exam, false);   // autoread: time, total marks and marking scheme page
       } catch (e) { showError(e); }
     }
     el('clear').addEventListener('click', () => {
@@ -502,6 +582,7 @@
       if (edit) { el('fname').textContent = res.file.split('/').pop(); el('fmeta').textContent = [res.pages && plural(res.pages, 'page'), res.size_kb && fmtSize(res.size_kb)].filter(Boolean).join(', '); el('clear').hidden = true; }
       else { el('info').hidden = true; el('suggest').hidden = true; }
       st.result = null; st.suggest = []; kwBox.innerHTML = '';
+      if (!edit) { st.examInfo = null; xnote.textContent = ''; }
       render();
     });
 
@@ -543,7 +624,7 @@
     }
 
     async function saveNew(v, asDraft) {
-      const r = tidy({ id: v.id, title: v.title, subject: v.subject, class: v.cls, type: v.type, year: v.year, file: `/${AC.pdfDir}/${v.id}.pdf`, pages: st.pdf.pages, size_kb: st.pdf.size_kb, added: v.added, updated: today(), downloads: 0, popular: v.popular, draft: asDraft, description: v.description, tags: v.tags });
+      const r = tidy(Object.assign({ id: v.id, title: v.title, subject: v.subject, class: v.cls, type: v.type, year: v.year, file: `/${AC.pdfDir}/${v.id}.pdf`, pages: st.pdf.pages, size_kb: st.pdf.size_kb, added: v.added, updated: today(), downloads: 0, popular: v.popular, draft: asDraft, description: v.description, tags: v.tags }, examFields(v)));
       const c = await withBusy(asDraft ? 'Saving draft' : 'Publishing', async (step) => {
         step('Reading the PDF');
         const b64 = await GH.fileToBase64(st.file);
@@ -571,7 +652,7 @@
           const i = data.resources.findIndex((x) => x.id === res.id);
           if (i < 0) throw new Error('This resource no longer exists. Reload the page.');
           const cur = data.resources[i];
-          data.resources[i] = Object.assign({}, cur, { title: v.title, subject: v.subject, type: v.type, year: isNaN(v.year) ? '' : v.year, class: v.cls, added: v.added, popular: v.popular, description: v.description, tags: v.tags, updated: today(), draft: makeDraft },
+          data.resources[i] = Object.assign({}, cur, { title: v.title, subject: v.subject, type: v.type, year: isNaN(v.year) ? '' : v.year, class: v.cls, added: v.added, popular: v.popular, description: v.description, tags: v.tags, updated: today(), draft: makeDraft }, examFields(v),
             st.file ? { file: newFile, pages: st.pdf.pages, size_kb: st.pdf.size_kb, rev } : {});
           return data;
         }, { upserts, deletes }, step);
@@ -601,6 +682,7 @@
       if (f.year && String(r.year) !== f.year) return false;
       if (f.status === 'draft' && !r.draft) return false;
       if (f.status === 'live' && r.draft) return false;
+      if (f.status === 'timer' && !isPaperType(r.type)) return false;
       const hay = [r.title, r.id, sub(r), r.type, r.year, (r.tags || []).join(' ')].join(' ').toLowerCase();
       return tokens.every((t) => hay.includes(t));
     });
@@ -631,6 +713,18 @@
     $('#fStatus').value = f.status;
   }
 
+  // Shows which resources get the "Timed exam" button, and what a student's exam will use for each setting
+  function timerBadge(r) {
+    if (!isPaperType(r.type)) return '';
+    const cfg = examCfg(), core = X();
+    const time = r.minutes > 0 ? `${r.minutes} min (set here)` : `read from the PDF, else ${core ? core.defaultMinutes(r, cfg) : 120} min`;
+    const marks = r.marks > 0 ? `${r.marks} (set here)` : `read from the PDF, else ${core ? core.defaultTotal(r.subject, cfg) : 80}`;
+    const lock = core && core.hasScheme(r, cfg);
+    const scheme = Number.isInteger(r.msFrom) ? (r.msFrom === 0 ? 'none, nothing hidden' : `from page ${r.msFrom} (set here)`) : lock ? 'found in the PDF when the exam starts' : 'not hidden (only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)';
+    const fixed = r.minutes > 0 && r.marks > 0;
+    return `<span class="badge xt${fixed ? ' fixed' : ''}" title="${esc(`Timed exam. Time: ${time}. Total marks: ${marks}. Marking scheme: ${scheme}.`)}">${icon('timer')}Timer${fixed ? '' : ' · auto'}</span>`;
+  }
+
   function renderLibrary() {
     const list = filtered();
     $('#libCount').textContent = state.data.resources.length;
@@ -645,7 +739,7 @@
         <td class="c-sub">${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>${codeText(s) ? `<span class="id">${esc(codeText(s))}</span>` : ''}` : '<span class="dim">Not set</span>'}</td>
         <td class="c-type dim">${esc(r.type || 'Not set')}</td>
         <td class="c-year dim">${esc(r.year || '–')}</td>
-        <td class="c-st"><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}</div></td>
+        <td class="c-st"><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}${timerBadge(r)}</div></td>
         <td class="c-dl dim" data-l="Downloads" title="${esc((r.downloads || 0) + ' starting + ' + (state.live[r.id] || 0) + ' counted')}">${fmtCount(dlTotal(r))}</td>
         <td class="c-up dim" data-l="Updated">${esc(fmtDate(r.updated || r.added))}</td>
         <td class="c-act">
@@ -843,6 +937,59 @@
     } catch (e) { showError(e); }
   });
 
+  /* ---------- timed exam defaults per subject ---------- */
+  // Saved in resources.json as "examDefaults": { minutes: { default, <subjectId> }, marks: { default, <subjectId> } }
+  function resetXd() {
+    const d = state.data.examDefaults || {};
+    state.xd = { minutes: Object.assign({}, d.minutes), marks: Object.assign({}, d.marks), dirty: false };
+    renderXd();
+  }
+  function renderXd() {
+    const box = $('#xdList'), t = state.xd; if (!box || !t) return;
+    const base = CFG.exam || {}, core = X();
+    const baseMin = (id) => (core ? core.defaultMinutes({ subject: id }, base) : 120);
+    const baseMarks = (id) => (core ? core.defaultTotal(id, base) : 80);
+    const rows = [{ id: 'default', name: 'All other subjects' }].concat(state.data.subjects.map((s) => ({ id: s.id, name: s.name, accent: s.accent })));
+    box.innerHTML = '<div class="xdrow head" aria-hidden="true"><span>Subject</span><span>Minutes</span><span>Total marks</span></div>' + rows.map((r) =>
+      `<div class="xdrow" data-id="${esc(r.id)}"${r.accent ? ` style="--accent:${esc(r.accent)}"` : ''}>
+        <span class="xdn">${r.accent ? '<i class="dot"></i>' : ''}${esc(r.name)}</span>
+        <label class="fld"><span>Minutes</span><input type="number" data-x="minutes" min="20" max="300" inputmode="numeric" value="${esc(t.minutes[r.id] || '')}" placeholder="${r.id === 'default' ? baseMin('') : baseMin(r.id)}" aria-label="Writing time in minutes for ${esc(r.name)}"></label>
+        <label class="fld"><span>Total marks</span><input type="number" data-x="marks" min="10" max="200" inputmode="numeric" value="${esc(t.marks[r.id] || '')}" placeholder="${r.id === 'default' ? baseMarks('') : baseMarks(r.id)}" aria-label="Total marks for ${esc(r.name)}"></label>
+      </div>`).join('');
+    $('#xdSave').disabled = !t.dirty; $('#xdReset').disabled = !t.dirty;
+    $('#xdHint').textContent = t.dirty ? 'Unsaved changes.' : 'Grey numbers are the built-in values from config.js.';
+  }
+  $('#xdList').addEventListener('input', (e) => {
+    const inp = e.target.closest('[data-x]'), row = e.target.closest('.xdrow'); if (!inp || !row) return;
+    const v = parseInt(inp.value, 10), k = inp.dataset.x, id = row.dataset.id;
+    if (inp.value.trim() === '' || isNaN(v)) delete state.xd[k][id]; else state.xd[k][id] = v;
+    inp.removeAttribute('aria-invalid');
+    state.xd.dirty = true; $('#xdSave').disabled = false; $('#xdReset').disabled = false; $('#xdHint').textContent = 'Unsaved changes.';
+  });
+  $('#xdReset').addEventListener('click', resetXd);
+  $('#xdSave').addEventListener('click', async () => {
+    const t = state.xd; let bad = null;
+    $$('#xdList [data-x]').forEach((inp) => {
+      const v = parseInt(inp.value, 10), empty = inp.value.trim() === '';
+      const ok = empty || (inp.dataset.x === 'minutes' ? MIN_OK(v) : MARKS_OK(v));
+      inp.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (!ok && !bad) bad = inp;
+    });
+    if (bad) { bad.focus(); return toast('Minutes must be 20 to 300, and total marks 10 to 200.'); }
+    const ids = new Set(['default'].concat(state.data.subjects.map((s) => s.id)));
+    const clean = (o) => Object.fromEntries(Object.entries(o).filter(([id, v]) => ids.has(id) && v > 0));
+    const minutes = clean(t.minutes), marks = clean(t.marks);
+    try {
+      await withBusy('Saving exam defaults', (step) => commitMutation('Update exam defaults', (data) => {
+        if (!Object.keys(minutes).length && !Object.keys(marks).length) delete data.examDefaults;
+        else { data.examDefaults = {}; if (Object.keys(minutes).length) data.examDefaults.minutes = minutes; if (Object.keys(marks).length) data.examDefaults.marks = marks; }
+        return data;
+      }, {}, step));
+      resetXd();
+      toast('Saved. Render will redeploy shortly.');
+    } catch (e) { showError(e); }
+  });
+
   /* ---------- activity ---------- */
   async function renderActivity() {
     const recent = [...state.data.resources].sort((a, b) => String(b.updated || b.added).localeCompare(String(a.updated || a.added))).slice(0, 8);
@@ -867,6 +1014,7 @@
     $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab; });
     if (tab === 'library') { renderFilters(); renderLibrary(); }
     if (tab === 'taxonomy' && (!state.tax || !state.tax.dirty)) resetTax();
+    if (tab === 'taxonomy' && (!state.xd || !state.xd.dirty)) resetXd();
     if (tab === 'activity') renderActivity();
   }
   $('.tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) show(b.dataset.tab); });
@@ -874,6 +1022,7 @@
   function renderAll() {
     renderFilters(); renderLibrary();
     if (state.tax && !state.tax.dirty) resetTax();
+    if (state.xd && !state.xd.dirty) resetXd();
     $('#libCount').textContent = state.data.resources.length;
   }
 
