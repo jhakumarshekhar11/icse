@@ -1399,7 +1399,7 @@
       "pages": 23,
       "size_kb": 1311,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Physics 2026",
       "tags": [
@@ -1415,7 +1415,10 @@
         "ohm s law",
         "nuclear fission",
         "energy"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 19
     },
     {
       "id": "physics-2027-specimen-paper",
