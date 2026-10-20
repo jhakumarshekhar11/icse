@@ -2546,7 +2546,7 @@
       "pages": 11,
       "size_kb": 470,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2025",
       "tags": [
@@ -2562,7 +2562,9 @@
         "bank",
         "identify",
         "profit"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "economics-2025-previous-year-paper",
