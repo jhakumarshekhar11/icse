@@ -897,14 +897,28 @@
       "pages": 8,
       "size_kb": 417,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of History & Civics 2024",
+      "description": "PYQ of History & Civics 2024. Covers president, parliament, high court and prime minister.",
       "tags": [
         "board",
         "paper",
-        "history"
-      ]
+        "history",
+        "president",
+        "parliament",
+        "high court",
+        "prime minister",
+        "rajya sabha",
+        "muslim league",
+        "supreme court",
+        "united nations",
+        "second world war",
+        "national movement",
+        "non aligned movement",
+        "council of ministers"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "history-2025-previous-year-paper",
