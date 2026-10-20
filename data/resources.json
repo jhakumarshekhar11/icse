@@ -2304,7 +2304,7 @@
       "pages": 24,
       "size_kb": 916,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2027. Covers tangents, gst, matrix and sphere.",
       "tags": [
@@ -2321,7 +2321,10 @@
         "arithmetic progression",
         "𝑥",
         "tangents"
-      ]
+      ],
+      "minutes": 180,
+      "marks": 80,
+      "msFrom": 15
     },
     {
       "id": "maths-2024-specimen-paper",
