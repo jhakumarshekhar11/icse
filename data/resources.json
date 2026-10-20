@@ -2353,7 +2353,7 @@
       "pages": 10,
       "size_kb": 175,
       "added": "2026-10-14",
-      "updated": "2026-10-15",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2022",
       "tags": [
@@ -2369,7 +2369,9 @@
         "monopolistically competitive",
         "capital",
         "increase"
-      ]
+      ],
+      "minutes": 60,
+      "marks": 50
     },
     {
       "id": "economics-2022-specimen-paper-2",
