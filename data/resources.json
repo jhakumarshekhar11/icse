@@ -192,7 +192,7 @@
       "pages": 11,
       "size_kb": 274,
       "added": "2026-10-11",
-      "updated": "2026-10-11",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Computer Applications 2024",
       "tags": [
@@ -201,7 +201,9 @@
         "computer",
         "applications",
         "previous year papers"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 100
     },
     {
       "id": "computer-2025-previous-year-paper",
