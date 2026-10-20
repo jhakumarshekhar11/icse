@@ -15,7 +15,7 @@
     const readingMs = Math.max(0, Math.round((o.readingMin || 0) * MIN / scale));
     const writingMs = Math.max(Math.round(MIN / scale), Math.round(o.writingMin * MIN / scale));
     return {
-      v: 1, id: res.id, title: res.title, subject: res.subject, year: res.year, type: res.type, startedAt: now, scale,
+      v: 1, id: res.id, title: res.title, subject: res.subject, year: res.year, type: res.type, total: o.total > 0 ? o.total : 0, startedAt: now, scale,
       readingMs, writingMs, readingEnd: now + readingMs, writingEnd: now + readingMs + writingMs
     };
   }
@@ -70,10 +70,55 @@
     return 0;
   }
 
+  // ----- reading "Time allowed" and "Maximum Marks" from the opening text of a paper -----
+  const WORD_NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+  const NUM = '(?:\\d+(?:\\.\\d+)?|one|two|three|four|five|six)';
+  const HALF = '(?:\\s*(?:and\\s+a\\s+half|and\\s+half|\\u00bd|1\\/2))?';
+  // "Time allowed: Two hours", "(Time: 2 hours 30 minutes)", "Time allowed: Two and a half hours", "Duration: 90 minutes"
+  const TIME_RE = new RegExp('(?:time(?:\\s+(?:allowed|given))?|duration)\\s*[:\\-\\u2013\\u2014=]?\\s*\\(?\\s*(' + NUM + ')(' + HALF + ')\\s*(hours?|hrs?|minutes?|mins?)\\b(?:\\s*(?:and\\s*)?(\\d{1,2})\\s*(?:minutes?|mins?)\\b)?', 'i');
+  // "Maximum Marks: 80", "(Max. Marks: 80)", "Full Marks - 80". "Total marks: 80" counts only on the first page.
+  const MARKS_RE = /(?:maximum|max\.?|full)\s*marks?\s*[:\-\u2013\u2014=]?\s*\(?\s*(\d{1,3})\b/i;
+  const TOTAL_RE = /\btotal\s*marks?\s*[:\-\u2013\u2014=]\s*\(?\s*(\d{1,3})\b/i;
+  // Returns {minutes, marks}; 0 means not found. Sanity limits keep stray numbers out.
+  function parsePaperInfo(text, allowTotal) {
+    const t = String(text || '').replace(/\s+/g, ' ');
+    const out = { minutes: 0, marks: 0 };
+    const tm = TIME_RE.exec(t);
+    if (tm) {
+      const w = tm[1].toLowerCase(), base = WORD_NUM[w] !== undefined ? WORD_NUM[w] : parseFloat(w);
+      const val = base + (tm[2] ? 0.5 : 0);
+      const min = tm[3][0].toLowerCase() === 'h' ? Math.round(val * 60 + (tm[4] ? parseInt(tm[4], 10) : 0)) : Math.round(val);
+      if (min >= 20 && min <= 300) out.minutes = min;
+    }
+    const mm = MARKS_RE.exec(t) || (allowTotal ? TOTAL_RE.exec(t) : null);
+    if (mm) { const n = parseInt(mm[1], 10); if (n >= 10 && n <= 200) out.marks = n; }
+    return out;
+  }
+  // Looks at the first two pages for the time allowed and the maximum marks. Returns null if stale() turns true mid-scan.
+  async function scanPaperInfo(doc, stale) {
+    const out = { minutes: 0, marks: 0 };
+    const last = Math.min(2, doc.numPages);
+    for (let i = 1; i <= last && !(out.minutes && out.marks); i++) {
+      const tc = await (await doc.getPage(i)).getTextContent();
+      if (stale && stale()) return null;
+      const f = parsePaperInfo(tc.items.map((x) => x.str).join(' ').replace(/\s+/g, ' ').trim().slice(0, 1500), i === 1);
+      if (!out.minutes) out.minutes = f.minutes;
+      if (!out.marks) out.marks = f.marks;
+    }
+    return out;
+  }
+  // Total marks to use when the paper does not state them: a number, or { default: 80, computer: 100 } by subject id
+  function defaultTotal(subject, c) {
+    const m = c && c.maxMarks;
+    if (typeof m === 'number' && m > 0) return m;
+    if (m && typeof m === 'object') return m[subject] || m.default || 80;
+    return 80;
+  }
+
   // A score is valid when 0 <= marks <= max and max > 0
   function validScore(marks, max) { return Number.isFinite(marks) && Number.isFinite(max) && max > 0 && marks >= 0 && marks <= max; }
 
-  const api = { MIN, validScore, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
+  const api = { MIN, validScore, parsePaperInfo, scanPaperInfo, defaultTotal, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -120,12 +165,9 @@
     try { localStorage.setItem(HKEY, JSON.stringify(hist)); } catch (e) { /* storage unavailable: kept for this visit only */ }
     root.dispatchEvent(new Event('exam:history'));
   }
-  const maxKey = (subject) => 'icse:exam:max:' + (subject || 'any');
-  function lastMax(subject) {
-    try { const v = Number(localStorage.getItem(maxKey(subject))); if (v > 0) return v; } catch (e) { /* ignore */ }
-    return CFG().maxMarks || 80;
-  }
-  function rememberMax(subject, max) { try { localStorage.setItem(maxKey(subject), String(max)); } catch (e) { /* ignore */ } }
+  // The total marks of an attempt are fixed: read from the paper (or set in resources.json), else the subject default.
+  // Attempts saved before this existed fall back to the total their score was entered against.
+  function attemptTotal(a) { return a.total > 0 ? a.total : a.max > 0 ? a.max : defaultTotal(a.subject, CFG()); }
   const findAttempt = (id) => hist.find((a) => a.id === id);
   const fmtAt = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
   const fmtMin = (ms) => {
@@ -148,19 +190,21 @@
     const now = at || Date.now();
     const a = {
       id: now + '-' + Math.random().toString(36).slice(2, 6), sid: s.startedAt, rid: s.id, title: s.title, subject: s.subject || '', year: s.year, type: s.type,
-      at: now, usedMs: Math.round(usedMs), allowedMs: s.writingMs, reason, score: null, max: null
+      at: now, usedMs: Math.round(usedMs), allowedMs: s.writingMs, reason, score: null, max: null,
+      total: s.total > 0 ? s.total : defaultTotal(s.subject, CFG())
     };
     hist.unshift(a);
     if (hist.length > HCAP) hist.length = HCAP;
     saveHist();
     return a;
   }
-  // marks = null clears the score. An invalid pair is ignored.
-  function setScore(id, marks, max) {
+  // marks = null clears the score. Marks outside 0..total are ignored. The total itself cannot be changed.
+  function setScore(id, marks) {
     const a = findAttempt(id);
     if (!a) return;
+    const total = attemptTotal(a);
     if (marks == null) { a.score = null; a.max = null; }
-    else if (validScore(marks, max)) { a.score = marks; a.max = max; rememberMax(a.subject, max); }
+    else if (validScore(marks, total)) { a.score = marks; a.max = total; }
     else return;
     saveHist();
   }
@@ -265,9 +309,12 @@
     if (!res || !eligible(res, c)) return;
     if (S) { toast(S.id === res.id ? 'Your exam is already running' : 'Finish your current exam first'); return; }
     let writing = defaultMinutes(res, c);
+    let total = defaultTotal(res.subject, c);
+    let touchedTime = false;   // once the student changes the time, the paper's value no longer replaces it
     const rm = c.readingMinutes || 0;
     let reading = rm > 0;
     const det = findScheme(res);   // scans the PDF while the dialog is open
+    const meta = findMeta(res);    // reads the time allowed and maximum marks from the same file
     let mine = 0;
     openDialog((card) => {
       const input = h('input', { id: 'xMin', type: 'number', min: 5, max: 360, step: 5, value: writing, inputmode: 'numeric', 'aria-label': 'Writing time in minutes' });
@@ -277,9 +324,11 @@
           (reading ? ' (' + fmtDur(rm) + ' reading + ' + fmtDur(writing) + ' writing)' : '');
       };
       const set = (v) => { writing = Math.min(360, Math.max(5, Math.round(v) || writing)); input.value = writing; upd(); };
-      input.addEventListener('change', () => set(parseInt(input.value, 10)));
-      input.addEventListener('input', () => { const v = parseInt(input.value, 10); if (v >= 5 && v <= 360) { writing = v; upd(); } });
+      input.addEventListener('change', () => { touchedTime = true; set(parseInt(input.value, 10)); });
+      input.addEventListener('input', () => { touchedTime = true; const v = parseInt(input.value, 10); if (v >= 5 && v <= 360) { writing = v; upd(); } });
       upd();
+      const totalEl = h('span', { class: 'x-total', id: 'xTotalMarks' }, String(total));
+      const metaNote = h('p', { class: 'x-note', id: 'xMetaNote' }, 'Reading the time allowed and total marks from the paper\u2026');
 
       card.append(
         h('h3', { id: 'xTitle' }, 'Timed exam'),
@@ -287,10 +336,11 @@
         h('div', { class: 'x-row' },
           h('label', { for: 'xMin' }, 'Writing time'),
           h('span', { class: 'x-step' },
-            h('button', { type: 'button', class: 'ib', 'aria-label': 'Less time', onclick: () => set(writing - 5) }, '\u2212'),
+            h('button', { type: 'button', class: 'ib', 'aria-label': 'Less time', onclick: () => { touchedTime = true; set(writing - 5); } }, '\u2212'),
             input,
-            h('button', { type: 'button', class: 'ib', 'aria-label': 'More time', onclick: () => set(writing + 5) }, '+'),
-            h('span', { class: 'x-unit' }, 'min'))));
+            h('button', { type: 'button', class: 'ib', 'aria-label': 'More time', onclick: () => { touchedTime = true; set(writing + 5); } }, '+'),
+            h('span', { class: 'x-unit' }, 'min'))),
+        h('div', { class: 'x-row' }, h('span', { class: 'x-lbl' }, 'Total marks'), totalEl));
       if (rm > 0) {
         const chk = h('input', { type: 'checkbox', id: 'xRead' });
         chk.checked = true;
@@ -303,8 +353,18 @@
         bchk.addEventListener('change', () => setBeepPref(bchk.checked));
         card.append(h('div', { class: 'x-row' }, h('label', { class: 'x-check', for: 'xBeep' }, bchk, 'Beep at the start, when writing begins and at the end')));
       }
-      card.append(sum);
-      const note = h('p', { class: 'x-note' });
+      card.append(sum, metaNote);
+      meta.then((m) => {
+        if (mine !== dlgToken || el.dlg.hidden) return;
+        if (m.minutes && !touchedTime) set(m.minutes);
+        if (m.marks) { total = m.marks; totalEl.textContent = String(total); }
+        const t = m.minutes ? 'Time allowed comes from the paper.' : 'Time allowed uses the default for this subject.';
+        const k = m.marks ? 'Total marks come from the paper.' : 'Total marks use the default for this subject.';
+        metaNote.textContent = m.minutes && m.marks ? 'Time allowed and total marks come from the paper.'
+          : !m.minutes && !m.marks ? 'Time allowed and total marks use the defaults for this subject.'
+          : m.minutes ? t + ' ' + k : k + ' ' + t;
+      });
+      const note = h('p', { class: 'x-note', id: 'xSchemeNote' });
       if (hasScheme(res, c) && !Number.isInteger(res.msFrom)) note.textContent = 'Checking the file for a marking scheme\u2026';
       card.append(note);
       det.then((d) => {
@@ -316,9 +376,10 @@
       });
       const startBtn = primary('Start exam', async () => {
         startBtn.disabled = true; startBtn.textContent = 'Preparing\u2026';
-        const d = await det;
+        const [d, m] = await Promise.all([det, meta]);
         if (mine !== dlgToken || el.dlg.hidden) return;
-        begin(res, writing, reading ? rm : 0, d.from >= 2 ? d.from : 0);
+        if (m.minutes && !touchedTime) writing = m.minutes;
+        begin(res, writing, reading ? rm : 0, d.from >= 2 ? d.from : 0, m.marks || total);
       }, { 'data-first': true });
       card.append(
         h('p', { class: 'x-note' }, 'The timer keeps running if you close the paper or this page. You can come back and resume.'),
@@ -355,6 +416,34 @@
     const from = await Promise.race([run, new Promise((r) => setTimeout(() => r(FAIL), 8000))]);
     return from === FAIL ? { from: 0, expected: true, failed: true } : { from, expected: true };
   }
+  /* ---------- time allowed and total marks of a paper ---------- */
+  const metaKey = (id) => 'icse:meta:' + id;
+  function readMeta(id, pages) {
+    try { const v = JSON.parse(localStorage.getItem(metaKey(id))); return v && v.v === 1 && v.n === pages ? { minutes: v.t || 0, marks: v.m || 0 } : null; } catch (e) { return null; }
+  }
+  function writeMeta(id, f, pages) { try { localStorage.setItem(metaKey(id), JSON.stringify({ v: 1, n: pages, t: f.minutes, m: f.marks })); } catch (e) { /* ignore */ } }
+
+  // {minutes, marks}: 0 = not known, so the caller falls back to its defaults.
+  // Order: set by hand in resources.json ("minutes", "marks"), then read from the PDF, then nothing.
+  async function findMeta(res) {
+    const V = root.Viewer;
+    const out = { minutes: res.minutes > 0 ? res.minutes : 0, marks: res.marks > 0 ? res.marks : 0 };
+    if (out.minutes && out.marks) return out;
+    const run = (async () => {
+      if (!(V && V.ready && await V.ready(res.id))) return null;
+      const doc = V.pdf();
+      if (!doc) return null;
+      const cached = readMeta(res.id, doc.numPages);
+      if (cached) return cached;
+      const f = await scanPaperInfo(doc, () => { const cur = viewerRes(); return !cur || cur.id !== res.id; });
+      if (f && (f.minutes || f.marks)) writeMeta(res.id, f, doc.numPages);
+      return f;
+    })().catch(() => null);
+    const f = await Promise.race([run, new Promise((r) => setTimeout(() => r(null), 8000))]);
+    if (f) { if (!out.minutes) out.minutes = f.minutes; if (!out.marks) out.marks = f.marks; }
+    return out;
+  }
+
   // Pages an exam in progress allows on this paper (0 = all of them)
   const lockPages = (res) => (S && res && S.id === res.id && S.lockFrom >= 2 ? S.lockFrom - 1 : 0);
   const locksDownload = (res) => !!(S && res && S.id === res.id && S.lockFrom >= 2);
@@ -373,8 +462,8 @@
     if (sig !== lockSig) { lockSig = sig; root.dispatchEvent(new Event('exam:change')); }
   }
 
-  function begin(res, writingMin, readingMin, lockFrom) {
-    S = makeSession(res, { writingMin, readingMin, scale: debugScale() }, Date.now());
+  function begin(res, writingMin, readingMin, lockFrom, total) {
+    S = makeSession(res, { writingMin, readingMin, total, scale: debugScale() }, Date.now());
     S.lockFrom = lockFrom >= 2 ? lockFrom : 0;   // first page of the marking scheme, hidden until the exam ends
     away = null; last = 0;
     save(); closeDialog(); refresh();
@@ -460,37 +549,33 @@
     });
   }
 
-  // Marks scored / out of. Saves as you type once the pair is valid, and says so. A blank marks box clears the score.
+  // Marks scored out of a fixed total. Saves as you type once the marks are valid, and says so. A blank box clears the score.
   function scoreRow(a) {
-    const marks = h('input', { type: 'number', min: 0, step: 'any', inputmode: 'decimal', id: 'xMarks', 'aria-label': 'Marks scored', placeholder: '--' });
-    const max = h('input', { type: 'number', min: 1, step: 'any', inputmode: 'decimal', id: 'xMax', 'aria-label': 'Out of' });
+    const total = attemptTotal(a);
+    const marks = h('input', { type: 'number', min: 0, max: total, step: 'any', inputmode: 'decimal', id: 'xMarks', 'aria-label': 'Marks scored out of ' + total, placeholder: '--' });
     const msg = h('span', { class: 'x-msg', role: 'status', 'aria-live': 'polite' });
     let touched = false;   // true once this dialog has saved something
     if (a.score != null) marks.value = a.score;
-    max.value = a.max || lastMax(a.subject);
     const check = () => {
-      const m = marks.value.trim() === '' ? null : Number(marks.value), x = Number(max.value);
-      const bad = m != null && !validScore(m, x);
+      const m = marks.value.trim() === '' ? null : Number(marks.value);
+      const bad = m != null && !validScore(m, total);
       marks.setAttribute('aria-invalid', bad ? 'true' : 'false');
-      max.setAttribute('aria-invalid', bad ? 'true' : 'false');
       if (bad) {
         msg.className = 'x-msg bad';
-        msg.textContent = m > x && x > 0
-          ? 'Marks can\u2019t be more than ' + x + '. Change \u201cout of\u201d if the paper has more marks.'
-          : 'Enter marks from 0 up to the total.';
+        msg.textContent = m > total ? 'Marks can\u2019t be more than ' + total + '.' : 'Enter marks from 0 up to ' + total + '.';
       } else {
-        const changed = m == null ? a.score != null : (a.score !== m || a.max !== x);
-        if (changed) { setScore(a.id, m, x); touched = true; }
+        const changed = m == null ? a.score != null : a.score !== m;
+        if (changed) { setScore(a.id, m); touched = true; }
         msg.className = 'x-msg ok';
         msg.textContent = m == null ? '' : 'Saved to History';
       }
-      return { ok: !bad, m, x, touched };
+      return { ok: !bad, m, x: total, touched };
     };
     marks.addEventListener('input', check);
-    max.addEventListener('input', check);
     pending = check;
     return h('div', { class: 'x-scorebox' },
-      h('div', { class: 'x-score' }, h('label', { for: 'xMarks' }, 'Your score'), h('span', { class: 'x-in' }, marks, ' / ', max)),
+      h('div', { class: 'x-score' }, h('label', { for: 'xMarks' }, 'Your score'),
+        h('span', { class: 'x-in' }, marks, ' / ', h('span', { class: 'x-total', id: 'xTotal' }, String(total)))),
       msg);
   }
 
@@ -626,6 +711,7 @@
     prompt, confirmLeave, lockPages, locksDownload,
     history: () => hist.slice(), editAttempt, confirmClear, fmtAt, fmtMin,
     beep,   // console check for your sound file: Exam.beep()
+    info: (doc) => scanPaperInfo(doc),   // console check: await Exam.info(await pdfjsLib.getDocument(url).promise)
     detect: (doc) => detectScheme(doc, CFG().schemeWords),   // console check: Exam.detect(await pdfjsLib.getDocument(url).promise)
     dialogOpen: () => !el.dlg.hidden,
     active: () => S

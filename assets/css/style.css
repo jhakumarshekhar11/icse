@@ -610,3 +610,8 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 .x-msg.bad { color: #ff7b7b; }
 :root[data-theme="light"] .x-msg.ok { color: #15803d; }
 :root[data-theme="light"] .x-msg.bad { color: #c62828; }
+
+/* fixed total marks */
+.x-total { font-weight: 600; color: var(--strong); font-variant-numeric: tabular-nums; }
+.x-in .x-total { min-width: 2.2em; text-align: left; }
+.x-lbl { font-weight: 550; }

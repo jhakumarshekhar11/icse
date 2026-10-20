@@ -41,7 +41,7 @@ window.ICSE_CONFIG = {
     readingMinutes: 15,                      // optional reading time before writing starts (0 to remove)
     schemeFromYear: 2025,                    // specimen papers from this year have the marking scheme at the end of the PDF
     schemeWords: ["marking scheme", "answer key", "marking guidelines"],  // a page whose opening text has one of these starts the scheme
-    maxMarks: 80,                            // default "out of" in the score box (the last value used for a subject is remembered)
+    maxMarks: 80,                            // total marks to use when a paper does not state them: a number, or { default: 80, computer: 100 } by subject id. Students cannot change the total
     keepAwake: true,                         // keep the phone screen on while an exam runs
     beep: { src: "/assets/beep.mp3", default: true }   // played at the start, when writing begins and when time is up. Put the sound file at assets/beep.mp3
   },
