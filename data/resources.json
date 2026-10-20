@@ -3364,7 +3364,7 @@
     },
     {
       "id": "physics-2027-sample-paper",
-      "title": "ICSE 2027 Physics",
+      "title": "ICSE 2027 Physics Sample Paper",
       "subject": "physics",
       "class": "X",
       "type": "Sample Papers",
@@ -3373,7 +3373,7 @@
       "pages": 7,
       "size_kb": 35,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Sample paper of Physics 2027. Covers lens, sound, pulley and echo.",
       "tags": [
@@ -3389,7 +3389,9 @@
         "point",
         "tuning fork",
         "tackle system"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "commercialstudies-2026-sample-paper",
