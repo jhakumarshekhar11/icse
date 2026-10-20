@@ -1274,7 +1274,7 @@
       "pages": 16,
       "size_kb": 523,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of Chemistry 2026",
       "tags": [
@@ -1290,7 +1290,9 @@
         "element",
         "process",
         "solution"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "chemistry-2023-previous-year-paper",
