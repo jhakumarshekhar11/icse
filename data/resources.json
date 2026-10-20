@@ -730,15 +730,29 @@
       "pages": 13,
       "size_kb": 683,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of Geography 2025",
+      "description": "PYQ of Geography 2025. Covers transport, irrigation, map of india and survey of india.",
       "tags": [
         "board",
         "geography",
         "paper",
-        "PYQ"
-      ]
+        "PYQ",
+        "transport",
+        "irrigation",
+        "map of india",
+        "survey of india",
+        "monsoon",
+        "natural vegetation",
+        "map work",
+        "soil",
+        "india map sheet",
+        "non conventional",
+        "energy",
+        "iron ore"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "geography-2023-specimen-paper",
