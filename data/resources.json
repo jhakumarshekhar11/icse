@@ -809,14 +809,16 @@
       "pages": 12,
       "size_kb": 397,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "PYQ of History & Civics 2026",
       "tags": [
         "board",
         "paper",
         "history"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "history-2024-specimen-paper",
