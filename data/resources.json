@@ -794,14 +794,16 @@
       "pages": 19,
       "size_kb": 1393,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Geography 2025",
       "tags": [
         "specimen",
         "paper",
         "geography"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "geography-2024-specimen-paper",
