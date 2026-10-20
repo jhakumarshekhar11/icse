@@ -854,14 +854,23 @@
       "pages": 24,
       "size_kb": 1242,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "Specimen paper of Geography 2027",
+      "description": "Specimen paper of Geography 2027. Covers monsoon, transport, irrigation and coal.",
       "tags": [
         "specimen",
         "paper",
-        "geography"
-      ]
+        "geography",
+        "soil",
+        "monsoon",
+        "transport",
+        "irrigation",
+        "india",
+        "understanding"
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 16
     },
     {
       "id": "history-2026-previous-year-paper",
