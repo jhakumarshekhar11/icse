@@ -695,15 +695,29 @@
       "pages": 11,
       "size_kb": 582,
       "added": "2026-10-13",
-      "updated": "2026-10-13",
+      "updated": "2026-10-20",
       "downloads": 0,
-      "description": "PYQ of Geography 2024",
+      "description": "PYQ of Geography 2024. Covers irrigation, monsoon, transport and agriculture.",
       "tags": [
         "board",
         "geography",
         "paper",
-        "PYQ"
-      ]
+        "PYQ",
+        "irrigation",
+        "monsoon",
+        "transport",
+        "agriculture",
+        "map of india",
+        "survey of india",
+        "map work",
+        "waste management",
+        "natural vegetation",
+        "grid square",
+        "soil",
+        "india map sheet"
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "geography-2025-previous-year-paper",
