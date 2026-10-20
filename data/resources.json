@@ -2503,7 +2503,7 @@
       "pages": 6,
       "size_kb": 172,
       "added": "2026-10-14",
-      "updated": "2026-10-14",
+      "updated": "2026-10-20",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies.",
       "tags": [
@@ -2519,7 +2519,9 @@
         "board pattern",
         "new pattern",
         "competency based"
-      ]
+      ],
+      "minutes": 120,
+      "marks": 80
     },
     {
       "id": "commercialstudies-2024-specimen-paper",
