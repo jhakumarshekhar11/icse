@@ -2784,7 +2784,7 @@
       "pages": 20,
       "size_kb": 1083,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-10-21",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2025",
       "tags": [
@@ -2802,7 +2802,8 @@
         "competency based"
       ],
       "minutes": 120,
-      "marks": 100
+      "marks": 100,
+      "msFrom": 13
     },
     {
       "id": "commercialstudies-2020-previous-year-paper",
