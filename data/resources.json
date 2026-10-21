@@ -2752,7 +2752,7 @@
       "pages": 15,
       "size_kb": 928,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-10-21",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies",
       "tags": [
@@ -2770,7 +2770,8 @@
         "competency based"
       ],
       "minutes": 120,
-      "marks": 80
+      "marks": 80,
+      "msFrom": 9
     },
     {
       "id": "economics-2025-specimen-paper",
