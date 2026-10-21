@@ -30,7 +30,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 
 ## Features
 
-| For students | For you |
+| For students | For Me |
 | --- | --- |
 | **Smart search.** Type "ICSE Computer paper 2025" and the right filters switch on by themselves. | **Hidden admin** at `/admin`: upload, edit, drafts, bulk edit, undo, JSON backup. |
 | **Multi-select filters** for class, subject, type and year. Pick everything and it resets to All. | **Autoread on upload.** Subject, type and year from the file name, keywords, a description, time allowed, total marks and marking scheme page from the PDF. |
@@ -82,10 +82,10 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 ## How it fits together
 
 ```text
- You (admin page) ──token──▶ GitHub repo, branch "website" ──auto deploy──▶ Render
+ I (admin page) ──token──▶ GitHub repo, branch "website" ──auto deploy──▶ Render
                                    │                                          │
                          data/resources.json + pdfs/                 node scripts/build-seo.js
-                                                                              │
+                                                                               │
  Student's browser ◀── static files, landing pages, sitemap.xml ◀─────────────┘
 ```
 
@@ -98,7 +98,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 
 ## Deploying on Render
 
-The service is a **Static Site**. `render.yaml` holds the same settings if you prefer a Blueprint.
+The service is a **Static Site**.
 
 | Setting | Value |
 | --- | --- |
@@ -178,7 +178,7 @@ Only accounts listed in `allowedUsers` (in `admin-config.js`) are accepted. The 
 
 ### What it does
 
-| Tab | What you can do |
+| Tab | What I can do |
 | --- | --- |
 | **Upload** | Drop a PDF. Subject, type, year and title are guessed from the file name. Keywords, a one-line description, time allowed, total marks and the marking scheme page are read from the PDF. A live preview shows the card. **Publish** or **Save as draft**. |
 | **Library** | Search, filter by subject, type, year or status, sort by update, upload order or site order. Preview in the reader, edit, delete, or select several for bulk edit and delete. A **Timer** badge marks papers that get a timed exam. |
