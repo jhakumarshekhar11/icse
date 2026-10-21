@@ -1914,7 +1914,7 @@
       "pages": 17,
       "size_kb": 677,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-10-21",
       "downloads": 0,
       "description": "Specimen paper of Biology 2025",
       "tags": [
@@ -1932,7 +1932,8 @@
         "fruits"
       ],
       "minutes": 120,
-      "marks": 80
+      "marks": 80,
+      "msFrom": 13
     },
     {
       "id": "biology-2024-specimen-paper",
