@@ -40,6 +40,7 @@ window.ICSE_CONFIG = {
     minutes: { default: 120, maths: 180, hindi: 180 },   // writing time per subject id. Check the "Time allowed" printed on each paper
     readingMinutes: 15,                      // optional reading time before writing starts (0 to remove)
     schemeFromYear: 2025,                    // specimen papers from this year have the marking scheme at the end of the PDF
+    noSchemeTypes: ["Previous Year Papers"],  // these types never have a marking scheme: nothing is scanned or hidden for them, on the site and in the admin
     schemeWords: ["marking scheme", "answer key", "marking guidelines"],  // a page whose opening text has one of these starts the scheme
     maxMarks: 80,                            // total marks to use when a paper does not state them: a number, or { default: 80, computer: 100 } by subject id. Students cannot change the total
     keepAwake: true,                         // keep the phone screen on while an exam runs

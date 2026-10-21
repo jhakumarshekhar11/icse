@@ -35,6 +35,8 @@
   const X = () => window.ExamCore || null;
   const examCfg = () => (X() ? X().mergeConfig(CFG.exam || {}, state.data.examDefaults) : (CFG.exam || {}));
   const isPaperType = (t) => !!t && Array.isArray((CFG.exam || {}).types) && CFG.exam.types.includes(t);
+  // Types that never have a marking scheme (config exam.noSchemeTypes, default: Previous Year Papers)
+  const noSchemeType = (t) => !!t && !!X() && X().noScheme({ type: t }, examCfg());
   const MIN_OK = (n) => Number.isInteger(n) && n >= 20 && n <= 300;
   const MARKS_OK = (n) => Number.isInteger(n) && n >= 10 && n <= 200;
   const fmtMins = (m) => (m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + (m % 60) + 'm' : '') : m + 'm');
@@ -323,6 +325,7 @@
               <label class="xf"><span>Marking scheme</span><select data-f="xms"><option value="auto">Auto, the site finds it</option><option value="page">Starts on page</option><option value="none">This paper has none</option></select></label>
               <label class="xf" data-el="xpg" hidden><span>Scheme starts on page</span><input type="number" data-f="xpage" min="2" inputmode="numeric" placeholder="e.g. 13"></label>
             </div>
+            <div class="sub" data-el="xnos" hidden></div>
             <div class="xrow"><button class="btn sm" type="button" data-el="xscan">${icon('timer')}Read from the PDF</button><span class="sub" data-el="xnote"></span></div>
             <div class="sub">Filled boxes are fixed for students. Empty boxes are worked out when they start the exam: the site reads the PDF, then uses the subject defaults.</div>
           </div>
@@ -368,7 +371,7 @@
       return {
         minutes: MIN_OK(v.xmin) ? v.xmin : undefined,
         marks: MARKS_OK(v.xmarks) ? v.xmarks : undefined,
-        msFrom: v.xms === 'none' ? 0 : v.xms === 'page' && v.xpage >= 2 ? v.xpage : undefined
+        msFrom: noSchemeType(v.type) ? undefined : v.xms === 'none' ? 0 : v.xms === 'page' && v.xpage >= 2 ? v.xpage : undefined
       };
     };
 
@@ -399,7 +402,7 @@
       if (isPaperType(v.type)) {
         if (!isNaN(v.xmin) && !MIN_OK(v.xmin)) errors.push('Writing time must be a whole number of minutes from 20 to 300.');
         if (!isNaN(v.xmarks) && !MARKS_OK(v.xmarks)) errors.push('Total marks must be a whole number from 10 to 200.');
-        if (v.xms === 'page') {
+        if (v.xms === 'page' && !noSchemeType(v.type)) {
           const last = st.pdf ? st.pdf.pages : res && res.pages;
           if (!(v.xpage >= 2)) errors.push('Enter the page where the marking scheme starts (page 2 or later), or pick another option.');
           else if (last && v.xpage > last) errors.push(`The marking scheme cannot start on page ${v.xpage}. The PDF has ${last} pages.`);
@@ -436,7 +439,11 @@
       else { sub.className = 'sub ok'; sub.textContent = edit ? 'The link name cannot change, so shared links keep working.' : 'Available: ' + location.origin + CFG.basePath + '?file=' + idv; }
       const paper = isPaperType(v.type), cfg = examCfg();
       el('xbox').hidden = !paper;
-      el('xpg').hidden = f.xms.value !== 'page';
+      const nos = noSchemeType(v.type);
+      el('xpg').hidden = nos || f.xms.value !== 'page';
+      f.xms.disabled = nos;
+      el('xnos').hidden = !nos;
+      if (nos) el('xnos').textContent = v.type + ' have no marking scheme, so nothing is hidden during the exam. The marking scheme setting does not apply.';
       if (paper && X()) {
         f.xmin.placeholder = 'Auto, default ' + X().defaultMinutes({ subject: v.subject }, cfg);
         f.xmarks.placeholder = 'Auto, default ' + X().defaultTotal(v.subject, cfg);
@@ -460,7 +467,7 @@
     const kwOpts = () => { const v = val(); return { subject: subj(v.subject) || null, type: v.type, year: isNaN(v.year) ? '' : v.year, title: v.title }; };
     function drawChips() {
       const have = new Set(curTags().map((x) => x.toLowerCase()));
-      const left = st.suggest.filter((x) => !have.has(x.toLowerCase()));
+      const left = st.suggest.filter((x) => !have.has(x.toLowerCase()) && !(noSchemeType(val().type) && /marking scheme|answer key/i.test(x)));
       kwBox.innerHTML = left.length
         ? '<span class="kw-l">Suggested from the PDF</span>' + left.map((x) => `<button type="button" class="chip" data-kw="${esc(x)}">${icon('plus')}${esc(x)}</button>`).join('') + (left.length > 1 ? '<button type="button" class="chip" data-kwall>Add all</button>' : '')
         : '';
@@ -468,11 +475,13 @@
     function writeDesc(force) {
       if (!st.result || !st.result.hasText) return;
       const o = kwOpts();
-      const d = KW.describe({ subjectName: o.subject ? o.subject.name : '', type: o.type, year: o.year, topics: st.result.topics, marking: st.result.marking, answerKey: st.result.answerKey });
+      const nos = noSchemeType(o.type);
+      const d = KW.describe({ subjectName: o.subject ? o.subject.name : '', type: o.type, year: o.year, topics: st.result.topics, marking: st.result.marking && !nos, answerKey: st.result.answerKey && !nos });
       if (force || !f.desc.value.trim() || f.desc.value === st.lastDesc) { f.desc.value = d; st.lastDesc = d; descSub.textContent = 'Written from the PDF. Edit it if you like.'; }
     }
     function analyze(pages, force) {
       const r = st.result = KW.analyze(pages, kwOpts());
+      if (noSchemeType(kwOpts().type)) { r.marking = false; r.answerKey = false; r.tags = r.tags.filter((t) => !/marking scheme|answer key/i.test(t)); }
       if (!r.hasText) {
         st.suggest = []; kwBox.innerHTML = '<span class="sub bad">This PDF has no readable text, so it looks scanned. Keywords and a description cannot be suggested. Add tags by hand.</span>';
         descSub.textContent = ''; return;
@@ -514,12 +523,14 @@
       const lockable = X() && X().hasScheme({ type: v.type, year: v.year }, cfg);
       if (info.minutes && (force || !f.xmin.value)) f.xmin.value = info.minutes;
       if (info.marks && (force || !f.xmarks.value)) f.xmarks.value = info.marks;
-      if (info.scheme && lockable && (force || f.xms.value === 'auto')) { f.xms.value = 'page'; f.xpage.value = info.scheme; }
+      const nos = noSchemeType(v.type);
+      if (info.scheme && lockable && !nos && (force || f.xms.value === 'auto')) { f.xms.value = 'page'; f.xpage.value = info.scheme; }
       const found = [], missing = [];
       (info.minutes ? found : missing).push(info.minutes ? 'time ' + fmtMins(info.minutes) : 'time');
       (info.marks ? found : missing).push(info.marks ? info.marks + ' marks' : 'marks');
-      if (info.scheme) found.push('marking scheme from page ' + info.scheme + (lockable ? '' : ' (not hidden: only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)'));
-      else if (lockable) missing.push('marking scheme');
+      if (nos) { /* no marking scheme for this type: nothing to report */ }
+      else if (info.scheme) found.push('marking scheme from page ' + info.scheme + (lockable ? '' : ' (not hidden: only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)'));
+      else if (lockable && !nos) missing.push('marking scheme');
       xnote.className = 'sub ' + (missing.length ? 'bad' : 'ok');
       xnote.textContent = (found.length ? 'Read from the PDF: ' + found.join(', ') + '. ' : '') + (missing.length ? 'Not found: ' + missing.join(', ') + '. Fill in by hand, or leave empty for the site to try.' : 'Check them against the paper.');
       touched = true; render();
@@ -720,7 +731,7 @@
     const time = r.minutes > 0 ? `${r.minutes} min (set here)` : `read from the PDF, else ${core ? core.defaultMinutes(r, cfg) : 120} min`;
     const marks = r.marks > 0 ? `${r.marks} (set here)` : `read from the PDF, else ${core ? core.defaultTotal(r.subject, cfg) : 80}`;
     const lock = core && core.hasScheme(r, cfg);
-    const scheme = Number.isInteger(r.msFrom) ? (r.msFrom === 0 ? 'none, nothing hidden' : `from page ${r.msFrom} (set here)`) : lock ? 'found in the PDF when the exam starts' : 'not hidden (only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)';
+    const scheme = noSchemeType(r.type) ? 'none (' + r.type + ' have no marking scheme)' : Number.isInteger(r.msFrom) ? (r.msFrom === 0 ? 'none, nothing hidden' : `from page ${r.msFrom} (set here)`) : lock ? 'found in the PDF when the exam starts' : 'not hidden (only specimen papers from ' + (cfg.schemeFromYear || 2025) + ' are)';
     const fixed = r.minutes > 0 && r.marks > 0;
     return `<span class="badge xt${fixed ? ' fixed' : ''}" title="${esc(`Timed exam. Time: ${time}. Total marks: ${marks}. Marking scheme: ${scheme}.`)}">${icon('timer')}Timer${fixed ? '' : ' · auto'}</span>`;
   }

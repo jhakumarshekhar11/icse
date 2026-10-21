@@ -48,8 +48,13 @@
   }
   function defaultMinutes(res, c) { return (c.minutes && (c.minutes[res.subject] || c.minutes.default)) || 120; }
   function eligible(res, c) { return !!res && Array.isArray(c.types) && c.types.includes(res.type); }
+  // Types that never have a marking scheme (config exam.noSchemeTypes). Previous year papers are only the question paper.
+  function noScheme(res, c) {
+    const list = c && Array.isArray(c.noSchemeTypes) ? c.noSchemeTypes : ['Previous Year Papers'];
+    return !!res && list.includes(res.type);
+  }
   // Specimen papers from this year on carry the marking scheme at the end of the same PDF
-  function hasScheme(res, c) { return res.type === 'Specimen Papers' && Number(res.year) >= (c.schemeFromYear || 9999); }
+  function hasScheme(res, c) { return !noScheme(res, c) && res.type === 'Specimen Papers' && Number(res.year) >= (c.schemeFromYear || 9999); }
 
   // ----- marking scheme detection -----
   const SCHEME_WORDS = ['marking scheme', 'answer key', 'answer keys', 'marking guidelines'];
@@ -79,16 +84,21 @@
   // "...hours 30 minutes", "...hours and thirty minutes", "...hours and a half"
   const TAIL = '(?:\\s*(?:and\\s*)?(?:(\\d{1,2})\\s*(?:minutes?|mins?)\\b|(a\\s+half|half)\\b))?';
   // "Time allowed: Two hours", "(Time: 2 hours 30 minutes)", "Time allowed: Two and a half hours", "Duration: 90 minutes"
-  const TIME_RE = new RegExp('(?:time(?:\\s+(?:allowed|given))?|duration)\\s*[:\\-\\u2013\\u2014=]?\\s*\\(?\\s*(' + NUM + ')(' + HALF + ')\\s*' + UNIT + TAIL, 'ig');
+  // "Time allowed" or "Time given" (colon optional), or "Time" / "Duration" with a colon or dash. A bare "time 3 hours" in a sentence does not count.
+  const TIME_RE = new RegExp('(?:time\\s+(?:allowed|given)\\s*[:\\-\\u2013\\u2014=]?|time\\s*[:\\-\\u2013\\u2014=]|duration\\s*[:\\-\\u2013\\u2014=]?)\\s*\\(?\\s*(' + NUM + ')(' + HALF + ')\\s*' + UNIT + TAIL, 'ig');
   // The bare bracketed form printed under the subject name on CISCE papers: "(Two hours)", "(Two and a half hours)"
   const PAREN_RE = new RegExp('\\(\\s*(' + NUM + ')(' + HALF + ')\\s*' + UNIT + TAIL + '\\s*\\)', 'ig');
   // "Maximum Marks: 80", "(Max. Marks: 80)", "Full Marks - 80". "Total marks: 80" counts only on the first page.
-  const MARKS_RE = /(?:maximum|max\.?|full)\s*marks?\s*[:\-–—=]?\s*\(?\s*(\d{1,3})\b/i;
-  const TOTAL_RE = /\btotal\s*marks?\s*[:\-–—=]\s*\(?\s*(\d{1,3})\b/i;
+  // (?!\d) rather than \b: a PDF can run the number into the next word ("Maximum Marks:100Time allowed")
+  const MARKS_RE = /(?:maximum|max\.?|full)\s*marks?\s*[:\-–—=]?\s*\(?\s*(\d{1,3})(?!\d)/i;
+  const TOTAL_RE = /\btotal\s*marks?\s*[:\-–—=]\s*\(?\s*(\d{1,3})(?!\d)/i;
+  // Last resort for PDFs that split words into pieces ("M aximum M arks"): the same patterns on text with every space removed
+  const SQ_TIME_RE = new RegExp('(?:time(?:allowed|given)[:\\-\\u2013\\u2014=]?|time[:\\-\\u2013\\u2014=]|duration[:\\-\\u2013\\u2014=]?)\\(?(' + NUM + ')((?:and(?:a|one-?)?half|\\u00bd|1\\/2)?)' + UNIT + '(?:(?:and)?(?:(\\d{1,2})(?:minutes?|mins?)|(ahalf|half)))?', 'ig');
+  const SQ_MARKS_RE = /(?:maximum|max\.?|full)marks?[:\-–—=]?\(?(\d{1,3})(?!\d)/i;
 
   // First duration in the text that is plausible for an exam (20 to 300 minutes); the others are skipped
-  function findMinutes(t) {
-    for (const re of [TIME_RE, PAREN_RE]) {
+  function findMinutes(t, squashed) {
+    for (const re of (squashed ? [SQ_TIME_RE] : [TIME_RE, PAREN_RE])) {
       re.lastIndex = 0;
       let tm;
       while ((tm = re.exec(t))) {
@@ -118,6 +128,11 @@
     };
     read(raw);
     if (!out.minutes || !out.marks) read(despace(raw));
+    if (!out.minutes || !out.marks) {
+      const sq = raw.replace(/\s+/g, '').toLowerCase();
+      if (!out.minutes) out.minutes = findMinutes(sq, true);
+      if (!out.marks) { const mm = SQ_MARKS_RE.exec(sq); if (mm) { const n = parseInt(mm[1], 10); if (n >= 10 && n <= 200) out.marks = n; } }
+    }
     return out;
   }
   // Looks at the first two pages for the time allowed and the maximum marks. Returns null if stale() turns true mid-scan.
@@ -171,7 +186,7 @@
   // A score is valid when 0 <= marks <= max and max > 0
   function validScore(marks, max) { return Number.isFinite(marks) && Number.isFinite(max) && max > 0 && marks >= 0 && marks <= max; }
 
-  const api = { MIN, validScore, parsePaperInfo, scanPaperInfo, infoFromPages, mergeConfig, defaultTotal, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, detectScheme, schemeRegex, SCHEME_WORDS };
+  const api = { MIN, validScore, parsePaperInfo, scanPaperInfo, infoFromPages, mergeConfig, defaultTotal, makeSession, status, crossings, fmt, fmtDur, defaultMinutes, eligible, hasScheme, noScheme, detectScheme, schemeRegex, SCHEME_WORDS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   try { root.ExamCore = api; } catch (e) { /* read-only global: fine */ }   // lets the admin page reuse the same reading logic
   if (typeof document === 'undefined') return;
@@ -420,10 +435,12 @@
           : m.minutes ? t + ' ' + k : k + ' ' + t;
       });
       const note = h('p', { class: 'x-note', id: 'xSchemeNote' });
-      if (hasScheme(res, c) && !Number.isInteger(res.msFrom)) note.textContent = 'Checking the file for a marking scheme\u2026';
+      if (noScheme(res, c)) note.textContent = res.type + ' have no marking scheme, so nothing in this paper is hidden.';
+      else if (hasScheme(res, c) && !Number.isInteger(res.msFrom)) note.textContent = 'Checking the file for a marking scheme\u2026';
       card.append(note);
       det.then((d) => {
         if (mine !== dlgToken || el.dlg.hidden) return;
+        if (d.none) return;   // the note above already says there is no marking scheme
         if (d.failed) { note.className = 'x-note warn'; note.textContent = 'Could not check this file for a marking scheme. If it has one at the end, avoid those pages until you finish.'; }
         else if (d.from >= 2) { note.className = 'x-note'; note.textContent = 'The marking scheme (from page ' + d.from + ') stays hidden until your exam ends.'; }
         else if (d.expected) { note.className = 'x-note warn'; note.textContent = 'No marking scheme was found in this file. If it has one at the end, avoid those pages until you finish.'; }
@@ -454,6 +471,7 @@
   // {from, expected}: from = first page of the scheme (0 = none found); expected = this paper should have one
   async function findScheme(res) {
     const c = CFG(), V = root.Viewer;
+    if (noScheme(res, c)) return { from: 0, expected: false, none: true };   // a previous year paper: nothing to hide, whatever msFrom says
     if (Number.isInteger(res.msFrom)) return { from: res.msFrom, expected: false };   // set by hand in resources.json (0 = no scheme)
     if (!hasScheme(res, c)) return { from: 0, expected: false };
     const FAIL = -2;   // the file could not be checked (not loaded, closed mid-scan, or too slow)
@@ -763,6 +781,7 @@
   root.Exam = Object.assign({}, api, {
     eligible: (r) => eligible(r, CFG()),
     hasScheme: (r) => hasScheme(r, CFG()),
+    noScheme: (r) => noScheme(r, CFG()),
     prompt, confirmLeave, lockPages, locksDownload,
     setDefaults: (d) => { remote = d && typeof d === 'object' ? d : null; },
     history: () => hist.slice(), editAttempt, confirmClear, fmtAt, fmtMin,
