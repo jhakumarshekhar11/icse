@@ -4513,6 +4513,36 @@
         "never",
         "sooner"
       ]
+    },
+    {
+      "id": "computer-2027-question-bank-3",
+      "title": "ICSE Computer Applications Question Bank",
+      "subject": "computer",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/computer-2027-question-bank-3.pdf",
+      "pages": 47,
+      "size_kb": 535,
+      "added": "2026-10-21",
+      "updated": "2026-10-21",
+      "downloads": 0,
+      "popular": true,
+      "description": "Question bank for Computer Applications.",
+      "tags": [
+        "number",
+        "print",
+        "program segment",
+        "array",
+        "system",
+        "string",
+        "mcq",
+        "method",
+        "void",
+        "println",
+        "double",
+        "java"
+      ]
     }
   ],
   "examDefaults": {
