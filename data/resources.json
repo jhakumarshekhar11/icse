@@ -4591,6 +4591,33 @@
         "double",
         "java"
       ]
+    },
+    {
+      "id": "biology-2027-question-bank-2",
+      "title": "Excretory System Question Bank",
+      "subject": "biology",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/biology-2027-question-bank-2.pdf",
+      "pages": 3,
+      "size_kb": 99,
+      "added": "2026-10-22",
+      "updated": "2026-10-22",
+      "downloads": 0,
+      "description": "Question bank for Biology. Covers excretory system.",
+      "tags": [
+        "mcq",
+        "renal",
+        "spec",
+        "score",
+        "urine",
+        "category",
+        "excretory system",
+        "cortex",
+        "medulla",
+        "urethra"
+      ]
     }
   ],
   "examDefaults": {
