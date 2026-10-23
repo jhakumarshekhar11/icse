@@ -23,8 +23,9 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 8. [Settings reference](#settings-reference)
 9. [Data reference](#data-reference)
 10. [Search and Google](#search-and-google)
-11. [Running locally](#running-locally)
-12. [Troubleshooting](#troubleshooting)
+11. [Accounts and sync](#accounts-and-sync)
+12. [Running locally](#running-locally)
+13. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -37,7 +38,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 | **Sorting:** By year (default), Oldest first, Most downloaded. | **Every change is one Git commit**, so Render redeploys on its own and Undo is one click. |
 | **In-page PDF reader** with zoom, page jump, fullscreen, pinch and swipe. | **SEO built at deploy time:** a page for every subject, type, year and paper, plus a sitemap. |
 | **Timed exams** with reading time, a countdown, a beep, History and scores. The marking scheme stays hidden until time is up. | **Per-subject exam defaults** for writing time and total marks, editable in the admin. |
-| **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. | **Download counter** with no database (a free hit-counter service). |
+| **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. **Optional accounts** (email or Google) sync bookmarks, history, progress and theme, with a "Continue where you left off" row. | **Download counter** with no database (a free hit-counter service). |
 | **Countdown to ICSE 2027**, read from the server clock, so a wrong phone clock cannot change it. | **Light and dark mode** on the site and the admin. They follow the device until you pick one. |
 
 ---
@@ -61,17 +62,20 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 │   ├── js/viewer.js           The PDF reader
 │   ├── js/exam.js             Timed exam mode, and the PDF reading shared with the admin
 │   ├── js/theme.js            Light / dark switch
+│   ├── js/account.js          Sign up, log in, log out and the sync of bookmarks, history, progress, settings
+│   ├── js/firebase-config.js  Your Firebase keys (paste them here to turn accounts on)
 │   ├── js/theme-boot.js       Sets the theme before first paint (admin)
 │   ├── js/admin.js            The admin console
 │   ├── js/admin-gh.js         GitHub client (reads and commits through the API)
 │   ├── js/admin-keywords.js   Keyword and description suggestions
 │   ├── js/admin-config.js     Admin settings: repo, branch, allowed users
-│   ├── vendor/                PDF.js and the QR library, self-hosted
+│   ├── vendor/                PDF.js, the QR library and a small Firebase build, self-hosted
 │   ├── og.jpg                 Share image for WhatsApp and social previews
 │   └── beep.mp3               Exam start, writing start and time-up sound
 ├── scripts/
 │   ├── build-seo.js           Runs on every deploy: landing pages and sitemap
 │   └── check-links.js         Checks every PDF path in resources.json exists
+├── firestore.rules            Security rules for the accounts database (publish in Firebase)
 ├── render.yaml                Render settings: build, redirects, headers
 ├── robots.txt                 Keeps /admin out of search, points to the sitemap
 └── favicon.svg
@@ -92,7 +96,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 - **No backend.** The site is static files. The admin talks to GitHub directly from the browser.
 - **One commit per action.** Uploading, editing or deleting commits the PDF and `resources.json` together. Commits start with `[admin]`, which is how Undo finds them.
 - **The build adds SEO, nothing else.** `build-seo.js` regenerates landing pages, paper pages, `sitemap.xml` and the crawlable links on `index.html` at deploy time. None of it is committed, and if it fails the plain site still deploys.
-- **Exam history and bookmarks live in the visitor's browser.** They do not sync between devices.
+- **Without an account, exam history and bookmarks live in the visitor's browser** and do not sync between devices. With an account (optional), they follow the student everywhere. See [Accounts and sync](#accounts-and-sync).
 
 ---
 
@@ -103,7 +107,7 @@ The service is a **Static Site**.
 | Setting | Value |
 | --- | --- |
 | Branch | `website` |
-| Build command | `node scripts/build-seo.js` |
+| Build command | `node scripts/write-firebase-config.js && node scripts/build-seo.js` |
 | Publish directory | `.` |
 | Custom domain | `icse.shekharjha.tech` (CNAME to the address Render shows) |
 
@@ -357,6 +361,66 @@ After the first deploy, submit `https://icse.shekharjha.tech/sitemap.xml` in Goo
 
 ---
 
+## Accounts and sync
+
+Accounts are **optional**. Without one the site works exactly as before. A student who signs up or logs in (email and password, or Google) gets these saved to their account and shared across their devices:
+
+| Saved | Details |
+| --- | --- |
+| **Bookmarks** | The Saved list. |
+| **Exam history and scores** | Every finished timed exam, with the score a student entered. |
+| **Reading progress** | The last page opened in each paper. Drives the **Continue where you left off** row (shown only when logged in, up to 8 papers, each with Resume and a remove button). |
+| **Preferences** | Light or dark theme, sort order and the exam beep switch. |
+
+It uses **Firebase Authentication** and **Cloud Firestore** (free Spark plan is plenty). There is still no server of your own.
+
+### How it behaves
+
+- **Email check.** Accounts made with an email and password must confirm the email (a link is sent on sign up). Until then nothing is saved to the account and the menu shows **I have verified** and **Resend email**. The site notices when the student comes back from the email tab. Google accounts are already verified. `firestore.rules` enforces this, so republish it after upgrading.
+- **Invitations for guests.** A quiet "Create a free account" message appears once per device after the first bookmark and after the first finished exam. A guest who taps **Saved** or **History** with nothing there yet is offered the sign up dialog.
+- **Account settings.** The menu has **Account settings** to change the name and (for email accounts) the password.
+
+- **Local first.** Everything is still written to the browser first, so the site is fast and works offline. When logged in, each change is also queued and sent to Firestore. The queue is saved in the browser, so a change made offline is sent next time the site opens.
+- **Signing in merges, never replaces.** Bookmarks, history and progress already on that device are added to the account. If both have a theme or sort order, the account's wins.
+- **Live sync.** A bookmark or theme changed on a phone appears on the laptop within a second or two.
+- **Logging out clears the synced data from that browser** (bookmarks, history, progress), so the next person on a shared computer does not see it. It stays safe in the account. Theme and sort order stay, since they describe the device. If there are unsynced changes (offline), the student is asked before signing out.
+- **Light on the first visit.** The Firebase code (about 175 KB compressed) is downloaded only when someone opens the Log in dialog, or when a signed-in student returns.
+- **Account data** is one Firestore document per student, `users/{uid}`, holding the maps `saved`, `history`, `progress` and `prefs`. Only that student can read or write it (see `firestore.rules`).
+
+### One-time setup (about 10 minutes)
+
+1. **Firebase console** (console.firebase.google.com): open your project, or **Add project**.
+2. **Add a web app:** Project settings (gear), Your apps, **</>** (Web). Copy the `firebaseConfig` values into `assets/js/firebase-config.js` (`apiKey`, `authDomain`, `projectId`, `appId`). These keys are public by design.
+3. **Authentication:** Build, Authentication, **Get started**. Under **Sign-in method** turn on **Email/Password** and **Google** (pick a support email for Google).
+4. **Authorized domains:** Authentication, Settings, **Authorized domains**. Add `icse.shekharjha.tech` (and your `*.onrender.com` address if you test there). `localhost` is already allowed.
+5. **Firestore:** Build, **Firestore Database**, Create database (production mode, region near India such as `asia-south1`). Open the **Rules** tab, paste the contents of `firestore.rules`, **Publish**.
+6. Commit and deploy. A **Log in** button appears in the top bar.
+
+While `apiKey` is empty, no account button appears and nothing changes.
+
+### Keeping the keys out of Git (optional)
+
+On Render, add environment variables `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID` and `FIREBASE_APP_ID`. The build command (`node scripts/write-firebase-config.js && node scripts/build-seo.js`) writes them into `firebase-config.js` on the server. Leave the committed file empty. This only keeps them out of the repository: a Firebase web key is always visible in the browser, so protect it with the key restrictions and Firestore rules described above.
+
+### Settings (`assets/js/firebase-config.js`)
+
+| Setting | What it does |
+| --- | --- |
+| `ICSE_FIREBASE` | Your Firebase web app values. Empty `apiKey` switches accounts off. |
+| `ICSE_ACCOUNT.google`, `.email` | Show or hide "Continue with Google" and the email form. |
+| `ICSE_ACCOUNT.minPassword` | Shortest password accepted when signing up (default 8). |
+| `ICSE_ACCOUNT.maxProgress`, `.maxHistory` | How many papers to remember for Continue (60), and how many finished exams to keep (200). |
+
+### Good to know
+
+- **Forgot password** sends Firebase's reset email from the Log in dialog (customise the wording under Authentication, Templates).
+- **The admin page is unrelated.** It still signs in with a GitHub token. Student accounts have no access to it.
+- **Firebase bundle.** `assets/vendor/firebase-lite.js` is a build of just the parts used. To rebuild after a Firebase upgrade, see the first lines of `scripts/firebase-entry.js`.
+- **Costs and limits.** A student's whole account is one small document (limits are enforced in `firestore.rules`). Reads and writes are well inside the free quota for a study site of this size. Writes are batched, a page turn is sent at most every couple of seconds.
+- **Privacy.** The site stores each student's email (and name or Google profile photo if given) in Firebase Authentication, and their saved data in Firestore. Consider a line about this in your About page.
+
+---
+
 ## Running locally
 
 PDF.js needs a web server, not `file://`.
@@ -382,6 +446,11 @@ node scripts/check-links.js      # every PDF path in resources.json exists, no d
 | "Timed exam" start dialog says it could not check for a marking scheme | The PDF loaded slowly or failed. Set `msFrom` on the paper by hand. |
 | Wrong time or marks in an exam | Set `minutes` and `marks` on the paper (admin Edit sheet), or fix the subject defaults. |
 | Download counts stay at the starting number | The counter service may be blocked or down. The site still works. Counts are public and can be inflated, so treat them as a rough guide. |
+| "This website address is not allowed yet" when signing in | Add the domain under Firebase, Authentication, Settings, Authorized domains. |
+| "This sign-in method is not turned on yet" | Enable Email/Password and Google under Authentication, Sign-in method. |
+| Menu says "Sync is paused" | Create the Firestore database and publish `firestore.rules` (the newest version). Press F12, Console, for the exact reason. Data stays on the device meanwhile. |
+| Email account says "Waiting for email verification" | The student opens the link in the email (check spam), then returns to the site. **Resend email** sends it again. |
+| Google sign-in popup does not appear | Allow popups for the site. The site falls back to a redirect on browsers that block them. |
 | A PDF will not load | Check the `file` path in `resources.json` and that the file is in `pdfs/` on the `website` branch. |
 
 ---

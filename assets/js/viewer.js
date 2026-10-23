@@ -290,6 +290,7 @@
   function flushPage() {
     if (!S.res || !S.n) return;
     store.set('icse:page:' + S.res.id, S.cur);
+    window.dispatchEvent(new CustomEvent('icse:progress', { detail: { rid: S.res.id, p: S.cur } }));   // account sync + "Continue"
     App().pageChanged && App().pageChanged(S.cur);
   }
 

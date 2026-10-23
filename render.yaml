@@ -4,7 +4,7 @@ services:
     name: icseresources
     runtime: static
     branch: website
-    buildCommand: node scripts/build-seo.js
+    buildCommand: node scripts/write-firebase-config.js && node scripts/build-seo.js
     staticPublishPath: .
     routes:
       # The library lives at the site root. Old /resource links still work.
@@ -17,6 +17,12 @@ services:
       - type: rewrite
         source: /about
         destination: /about/index.html
+      - type: rewrite
+        source: /privpol
+        destination: /privpol/index.html
+      - type: rewrite
+        source: /tos
+        destination: /tos/index.html
       # /admin serves the admin console
       - type: rewrite
         source: /admin

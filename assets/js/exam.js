@@ -288,7 +288,10 @@
   function beepPref() {
     try { const v = localStorage.getItem('icse:exam:beep'); return v === null ? beepCfg().default !== false : v === '1'; } catch (e) { return true; }
   }
-  function setBeepPref(on) { try { localStorage.setItem('icse:exam:beep', on ? '1' : '0'); } catch (e) { /* ignore */ } }
+  function setBeepPref(on) {
+    try { localStorage.setItem('icse:exam:beep', on ? '1' : '0'); } catch (e) { /* ignore */ }
+    root.dispatchEvent(new CustomEvent('icse:pref', { detail: { key: 'beep', value: !!on } }));   // account sync
+  }
   function getAudio() {
     if (!beepCfg().src) return null;
     if (!audio) { try { audio = new root.Audio(beepCfg().src); audio.preload = 'auto'; } catch (e) { audio = null; } }
@@ -785,6 +788,8 @@
     prompt, confirmLeave, lockPages, locksDownload,
     setDefaults: (d) => { remote = d && typeof d === 'object' ? d : null; },
     history: () => hist.slice(), editAttempt, confirmClear, fmtAt, fmtMin,
+    // Used by account.js: swap in the history saved on the student's account (it has already written storage)
+    replaceHistory: (list) => { hist = Array.isArray(list) ? list.filter((a) => a && a.id && a.rid) : []; root.dispatchEvent(new Event('exam:history')); },
     beep,   // console check for your sound file: Exam.beep()
     info: (doc) => scanPaperInfo(doc),   // console check: await Exam.info(await pdfjsLib.getDocument(url).promise)
     detect: (doc) => detectScheme(doc, CFG().schemeWords),   // console check: Exam.detect(await pdfjsLib.getDocument(url).promise)
