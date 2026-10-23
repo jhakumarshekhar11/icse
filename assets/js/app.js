@@ -59,7 +59,7 @@
     const t = document.createElement('div');
     t.className = 'toast'; t.textContent = msg;
     el.toasts.appendChild(t);
-    setTimeout(() => t.remove(), 2600);
+    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, 2600);
   }
 
   /* ---------- data ---------- */

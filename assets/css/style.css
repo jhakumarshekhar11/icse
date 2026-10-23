@@ -325,8 +325,17 @@ section[id] { scroll-margin-top: 84px; }
 .dlg-acts .btn { flex: 1 1 calc(50% - 4px); min-width: 0; justify-content: center; }
 .dlg-acts #shReport { flex-basis: 100%; }
 
-#toasts { position: fixed; z-index: 90; left: 50%; bottom: 24px; transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; pointer-events: none; width: max-content; max-width: calc(100% - 32px); }
-.toast { padding: 11px 18px; border-radius: 999px; background: var(--toast-bg); border: 1px solid var(--line-hi); backdrop-filter: blur(14px); box-shadow: var(--toast-shadow); font-size: 0.92rem; animation: pop 0.2s ease-out; }
+/* Messages: a glass capsule that slides in from the right and slides back out */
+#toasts { position: fixed; z-index: 90; right: 16px; bottom: 24px; display: grid; gap: 10px; justify-items: end; pointer-events: none; width: max-content; max-width: min(400px, calc(100% - 32px)); }
+.toast { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: 999px; background: var(--toast-bg); border: 1px solid var(--line-hi); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); box-shadow: var(--toast-shadow), inset 0 1px 0 rgba(var(--w), 0.08); font-size: 0.92rem; line-height: 1.35; animation: toast-in 0.38s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.toast.out { animation: toast-out 0.26s ease-in both; }
+@keyframes toast-in { from { opacity: 0; transform: translateX(calc(100% + 24px)); } }
+@keyframes toast-out { to { opacity: 0; transform: translateX(calc(100% + 24px)); } }
+/* A message that asks a question (replaces the browser's own confirm box) */
+.toast.ask { pointer-events: auto; flex-wrap: wrap; justify-content: flex-end; border-radius: 24px; padding: 14px 16px 12px 20px; }
+.toast.ask .t-msg { flex: 1 1 100%; }
+.toast.ask .t-acts { display: flex; gap: 8px; }
+.toast.ask .btn { height: 36px; padding: 0 14px; border-radius: 999px; font-size: 0.88rem; }
 
 /* ---------- Small screens ---------- */
 @media (max-width: 640px) {

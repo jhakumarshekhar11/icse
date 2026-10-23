@@ -39,15 +39,17 @@
   const eq = (a, b) => canon(a) === canon(b);
   const emit = (name, detail) => root.dispatchEvent(new CustomEvent(name, { detail }));
   const DOMAINS = ['saved', 'history', 'progress', 'prefs'];
+  // Firestore rejects field names that start and end with "__" (the admin preview uses "__preview__"), and empty ones
+  const okKey = (k) => typeof k === 'string' && k.length > 0 && k.length < 200 && !/^__.*__$/.test(k) && k.indexOf('/') < 0;
 
   /* ---------- local state <-> plain maps ---------- */
   function readLocal() {
     const saved = {};
-    (jget(K.saved, []) || []).forEach((id) => { if (typeof id === 'string' && id) saved[id] = 1; });
+    (jget(K.saved, []) || []).forEach((id) => { if (okKey(id)) saved[id] = 1; });
     const history = {};
-    (jget(K.hist, []) || []).forEach((a) => { if (a && a.id && a.rid) history[a.id] = a; });
+    (jget(K.hist, []) || []).forEach((a) => { if (a && okKey(a.id) && a.rid) history[a.id] = a; });
     const progress = {};
-    Object.entries(objOf(jget(K.prog, {}))).forEach(([rid, v]) => { if (v && v.p > 0) progress[rid] = { p: v.p | 0, n: v.n | 0, at: Number(v.at) || 0 }; });
+    Object.entries(objOf(jget(K.prog, {}))).forEach(([rid, v]) => { if (okKey(rid) && v && v.p > 0) progress[rid] = { p: v.p | 0, n: v.n | 0, at: Number(v.at) || 0 }; });
     // pages remembered by the reader before accounts existed
     try {
       for (let i = 0; i < localStorage.length; i++) {
@@ -55,7 +57,7 @@
         if (!key || key.indexOf(K.page) !== 0) continue;
         const rid = key.slice(K.page.length);
         const p = parseInt(JSON.parse(localStorage.getItem(key)), 10);
-        if (!progress[rid] && p > 1) progress[rid] = { p, n: 0, at: 0 };
+        if (okKey(rid) && !progress[rid] && p > 1) progress[rid] = { p, n: 0, at: 0 };
       }
     } catch (e) { /* ignore */ }
     const prefs = {};
@@ -117,9 +119,10 @@
     return ops;
   }
   let queue = objOf(jget(K.queue, {}));
+  Object.keys(queue).forEach((key) => { const o = queue[key]; if (!o || !okKey(o.k)) delete queue[key]; });   // drop anything Firestore would refuse
   const qkey = (o) => o.d + '|' + o.k;
   const saveQueue = () => (Object.keys(queue).length ? jset(K.queue, queue) : LS.del(K.queue));
-  function enqueue(ops) { ops.forEach((o) => { queue[qkey(o)] = o; }); if (ops.length) saveQueue(); }
+  function enqueue(ops) { ops = ops.filter((o) => okKey(o.k)); ops.forEach((o) => { queue[qkey(o)] = o; }); if (ops.length) saveQueue(); }
   function overlay(state) {
     const out = clone(state);
     Object.values(queue).forEach((o) => {
@@ -245,7 +248,7 @@
 
   // Reading progress. The reader reports each page it settles on.
   root.addEventListener('icse:progress', (e) => {
-    const d = e.detail || {}; if (!d.rid || !(d.p > 0)) return;
+    const d = e.detail || {}; if (!okKey(d.rid) || !(d.p > 0)) return;
     const m = objOf(jget(K.prog, {}));
     const res = root.App && root.App.byId ? root.App.byId(d.rid) : null;
     m[d.rid] = { p: d.p | 0, n: (res && res.pages) || (m[d.rid] && m[d.rid].n) || 0, at: Date.now() };
@@ -363,7 +366,29 @@
     let host = document.getElementById('toasts');
     if (!host) { host = h('div', { id: 'toasts', role: 'status', 'aria-live': 'polite' }); document.body.appendChild(host); }
     const t = h('div', { class: 'toast' }, msg);
-    host.appendChild(t); setTimeout(() => t.remove(), 2600);
+    host.appendChild(t); setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, 2600);
+  }
+  // A question in the same glass capsule (instead of the browser's own confirm box). Resolves true or false.
+  function ask(msg, yes, no) {
+    return new Promise((resolve) => {
+      let host = document.getElementById('toasts');
+      if (!host) { host = h('div', { id: 'toasts', role: 'status', 'aria-live': 'polite' }); document.body.appendChild(host); }
+      const prev = document.activeElement;
+      const done = (v) => {
+        document.removeEventListener('keydown', onKey, true);
+        t.classList.add('out'); setTimeout(() => t.remove(), 280);
+        if (prev && prev.focus) prev.focus({ preventScroll: true });
+        resolve(v);
+      };
+      const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); done(false); } };
+      const ok = h('button', { class: 'btn btn-primary', type: 'button', onclick: () => done(true) }, yes || 'OK');
+      const t = h('div', { class: 'toast ask', role: 'alertdialog', 'aria-label': msg },
+        h('span', { class: 't-msg' }, msg),
+        h('div', { class: 't-acts' }, h('button', { class: 'btn', type: 'button', onclick: () => done(false) }, no || 'Cancel'), ok));
+      host.appendChild(t);
+      document.addEventListener('keydown', onKey, true);
+      ok.focus({ preventScroll: true });
+    });
   }
 
   /* ---------- nav button + account menu ---------- */
@@ -434,7 +459,7 @@
     closeMenu();
     if (Object.keys(queue).length) {
       const ok = await Promise.race([flush(), new Promise((r) => setTimeout(() => r(false), 4000))]);
-      if (!ok && !root.confirm('Some recent changes have not reached your account yet (you may be offline). Sign out anyway and lose them?')) return;
+      if (!ok && !(await ask('Some recent changes have not reached your account yet. You may be offline. Sign out anyway and lose them?', 'Sign out anyway', 'Stay signed in'))) return;
     }
     try { await fb.signOut(auth); } catch (e) { toast('Could not sign out. Try again.'); return; }
     toast('Signed out');
