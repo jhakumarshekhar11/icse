@@ -1,0 +1,5 @@
+firebase-lite.js is a build of parts of the Firebase JavaScript SDK (firebase/app, firebase/auth,
+firebase/firestore), Copyright Google LLC, licensed under the Apache License, Version 2.0:
+https://www.apache.org/licenses/LICENSE-2.0
+Source: https://github.com/firebase/firebase-js-sdk
+Rebuild instructions are at the top of scripts/firebase-entry.js.

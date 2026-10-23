@@ -342,7 +342,39 @@
     el.quick.innerHTML = list.length ? '<span>Try</span>' + list.map((t) => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join('') : '';
   }
 
-  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderGrid(); renderHistory(); }
+  /* ---------- continue where you left off (signed-in students; progress is kept by account.js) ---------- */
+  const cont = { box: $('#continue'), strip: $('#contStrip'), sub: $('#contSub') };
+  function contHtml(x, r) {
+    const total = x.n || r.pages || 0;
+    const pct = total > 0 ? Math.min(100, Math.round((x.p / total) * 100)) : 0;
+    const where = total > 0 ? `Page ${x.p} of ${total}` : `Page ${x.p}`;
+    return `
+    <article class="mini cont glass gh" style="--accent:${esc(r.accent)};--p:${pct / 100}" data-id="${esc(r.id)}">
+      <button class="ib cont-x" type="button" data-act="forget" aria-label="Remove ${esc(r.title)} from this list" title="Remove from this list">${icon('close')}</button>
+      <div class="tl"><i class="dot"></i>${esc(r.subject_name)}</div>
+      <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
+      <div class="cont-bar" role="img" aria-label="${pct}% read"><i></i></div>
+      <div class="row">
+        <span class="when">${esc(where)}${pct ? ' &middot; ' + pct + '%' : ''}</span>
+        <a class="btn btn-primary" style="height:36px;padding:0 14px" href="${esc(readHref(r))}" data-act="read">${icon('read')}Resume</a>
+      </div>
+    </article>`;
+  }
+  function renderContinue() {
+    if (!cont.box) return;
+    const A = window.Account;
+    const items = A && A.signedIn() && state.byId.size
+      ? A.recent(12).map((x) => ({ x, r: state.byId.get(x.rid) })).filter((o) => o.r).slice(0, 8)
+      : [];
+    cont.box.hidden = !items.length;
+    cont.strip.innerHTML = items.map((o) => contHtml(o.x, o.r)).join('');
+    cont.sub.textContent = items.length ? 'Pick up your last ' + (items.length === 1 ? 'paper' : items.length + ' papers') : '';
+  }
+  addEventListener('account:state', renderContinue);
+  addEventListener('account:data', renderContinue);
+  addEventListener('viewer:close', () => setTimeout(renderContinue, 450));
+
+  function renderAll() { renderChips(); renderSubjects(); renderStrip(); renderContinue(); renderGrid(); renderHistory(); }
 
   function refreshSavedUI() {
     el.savedCount.textContent = state.saved.size;
@@ -364,9 +396,22 @@
     const on = !state.saved.has(id);
     on ? state.saved.add(id) : state.saved.delete(id);
     store.set('icse:saved', [...state.saved]);
+    window.dispatchEvent(new Event('icse:saved'));   // account sync
     refreshSavedUI();
     toast(on ? 'Saved to bookmarks' : 'Removed from bookmarks');
     if (state.savedOnly && !on) renderGrid();
+  }
+  // Used by account.js after it merges or loads the bookmarks saved on the student's account
+  function applySaved(ids) {
+    state.saved = new Set(ids);
+    refreshSavedUI();
+    if (state.savedOnly && state.byId.size) renderGrid();
+  }
+  function applyPrefs(p) {
+    if (p && ['year', 'old', 'popular'].includes(p.sort) && p.sort !== state.sort) {
+      state.sort = p.sort;
+      if (state.byId.size) { renderChips(); renderGrid(); }
+    }
   }
 
   /* ---------- downloads + counter ---------- */
@@ -560,7 +605,9 @@
 
   el.sort.addEventListener('click', (e) => {
     const b = e.target.closest('[data-sort]'); if (!b) return;
-    state.sort = b.dataset.sort; store.set('icse:sort', state.sort); renderChips(); renderGrid();
+    state.sort = b.dataset.sort; store.set('icse:sort', state.sort);
+    window.dispatchEvent(new CustomEvent('icse:pref', { detail: { key: 'sort', value: state.sort } }));   // account sync
+    renderChips(); renderGrid();
   });
   el.savedBtn.addEventListener('click', () => {
     state.savedOnly = !state.savedOnly; renderChips(); renderGrid();
@@ -591,6 +638,11 @@
   el.grid.addEventListener('click', onAction);
   el.strip.addEventListener('click', onAction);
   el.count.addEventListener('click', onAction);
+  if (cont.strip) cont.strip.addEventListener('click', (e) => {
+    const f = e.target.closest('[data-act="forget"]');
+    if (f) { const card = f.closest('[data-id]'); if (card && window.Account) Account.forget(card.dataset.id); return; }
+    onAction(e);
+  });
 
   // Pointer glow
   let px = 0, py = 0, raf = 0;
@@ -669,6 +721,7 @@
   // Public hooks used by viewer.js
   window.App = {
     fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, toast, openReader,
+    applySaved, applyPrefs,
     byId: (id) => state.byId.get(id),
     shareOpen: () => !el.dlg.hidden || !!(window.Exam && Exam.dialogOpen())
   };

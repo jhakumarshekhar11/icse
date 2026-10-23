@@ -13,11 +13,15 @@
       btn.title = light ? 'Switch to dark mode' : 'Switch to light mode';
     }
   }
-  function apply(next) {
+  function apply(next, fromAccount) {
     root.dataset.theme = next;
     try { localStorage.setItem('icse:theme', next); } catch (e) { /* storage unavailable */ }
     paint();
+    // Tell the account sync a choice was made (not when the choice itself came from the account)
+    if (!fromAccount) window.dispatchEvent(new CustomEvent('icse:pref', { detail: { key: 'theme', value: next } }));
   }
+  // Used by account.js to apply the theme saved on the student's account
+  window.IcseTheme = { set: (t) => { if (t === 'light' || t === 'dark') apply(t, true); } };
   // The new theme is painted over the old one: light to dark sweeps from the top of the screen to the
   // bottom, dark to light sweeps from the bottom to the top.
   // Browsers without the View Transitions API (and people who prefer reduced motion) just switch.
