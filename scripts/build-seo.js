@@ -29,6 +29,12 @@ function main() {
   const template = fs.readFileSync(tplFile, 'utf8');
   if (!/<!--seo:head-->/.test(template)) throw new Error('index.html has no seo markers');
 
+  // Optional extra wording (data/seo.json): other names for a subject, and extra search phrases for single papers
+  let SEO = {};
+  try { SEO = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'seo.json'), 'utf8')); } catch (e) { /* optional */ }
+  const aliasesOf = (id) => (SEO.subjectAliases || {})[id] || [];
+  const extraKeywords = (id) => (SEO.resourceKeywords || {})[id] || [];
+
   const subjects = new Map((data.subjects || []).map((s) => [s.id, s]));
   const live = (data.resources || []).filter((r) => !r.draft && subjects.has(r.subject));
   const classLabel = '10';
@@ -121,7 +127,7 @@ function main() {
       const t1 = `${heading} PDF – Free Download | ${OWNER}`, t2 = `${heading} PDF | ${OWNER}`;
       const title = t1.length <= 66 ? t1 : t2.length <= 66 ? t2 : `${heading} PDF`;
       const skip = new Set([subj.toLowerCase(), r.subject, r.type.toLowerCase(), one.toLowerCase(), String(r.year)]);
-      const tags = (r.tags || []).filter((x) => !skip.has(String(x).toLowerCase())).slice(0, 12);
+      const tags = [...new Set([...extraKeywords(r.id), ...(r.tags || [])])].filter((x) => !skip.has(String(x).toLowerCase())).slice(0, 14);
       const others = live.filter((x) => x !== r);
       const sameSubject = others.filter((x) => x.subject === r.subject)
         .sort((a, b) => (b.type === r.type) - (a.type === r.type) || b.year - a.year || a.title.localeCompare(b.title)).slice(0, 8);
@@ -158,6 +164,7 @@ function main() {
       <h2>${esc(one)} ${esc(r.year)} for other subjects</h2>
       <ul class="paper-related">${sameYear.map(li).join('')}</ul>
     </section>` : ''}
+    ${(() => { const g = { subject: subj, subjectId: r.subject, type: r.type, year: String(r.year), items: [r] }; return copyOf(g, words(g)).html; })()}
     <section>
       <h2>Found a mistake?</h2>
       <p>Files are uploaded by hand and errors can slip in. Email <a id="mail" href="#">me</a> and I will fix it.</p>
@@ -170,6 +177,7 @@ function main() {
       const ld = [
         { '@context': 'https://schema.org', '@type': 'LearningResource', name: heading, description: r.description || undefined, url: canon,
           educationalLevel: 'Class ' + classLabel, learningResourceType: r.type, about: subj, inLanguage: r.subject === 'hindi' ? 'hi' : 'en',
+          keywords: tags.length ? tags.join(', ') : undefined,
           datePublished: r.added, dateModified: r.updated || r.added, isAccessibleForFree: true, publisher: { '@type': 'Person', name: OWNER },
           isPartOf: { '@type': 'WebSite', name: 'ICSE Class 10 Resources', url: SITE + '/' },
           encoding: { '@type': 'MediaObject', contentUrl: abs(r.file), encodingFormat: 'application/pdf', contentSize: r.size_kb ? r.size_kb + ' KB' : undefined } },
@@ -191,22 +199,80 @@ function main() {
     });
     return made;
   }
+  // ----- text for a page -----
+  const SHORT = { 'Specimen Papers': 'Specimen', 'Sample Papers': 'Sample', 'Previous Year Papers': 'Previous Year' };
+  const lc = (x) => String(x).toLowerCase();
+  const joinWords = (a) => (a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]);
+
+  function words(g) {
+    const n = g.items.length, subj = g.subject || '', year = g.year || '';
+    const T = g.type ? (n === 1 ? singular(g.type) : g.type) : '';
+    const present = [...new Set(g.items.map((r) => r.type).filter((t) => SHORT[t]))].map((t) => SHORT[t]);
+    // the heading a student would type: "ICSE Class 10 Biology Specimen Paper 2023"
+    const heading = g.type
+      ? ['ICSE Class ' + classLabel, subj, T, year].filter(Boolean).join(' ')
+      : subj
+        ? ['ICSE Class ' + classLabel, subj, year, year ? 'Papers and Notes' : 'Papers, Notes and Solutions'].filter(Boolean).join(' ')
+        : `ICSE Class ${classLabel} ${year} ${present.length ? 'Question Papers: ' + joinWords(present) + ' PDF' : 'Papers and Notes'}`.replace(/\s+/g, ' ');
+    const cisce = g.type === 'Specimen Papers' && !subj;   // aggregate specimen pages: people search "CISCE specimen papers"
+    let title = `${heading}${/PDF$/.test(heading) ? '' : ' PDF'}${cisce ? ' (CISCE)' : ''}`;
+    if ((title + ' | ICSE Resources').length <= 70) title += ' | ICSE Resources';
+    const names = [...g.items].sort(byDate).slice(0, 3).map((r) => tidy(r.title)).join('; ');
+    const what = g.type ? (g.type === 'Previous Year Papers' ? (n === 1 ? 'previous year paper (board question paper)' : 'previous year papers (board question papers)') : lc(T)) : 'papers, notes and solutions';
+    const desc = trim(`Free ICSE Class ${classLabel} ${[subj, what, year].filter(Boolean).join(' ')} PDF${cisce ? ' as released by CISCE' : ''}. ${n} file${n === 1 ? '' : 's'}: ${names}. Read online or download, no sign up needed.`, 158);
+    const intro = `${n} free ICSE Class ${classLabel} ${[subj, g.type ? lc(T) : '', year].filter(Boolean).join(' ') || 'resource'}${g.type ? '' : n === 1 ? ' file' : ' files'} ` +
+      `for the ICSE board exam. Read each PDF in your browser or download it.`;
+    return { heading, title, desc, intro, T, n };
+  }
+
+  // Helpful text under every page: what the files are, what to expect inside them, and a few common questions.
+  // Everything here is true for every page it appears on (marking scheme facts come from the site's own exam settings).
+  function copyOf(g, w) {
+    const subj = g.subject, year = g.year, type = g.type;
+    const has = (u) => pages.has(u);
+    const para = [];
+    para.push(`${w.intro} Every file on this page is free to use for personal study.`);
+    if (type && TYPE_BLURB[type]) para.push(TYPE_BLURB[type]);
+    const al = g.subjectId ? aliasesOf(g.subjectId).filter((a) => lc(a) !== lc(subj)) : [];
+    if (al.length) para.push(`${subj} is also searched as ${joinWords(al)}.`);
+    const faq = [];
+    const where = ['ICSE Class ' + classLabel, subj, type ? lc(w.T || type) : 'papers', year].filter(Boolean).join(' ');
+    faq.push([`Where can I download ${where} PDF?`, `Open any file on this page to read it online, or press Download to save the PDF. It is free and needs no account.`]);
+    if (type === 'Specimen Papers' || type === 'Sample Papers') {
+      const y = Number(year);
+      faq.push([`Does the ${lc(singular(type))}${year ? ' ' + year : ''} include the marking scheme?`,
+        year ? (y >= 2025 ? `Specimen papers from 2025 onwards carry the marking scheme at the end of the same PDF. In the timed exam it stays hidden until your time is up.`
+                           : `Specimen papers from 2025 onwards carry the marking scheme at the end of the same PDF. For ${year}, open the file to see exactly what it contains.`)
+             : `Specimen papers from 2025 onwards carry the marking scheme at the end of the same PDF. For earlier years, open the file to see what it contains.`]);
+    } else if (type === 'Previous Year Papers') {
+      faq.push([`Are these previous year papers solved?`, `They are the board question papers. Answers and explanations are available separately where listed under Solutions and Question Banks.`]);
+    } else if (!type) {
+      faq.push([`What kinds of files are here?`, `${present(g)} Use the filters above to narrow by type.`]);
+    }
+    if (has('/solutions/') || has('/question-banks/')) {
+      const links = [has('/solutions/') ? '<a href="/solutions/">Solutions</a>' : '', has('/question-banks/') ? '<a href="/question-banks/">Question Banks</a>' : ''].filter(Boolean);
+      faq.push([`Where can I find solved answers?`, { html: `Look under ${links.join(' and ')}. Some question banks include an answer key.` }]);
+    }
+    if (g.items.some((r) => PAPER_TYPES.has(r.type))) {
+      faq.push([`Can I practise with a timer?`, `Yes. Press Timed exam on any paper for a countdown with an optional reading time, a beep, and a score history. Create an account (optional) to keep your scores on all your devices.`]);
+    }
+    faq.push([`Are these official CISCE files?`, `Specimen and board papers are issued by CISCE. This site is an independent library and is not affiliated with CISCE. Check the official CISCE website for the latest versions.`]);
+    function present(grp) {
+      const t = [...new Set(grp.items.map((r) => r.type))];
+      return `This page has ${joinWords(t.map((x) => lc(x)))}.`;
+    }
+    const plainA = (a) => (typeof a === 'string' ? a : a.html.replace(/<[^>]+>/g, ''));
+    const html = `<div class="seo-copy"><h2>About these ${esc(w.heading.replace(/ PDF$/, ''))} files</h2>` +
+      para.map((x) => `<p>${esc(x)}</p>`).join('') +
+      `<h3>Common questions</h3>` +
+      faq.map(([q, a]) => `<details open><summary>${esc(q)}</summary><p>${typeof a === 'string' ? esc(a) : a.html}</p></details>`).join('') + '</div>';
+    const ld = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: plainA(a) } })) };
+    return { html, ld };
+  }
+
+  // (paper pages are built here because they reuse the helper text above)
   let paperCount = 0;
   try { paperCount = buildPaperPages(); paperPagesOk = true; } catch (e) { console.warn('Paper pages skipped:', e.message); }
-
-  // ----- text for a page -----
-  function words(g) {
-    const subj = g.subject || '';
-    const kind = g.type || (g.subject ? 'Papers, Notes and Solutions' : 'Papers, Notes and Solutions');
-    const heading = ['ICSE Class ' + classLabel, subj, g.type || '', g.year, g.type ? '' : 'Papers and Notes'].filter(Boolean).join(' ').replace(/\s+/g, ' ');
-    const title = heading + ' – Free PDF Download | ' + OWNER;
-    const n = g.items.length;
-    const names = [...g.items].sort(byDate).slice(0, 3).map((r) => r.title).join('; ');
-    const desc = trim(`Free ICSE Class ${classLabel} ${[subj, g.type || kind, g.year].filter(Boolean).join(' ')} PDFs. ${n} resource${n === 1 ? '' : 's'} including ${names}. Read online or download.`, 158);
-    const intro = `${n} free ICSE Class ${classLabel} ${[subj, g.type, g.year].filter(Boolean).join(' ') || 'resource'}${n === 1 ? '' : 's'} ` +
-      `for the ICSE board exam, by ${OWNER}. Read each PDF in your browser or download it.`;
-    return { heading, title, desc, intro, kind };
-  }
 
   function listHtml(items) {
     return '<ul>' + [...items].sort(byDate).map((r) =>
@@ -249,7 +315,7 @@ function main() {
 
   // ----- stamp the template -----
   function stamp(url, meta) {
-    const canon = SITE + url;
+    const canon = SITE + (meta.canonical || url);
     const head = [
       `<title>${esc(meta.title)}</title>`,
       `<meta name="description" content="${esc(meta.desc)}">`,
@@ -270,8 +336,15 @@ function main() {
       meta.preset ? `<script>window.__PRESET=${JSON.stringify(meta.preset).replace(/</g, '\\u003c')};</script>` : '',
       ...meta.ld.map(jsonLd)
     ].filter(Boolean).join('\n  ');
-    const body = `<section class="seo-static"><h2>${esc(meta.heading)}</h2><p>${esc(meta.intro)}</p>${meta.list}</section>`;
-    return template
+    const body = `<section class="seo-static">${meta.copy || `<div class="seo-copy"><h2>${esc(meta.heading)}</h2><p>${esc(meta.intro)}</p></div>`}<div class="seo-list">${meta.list}</div></section>`;
+    let page = template;
+    // landing pages: the page's own heading becomes the visible H1 and lead line (the home page keeps its design copy)
+    if (meta.h1) {
+      page = page
+        .replace('<h1 id="h1">ICSE Class X, ready to study.</h1>', () => `<h1 id="h1" class="h1-landing">${esc(meta.h1)}</h1>`)
+        .replace('<p>Notes, past papers and solutions by Shekhar Jha. Read them right here, or download the PDF.</p>', () => `<p>${esc(meta.lead)}</p>`);
+    }
+    return page
       .replace(/<!--seo:head-->[\s\S]*?<!--\/seo:head-->/, '<!--seo:head-->\n  ' + head + '\n  <!--/seo:head-->')
       .replace(/<!--seo:body-->[\s\S]*?<!--\/seo:body-->/, '<!--seo:body-->' + body + '<!--/seo:body-->')
       .replace(/<!--seo:browse-->[\s\S]*?<!--\/seo:browse-->/, '<!--seo:browse-->' + browse(url) + '<!--/seo:browse-->');
@@ -279,15 +352,22 @@ function main() {
 
   // landing pages
   let count = 0;
+  const soloUrls = new Set();
   pages.forEach((g, url) => {
     const w = words(g);
+    const cp = copyOf(g, w);
+    // subject + type + year with a single file is the same thing as that file's own page: point Google at the richer one
+    const solo = paperPagesOk && g.subject && g.type && g.year && g.items.length === 1;
+    if (solo) soloUrls.add(url);
     const crumbs = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ICSE Resources', item: SITE + '/' },
       { '@type': 'ListItem', position: 2, name: w.heading, item: SITE + url }] };
     const html = stamp(url, {
-      title: w.title, desc: w.desc, heading: w.heading, intro: w.intro, list: listHtml(g.items),
+      canonical: solo ? paperUrls.get(g.items[0]) : undefined,
+      title: w.title, desc: w.desc, heading: w.heading, intro: w.intro, list: listHtml(g.items), copy: cp.html,
+      h1: w.heading, lead: w.intro,
       preset: { subject: g.subjectId || undefined, type: g.type || undefined, year: g.year || undefined },
-      ld: [itemListLd(g.items, w.heading, url), crumbs]
+      ld: [itemListLd(g.items, w.heading, url), crumbs, cp.ld]
     });
     const dir = path.join(ROOT, url.replace(/^\//, ''));
     fs.mkdirSync(dir, { recursive: true });
@@ -301,6 +381,10 @@ function main() {
     desc: 'Free ICSE Class 10 previous year papers, specimen papers, sample papers, notes and solutions. Read them online or download the PDF.',
     heading: 'ICSE Class 10 resources', intro: `Free ICSE Class ${classLabel} papers, specimen papers, notes and solutions by ${OWNER}.`,
     list: listHtml(live),
+    copy: `<div class="seo-copy"><h2>Free ICSE Class 10 papers, specimen papers, sample papers and notes</h2>` +
+      `<p>One place for ICSE Class 10 (Class X) study material for the 2027 board exams: previous year board papers, CISCE specimen papers, sample papers, question banks, notes and solutions for English Language, English Literature, Hindi, History and Civics, Geography, Mathematics, Physics, Chemistry, Biology, Commercial Studies (Commerce), Computer Applications and Economic Applications.</p>` +
+      `<p>Read every PDF in your browser, download it free, or run a timed exam with a countdown, a beep and a score history. An account is optional and keeps your bookmarks, exam history and place in each paper on all your devices.</p>` +
+      `<p>This is an independent library and is not affiliated with CISCE. Check the official CISCE website for the latest specimen papers and notifications.</p></div>`,
     ld: [
       { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ICSE Class 10 Resources', url: SITE + '/',
         potentialAction: { '@type': 'SearchAction', target: SITE + '/?q={search_term_string}', 'query-input': 'required name=search_term_string' } },
@@ -313,7 +397,9 @@ function main() {
   const latest = (items) => items.map((r) => String(r.added)).sort().pop() || '';
   const urls = [{ loc: SITE + '/', lm: latest(live) }];
   urls.push({ loc: SITE + '/about/', lm: '' });
-  pages.forEach((g, url) => urls.push({ loc: SITE + url, lm: latest(g.items) }));
+  urls.push({ loc: SITE + '/privpol/', lm: '' });
+  urls.push({ loc: SITE + '/tos/', lm: '' });
+  pages.forEach((g, url) => { if (!soloUrls.has(url)) urls.push({ loc: SITE + url, lm: latest(g.items) }); });
   if (paperPagesOk) live.forEach((r) => urls.push({ loc: SITE + paperUrls.get(r), lm: String(r.updated || r.added) }));
   live.forEach((r) => urls.push({ loc: abs(r.file), lm: String(r.added) }));
   const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

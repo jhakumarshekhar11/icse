@@ -1,0 +1,20 @@
+{
+  "_help": "Search wording used only by scripts/build-seo.js (never by the admin page, so it is safe to edit by hand). subjectAliases: other names students type for a subject. resourceKeywords: extra search phrases for one paper, by its id.",
+  "subjectAliases": {
+    "commercialstudies": ["Commerce", "Commercial Studies"],
+    "computer": ["Computer Science", "Computer Applications", "Java"],
+    "maths": ["Maths", "Math", "Mathematics"],
+    "history": ["History and Civics", "History & Civics", "Civics"],
+    "englishlang": ["English", "English Paper 1"],
+    "englishlit": ["English Paper 2", "Literature in English"],
+    "economics": ["Economics", "Economic Applications"],
+    "biology": ["Bio"],
+    "physics": ["Phy"],
+    "chemistry": ["Chem"]
+  },
+  "resourceKeywords": {
+    "englishlit-2027-solution-3": ["cinna the poet", "julius caesar act 3 scene 3", "cinna the poet questions and answers"],
+    "englishlit-2027-question-bank-3": ["cinna the poet", "julius caesar act 3 scene 3", "cinna the poet questions and answers"],
+    "englishlit-2027-note-5": ["with the photographer", "with the photographer notes", "the photographer class 10 icse"]
+  }
+}
