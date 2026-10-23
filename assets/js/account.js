@@ -177,10 +177,14 @@
     applyRemote(remote, false);
     if (status !== 'offline') setStatus('synced');
   }
+  // Only a real network problem counts as offline. Anything else (no database yet, rules not published,
+  // API not enabled or blocked by the key's restrictions) is a setup problem and is shown as such.
+  const NETWORK = ['unavailable', 'deadline-exceeded', 'cancelled', 'aborted'];
   function onSnapError(err) {
-    if (err && err.code === 'permission-denied') {
+    if (err) console.warn('Account sync:', err.code, err.message);
+    if (err && !NETWORK.includes(err.code)) {
       setStatus('error');
-      if (!warnedRules) { warnedRules = true; toast('Sync is not set up yet. Publish firestore.rules in Firebase.'); }
+      if (!warnedRules) { warnedRules = true; toast('Sync is not set up yet. Check Firestore in Firebase (see README).'); }
     } else setStatus('offline');
   }
 
@@ -228,8 +232,8 @@
         setStatus('synced');
         return true;
       } catch (e) {
-        if (e && e.code === 'permission-denied') onSnapError(e);
-        else { setStatus('offline'); clearTimeout(retryTimer); retryTimer = setTimeout(flush, retryMs); retryMs = Math.min(retryMs * 2, 60000); }
+        onSnapError(e);
+        clearTimeout(retryTimer); retryTimer = setTimeout(flush, retryMs); retryMs = Math.min(retryMs * 2, 60000);
         return false;
       } finally { flushing = null; }
     })();
