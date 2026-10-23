@@ -376,6 +376,10 @@ It uses **Firebase Authentication** and **Cloud Firestore** (free Spark plan is 
 
 ### How it behaves
 
+- **Email check.** Accounts made with an email and password must confirm the email (a link is sent on sign up). Until then nothing is saved to the account and the menu shows **I have verified** and **Resend email**. The site notices when the student comes back from the email tab. Google accounts are already verified. `firestore.rules` enforces this, so republish it after upgrading.
+- **Invitations for guests.** A quiet "Create a free account" message appears once per device after the first bookmark and after the first finished exam. A guest who taps **Saved** or **History** with nothing there yet is offered the sign up dialog.
+- **Account settings.** The menu has **Account settings** to change the name and (for email accounts) the password.
+
 - **Local first.** Everything is still written to the browser first, so the site is fast and works offline. When logged in, each change is also queued and sent to Firestore. The queue is saved in the browser, so a change made offline is sent next time the site opens.
 - **Signing in merges, never replaces.** Bookmarks, history and progress already on that device are added to the account. If both have a theme or sort order, the account's wins.
 - **Live sync.** A bookmark or theme changed on a phone appears on the laptop within a second or two.
@@ -444,7 +448,8 @@ node scripts/check-links.js      # every PDF path in resources.json exists, no d
 | Download counts stay at the starting number | The counter service may be blocked or down. The site still works. Counts are public and can be inflated, so treat them as a rough guide. |
 | "This website address is not allowed yet" when signing in | Add the domain under Firebase, Authentication, Settings, Authorized domains. |
 | "This sign-in method is not turned on yet" | Enable Email/Password and Google under Authentication, Sign-in method. |
-| Menu says "Sync is not set up yet" | Create the Firestore database and publish `firestore.rules`. Data stays on the device until then. |
+| Menu says "Sync is paused" | Create the Firestore database and publish `firestore.rules` (the newest version). Press F12, Console, for the exact reason. Data stays on the device meanwhile. |
+| Email account says "Waiting for email verification" | The student opens the link in the email (check spam), then returns to the site. **Resend email** sends it again. |
 | Google sign-in popup does not appear | Allow popups for the site. The site falls back to a redirect on browsers that block them. |
 | A PDF will not load | Check the `file` path in `resources.json` and that the file is in `pdfs/` on the `website` branch. |
 

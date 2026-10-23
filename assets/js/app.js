@@ -53,13 +53,13 @@
     return 'Added ' + new Date(r._date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
   }
 
-  function toast(msg) {
+  function toast(msg, ms) {
     const host = window.Viewer ? Viewer.fullscreenHost() : document.body;
     if (el.toasts.parentNode !== host) host.appendChild(el.toasts);
     const t = document.createElement('div');
     t.className = 'toast'; t.textContent = msg;
     el.toasts.appendChild(t);
-    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, 2600);
+    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 280); }, ms || 2600);
   }
 
   /* ---------- data ---------- */
