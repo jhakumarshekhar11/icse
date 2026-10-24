@@ -4618,6 +4618,36 @@
         "medulla",
         "urethra"
       ]
+    },
+    {
+      "id": "chemistry-2027-question-bank",
+      "title": "Chemistry Question Bank Chapter 1 to 3",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/chemistry-2027-question-bank.pdf",
+      "pages": 8,
+      "size_kb": 329,
+      "added": "2026-10-24",
+      "updated": "2026-10-24",
+      "downloads": 0,
+      "popular": true,
+      "description": "Question bank for Chemistry with answer key. Covers periodic table, chemical bonding and Acid Bases and Salts.",
+      "tags": [
+        "answer key",
+        "ionisation",
+        "ionic compounds",
+        "covalent compounds",
+        "sulphuric acid",
+        "group",
+        "electron affinity",
+        "atomic",
+        "valence electrons",
+        "element",
+        "sodium chloride",
+        "h₂so₄"
+      ]
     }
   ],
   "examDefaults": {
