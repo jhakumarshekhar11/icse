@@ -4603,8 +4603,9 @@
       "pages": 3,
       "size_kb": 99,
       "added": "2026-10-22",
-      "updated": "2026-10-22",
+      "updated": "2026-10-24",
       "downloads": 0,
+      "popular": true,
       "description": "Question bank for Biology. Covers excretory system.",
       "tags": [
         "mcq",
