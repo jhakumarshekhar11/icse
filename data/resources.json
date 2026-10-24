@@ -17,21 +17,21 @@
     {
       "id": "physics",
       "name": "Physics",
-      "accent": "#1e38a8",
+      "accent": "#0077b6",
       "code": "521",
       "altCode": "SCI1"
     },
     {
       "id": "chemistry",
       "name": "Chemistry",
-      "accent": "#f0abfc",
+      "accent": "#bf00ff",
       "code": "522",
       "altCode": "SCI2"
     },
     {
       "id": "biology",
       "name": "Biology",
-      "accent": "#86efac",
+      "accent": "#0e8f33",
       "code": "523",
       "altCode": "SCI3"
     },
