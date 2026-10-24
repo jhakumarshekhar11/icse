@@ -285,7 +285,7 @@ section[id] { scroll-margin-top: 84px; }
 .grp .ib { width: 32px; height: 32px; border-color: transparent; background: none; }
 .grp .ib:hover { background: var(--glass-hi); }
 .pg-in { display: inline-flex; align-items: center; gap: 6px; padding: 0 4px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
-.pg-in input { width: 3.1em; height: 30px; text-align: center; border-radius: 9px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); outline: 0; -moz-appearance: textfield; appearance: textfield; }
+.pg-in input { width: 3.1em; height: 30px; text-align: center; border-radius: 9px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); outline: 0; -moz-appearance: textfield; appearance: textfield; appearance: textfield; }
 .pg-in input::-webkit-outer-spin-button, .pg-in input::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
 .pg-in input:focus { border-color: var(--strong); box-shadow: 0 0 0 3px rgba(var(--w), 0.12); }
 .zl { min-width: 3.4em; text-align: center; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
@@ -544,7 +544,7 @@ html.theme-wiping.theme-wipe-up::view-transition-new(root) {
 .x-row label { font-weight: 550; }
 .x-step { display: inline-flex; align-items: center; gap: 6px; }
 .x-step .ib { width: 34px; height: 34px; font-size: 1.1rem; }
-.x-step input { width: 4.2em; height: 36px; text-align: center; border-radius: 10px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); color: inherit; font: inherit; outline: 0; -moz-appearance: textfield; }
+.x-step input { width: 4.2em; height: 36px; text-align: center; border-radius: 10px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); color: inherit; font: inherit; outline: 0; -moz-appearance: textfield; appearance: textfield; }
 .x-step input::-webkit-outer-spin-button, .x-step input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .x-step input:focus { border-color: var(--strong); box-shadow: 0 0 0 3px rgba(var(--w), 0.12); }
 .x-unit { color: var(--muted); font-size: 0.86rem; }
@@ -577,7 +577,7 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 .x-score { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding: 12px 0 2px; border-top: 1px solid var(--line); }
 .x-score label { font-weight: 550; }
 .x-in { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
-.x-score input { width: 4.4em; height: 36px; text-align: center; border-radius: 10px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); color: inherit; font: inherit; outline: 0; -moz-appearance: textfield; }
+.x-score input { width: 4.4em; height: 36px; text-align: center; border-radius: 10px; border: 1px solid var(--line); background: rgba(var(--w), 0.06); color: inherit; font: inherit; outline: 0; -moz-appearance: textfield; appearance: textfield; }
 .x-score input::-webkit-outer-spin-button, .x-score input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .x-score input:focus { border-color: var(--strong); box-shadow: 0 0 0 3px rgba(var(--w), 0.12); }
 .x-score input[aria-invalid="true"] { border-color: #ff7b7b; }
