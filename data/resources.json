@@ -73,14 +73,14 @@
     {
       "id": "commercialstudies",
       "name": "Commercial Studies",
-      "accent": "#f0abfc",
+      "accent": "#553b39",
       "code": "631",
       "altCode": "CST"
     },
     {
       "id": "economics",
       "name": "Economic Applications",
-      "accent": "#87efac",
+      "accent": "#b7410e",
       "code": "871",
       "altCode": "EAS"
     }
