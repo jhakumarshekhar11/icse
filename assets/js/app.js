@@ -789,6 +789,36 @@
     } catch (e) { /* no countdown if the file is missing or invalid */ }
   }
 
+
+  /* ---------- back to top: appears once the end of all resources has scrolled into view ---------- */
+  const topBtn = $('#toTop');
+  if (topBtn) {
+    let raf = 0, shown = false;
+    const setShown = (on) => {
+      if (on === shown) return;
+      shown = on;
+      topBtn.classList.toggle('on', on);
+      topBtn.setAttribute('aria-hidden', on ? 'false' : 'true');
+      topBtn.tabIndex = on ? 0 : -1;
+      document.body.classList.toggle('to-top-on', on);
+    };
+    const checkTop = () => {
+      raf = 0;
+      const g = el.grid.getBoundingClientRect();
+      const endReached = el.grid.children.length > 0 && g.bottom <= innerHeight + 40;   // last card is on screen, footer not needed
+      setShown(endReached && scrollY > innerHeight * 0.5);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(checkTop); };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    new MutationObserver(queue).observe(el.grid, { childList: true });   // filters, sort and search change the grid length
+    topBtn.addEventListener('click', () => {
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+    queue();
+  }
+
   /* ---------- init ---------- */
   (async function init() {
     $('#backLink').href = CFG.portfolioUrl;
