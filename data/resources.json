@@ -45,21 +45,21 @@
     {
       "id": "history",
       "name": "History & Civics",
-      "accent": "#fdba74",
+      "accent": "#8a6e51",
       "code": "501",
       "altCode": "HCG1"
     },
     {
       "id": "geography",
       "name": "Geography",
-      "accent": "#67e8f9",
+      "accent": "#2e8b57",
       "code": "502",
       "altCode": "HCG2"
     },
     {
       "id": "computer",
       "name": "Computer Applications",
-      "accent": "#fda4af",
+      "accent": "#007bff",
       "code": "861",
       "altCode": "CTA"
     },
