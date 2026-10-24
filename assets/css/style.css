@@ -754,3 +754,6 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 .act-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 html[data-theme="light"] .act-ic.ok { color: #16a34a; }
 html[data-theme="light"] .act-ic.bad { color: #dc2626; }
+
+/* the hidden attribute must win over display:grid on the account forms (hides Change password for Google users) */
+.ac-dlg [hidden] { display: none !important; }
