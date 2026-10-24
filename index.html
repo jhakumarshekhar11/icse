@@ -142,7 +142,7 @@
 
     <section class="block" id="library" aria-labelledby="hLib">
       <div class="block-head"><h2 id="hLib">All resources</h2></div>
-      <div class="filters glass" id="filters" title="Pick one or more in each row">
+      <div class="filters glass" id="filters" title="Pick one or more in each row" hidden>
         <div class="frow" id="rowClass" hidden><label>Class</label><div class="chips" id="chipsClass"></div></div>
         <div class="frow"><label>Subject</label><div class="chips" id="chipsSubject"></div></div>
         <div class="frow"><label>Type</label><div class="chips" id="chipsType"></div></div>
@@ -150,10 +150,16 @@
       </div>
       <div class="toolbar">
         <p class="count" id="count" aria-live="polite"></p>
-        <div class="seg glass" role="group" aria-label="Sort resources" id="sortSeg">
-          <button type="button" data-sort="year" aria-pressed="true">By year</button>
-          <button type="button" data-sort="old" aria-pressed="false">Oldest first</button>
-          <button type="button" data-sort="popular" aria-pressed="false">Most downloaded</button>
+        <div class="tb-right">
+          <button type="button" class="pill tb-btn" id="filterBtn" aria-expanded="false" aria-controls="filters">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg><span>Filters</span><i class="fcount" id="filterCount" hidden></i>
+          </button>
+          <button type="button" class="pill tb-btn" id="popBtn" aria-pressed="false" title="Show only popular resources">Popular</button>
+          <div class="seg glass" role="group" aria-label="Sort resources" id="sortSeg">
+            <button type="button" data-sort="year" aria-pressed="true">By year</button>
+            <button type="button" data-sort="old" aria-pressed="false">Oldest first</button>
+            <button type="button" data-sort="popular" aria-pressed="false">Top downloads</button>
+          </div>
         </div>
       </div>
       <div class="grid" id="grid"></div>

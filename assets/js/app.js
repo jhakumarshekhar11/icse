@@ -9,7 +9,7 @@
     strip: $('#strip'), subjects: $('#subjectGrid'), grid: $('#grid'), count: $('#count'),
     chipsClass: $('#chipsClass'), rowClass: $('#rowClass'), chipsSubject: $('#chipsSubject'),
     chipsType: $('#chipsType'), chipsYear: $('#chipsYear'), sort: $('#sortSeg'),
-    savedBtn: $('#savedBtn'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
+    savedBtn: $('#savedBtn'), filterBtn: $('#filterBtn'), filterCount: $('#filterCount'), filters: $('#filters'), popBtn: $('#popBtn'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
     spot: $('#spot'), page: $('#page'),
     dlg: $('#shareDlg'), shName: $('#shName'), shLink: $('#shLink'), shQr: $('#shQr'),
     shCopy: $('#shCopy'), shNative: $('#shNative'), shWa: $('#shWa'), shReport: $('#shReport'), shClose: $('#shClose'),
@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false,
+    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false, popOnly: false,
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -181,6 +181,7 @@
     const tokens = state.rest.split(/\s+/).filter(Boolean);
     const list = state.res.filter((r) =>
       (!state.savedOnly || state.saved.has(r.id)) &&
+      (!state.popOnly || isPopular(r)) &&
       (!state.cls.length || state.cls.includes(r.class)) &&
       (!state.subject.length || state.subject.includes(r.subject)) &&
       (!state.type.length || state.type.includes(r.type)) &&
@@ -197,10 +198,11 @@
     // The chosen sort (By year / Oldest first / Most downloaded) still applies inside each subject.
     const order = CFG.subjectOrder || [];
     const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
-    const grouped = !filtering();
+    // Grouped by subject, also for Top downloads and the Popular filter (those only reorder inside each subject)
+    const grouped = !(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
     return list.sort((a, b) => (grouped ? rank(a) - rank(b) : 0) || by(a, b));
   }
-  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
+  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.popOnly);
 
   /* ---------- rendering ---------- */
   function badges(r) {
@@ -316,6 +318,9 @@
     el.chipsYear.innerHTML = chip('All', '', allOf('year')) + options('year').map((y) => chip(y, y, on('year', y))).join('');
     el.sort.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sort === state.sort));
     el.savedBtn.setAttribute('aria-pressed', state.savedOnly);
+    el.popBtn.setAttribute('aria-pressed', state.popOnly);
+    const nf = ['cls', 'subject', 'type', 'year'].filter((k) => state[k].length).length;
+    el.filterCount.textContent = nf; el.filterCount.hidden = !nf;
     el.savedCount.textContent = state.saved.size;
   }
 
@@ -580,7 +585,7 @@
     el.q.focus({ preventScroll: true }); el.q.select();
   }
   function resetAll() {
-    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false });
+    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, popOnly: false });
     el.q.value = ''; renderChips(); renderGrid(); syncQueryUrl();
   }
 
@@ -609,6 +614,11 @@
     window.dispatchEvent(new CustomEvent('icse:pref', { detail: { key: 'sort', value: state.sort } }));   // account sync
     renderChips(); renderGrid();
   });
+  el.filterBtn.addEventListener('click', () => {
+    const open = el.filters.hidden;
+    el.filters.hidden = !open; el.filterBtn.setAttribute('aria-expanded', open);
+  });
+  el.popBtn.addEventListener('click', () => { state.popOnly = !state.popOnly; renderChips(); renderGrid(); });
   el.savedBtn.addEventListener('click', () => {
     state.savedOnly = !state.savedOnly; renderChips(); renderGrid();
     if (state.savedOnly) $('#library').scrollIntoView({ behavior: 'smooth' });
