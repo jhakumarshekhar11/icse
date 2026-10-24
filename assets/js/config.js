@@ -13,6 +13,9 @@ window.ICSE_CONFIG = {
   notice: "Free for personal study. If you share these, please credit Shekhar Kumar Jha.",
 
   // "Report an error" opens an email to this address. CHANGE THIS to your own.
+  // Google Analytics 4 measurement ID (public). Leave "" to switch visitor statistics off.
+  analyticsId: "G-6XLM3D1V87",
+
   reportEmail: "jhakumarshekhar11@gmail.com",
 
   // Badges
