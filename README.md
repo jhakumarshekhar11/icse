@@ -421,6 +421,10 @@ On Render, add environment variables `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`,
 
 ---
 
+### Your own page for email links
+
+Confirm-email, reset-password and undo-email-change links open `/auth/action/` on this site instead of the plain Firebase page. One-time setup: Firebase console > Authentication > Templates > click the pencil on "Email address verification" > "Customize action URL" > enter `https://icse.shekharjha.tech/auth/action/` > Save. It applies to all the email templates. The page is `auth/action/index.html` with `assets/js/action.js`; it is hidden from search engines.
+
 ## Running locally
 
 PDF.js needs a web server, not `file://`.

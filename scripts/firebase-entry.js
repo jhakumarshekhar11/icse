@@ -7,7 +7,8 @@ import {
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
   signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut,
   sendPasswordResetEmail, updateProfile, sendEmailVerification, updatePassword,
-  reauthenticateWithCredential, EmailAuthProvider
+  reauthenticateWithCredential, EmailAuthProvider,
+  applyActionCode, checkActionCode, verifyPasswordResetCode, confirmPasswordReset
 } from 'firebase/auth';
 import {
   getFirestore, initializeFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp, deleteField, FieldPath
@@ -19,5 +20,6 @@ window.ICSE_FB = {
   signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut,
   sendPasswordResetEmail, updateProfile, sendEmailVerification, updatePassword,
   reauthenticateWithCredential, EmailAuthProvider,
+  applyActionCode, checkActionCode, verifyPasswordResetCode, confirmPasswordReset,
   getFirestore, initializeFirestore, doc, setDoc, updateDoc, onSnapshot, serverTimestamp, deleteField, FieldPath
 };

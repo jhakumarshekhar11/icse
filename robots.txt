@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /admin
+Disallow: /auth/
 Allow: /
 
 Sitemap: https://icse.shekharjha.tech/sitemap.xml

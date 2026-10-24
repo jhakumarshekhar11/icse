@@ -739,3 +739,18 @@ html[data-exam-lock] #vDl, html[data-exam-lock] #vShare, html[data-exam-lock] .v
 .seo-copy summary { cursor: pointer; font-weight: 600; color: var(--text); list-style: none; }
 .seo-copy summary::-webkit-details-marker { display: none; }
 .seo-copy details p { margin-top: 6px; }
+
+/* ---------- Email link page (/auth/action/) ---------- */
+.act-wrap { max-width: 520px; }
+.act-wrap .act { margin-top: 26px; display: grid; justify-items: start; gap: 14px; padding: 26px; }
+.act-ic { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; border: 1px solid var(--line-hi); background: var(--glass-hi); }
+.act-ic svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.act-ic.ok { color: #4ade80; }
+.act-ic.bad { color: #ff7b7b; }
+.act-ic.key, .act-ic.wait { color: var(--strong); }
+.act-p { color: var(--muted); line-height: 1.55; }
+.act .ac-form { width: 100%; }
+.act .ac-form .btn { width: 100%; justify-content: center; }
+.act-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+html[data-theme="light"] .act-ic.ok { color: #16a34a; }
+html[data-theme="light"] .act-ic.bad { color: #dc2626; }

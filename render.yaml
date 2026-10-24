@@ -23,6 +23,9 @@ services:
       - type: rewrite
         source: /tos
         destination: /tos/index.html
+      - type: rewrite
+        source: /auth/action
+        destination: /auth/action/index.html
       # /admin serves the admin console
       - type: rewrite
         source: /admin
@@ -31,6 +34,12 @@ services:
         source: /admin/
         destination: /admin/index.html
     headers:
+      - path: /auth/*
+        name: X-Robots-Tag
+        value: noindex, nofollow
+      - path: /auth/*
+        name: Cache-Control
+        value: no-store
       - path: /admin
         name: X-Robots-Tag
         value: noindex, nofollow, noarchive
