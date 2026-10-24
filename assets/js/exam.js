@@ -304,14 +304,19 @@
     try { a.currentTime = 0; const p = a.play(); if (p && p.catch) p.catch(() => { /* blocked or file missing: stay silent */ }); } catch (e) { /* no sound is fine */ }
   }
   // Browsers only allow sound after a tap. Starting an exam is a tap. After a reload, the first tap unlocks it.
+  // Plays the sound once, muted, so the browser lets it play later. Returns a promise that settles when that is done.
+  function unlockAudio() {
+    primed = true;
+    const a = getAudio();
+    if (!a) return Promise.resolve();
+    return new Promise((res) => {
+      const done = () => { try { a.pause(); a.currentTime = 0; } catch (e) { /* ignore */ } a.muted = false; res(); };
+      try { a.muted = true; const p = a.play(); if (p && p.then) p.then(done, () => { a.muted = false; res(); }); else done(); } catch (e) { a.muted = false; res(); }
+    });
+  }
   function armPrime() {
     if (primed || !getAudio()) return;
-    document.addEventListener('pointerdown', () => {
-      primed = true;
-      const a = getAudio();
-      const done = () => { try { a.pause(); a.currentTime = 0; } catch (e) { /* ignore */ } a.muted = false; };
-      try { a.muted = true; const p = a.play(); if (p && p.then) p.then(done, () => { a.muted = false; }); else done(); } catch (e) { a.muted = false; }
-    }, { once: true, capture: true });
+    document.addEventListener('pointerdown', () => { unlockAudio(); }, { once: true, capture: true });
   }
 
   /* ---------- keep the screen awake while an exam runs ---------- */
@@ -451,7 +456,9 @@
       });
       const startBtn = primary('Start exam', async () => {
         startBtn.disabled = true; startBtn.textContent = 'Preparing\u2026';
-        const [d, m] = await Promise.all([det, meta]);
+        // Unlock the beep here, inside the tap: phones refuse to play a sound that is first started after a wait
+        const unlocked = beepPref() ? unlockAudio() : Promise.resolve();
+        const [d, m] = await Promise.all([det, meta, unlocked]);
         if (mine !== dlgToken || el.dlg.hidden) return;
         if (m.minutes && !touchedTime) writing = m.minutes;
         begin(res, writing, reading ? rm : 0, d.from >= 2 ? d.from : 0, m.marks || total);
@@ -580,10 +587,12 @@
     if (!S) return;
     const s = S, sc = s.scale || 1;
     const used = Math.min(s.writingMs, Math.max(0, Date.now() - s.readingEnd)) * sc;
+    // Save the attempt before the running exam is cleared, so another tab that sees the exam disappear finds the result
+    const att = reason === 'cancelled' ? null : record(s, reason, used);
     S = null; save(); refresh();
     if (reason === 'cancelled') { toast('Exam cancelled'); return; }
     if (reason === 'timeup') beep();   // writing time is over
-    showEnd(s, reason, used, record(s, reason, used));
+    showEnd(s, reason, used, att);
   }
 
   function showEnd(s, reason, usedMs, att) {
@@ -766,8 +775,19 @@
   root.addEventListener('viewer:close', refresh);
   document.addEventListener('visibilitychange', () => { tick(); if (S) wake(true); });   // the wake lock is released when the tab is hidden
   root.addEventListener('storage', (e) => {
-    if (e.key === KEY) { S = load(); last = 0; refresh(); }
-    else if (e.key === HKEY) { hist = loadHist(); root.dispatchEvent(new Event('exam:history')); }
+    if (e.key === KEY) {
+      const prev = S;
+      S = load(); last = 0;
+      refresh();
+      // The exam this tab was running was ended in another tab (time up, finished or cancelled): say so here too,
+      // instead of the timer silently vanishing. The other tab already saved the attempt.
+      if (prev && (!S || S.startedAt !== prev.startedAt)) {
+        hist = loadHist();
+        const att = hist.find((x) => x.sid === prev.startedAt && x.rid === prev.id) || null;
+        if (att) showEnd(prev, att.reason, att.usedMs, att);
+        else toast('Exam cancelled');
+      }
+    } else if (e.key === HKEY) { hist = loadHist(); root.dispatchEvent(new Event('exam:history')); }
   });
 
   /* ---------- start up ---------- */

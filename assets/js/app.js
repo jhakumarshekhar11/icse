@@ -194,12 +194,12 @@
       old: (a, b) => a._date - b._date || a.title.localeCompare(b.title),
       popular: (a, b) => dlCount(b) - dlCount(a) || a.title.localeCompare(b.title)
     }[state.sort] || ((a, b) => Number(a.year) - Number(b.year) || a.title.localeCompare(b.title));
-    // With no filter or search active, group by subject in the order set in config.js (subjectOrder).
-    // The chosen sort (By year / Oldest first / Most downloaded) still applies inside each subject.
+    // With no filter or search active, "By year" groups by subject in the order set in config.js (subjectOrder),
+    // and sorts by year inside each subject. "Oldest first" and "Top downloads" sort the whole list exactly as
+    // their label says, with no subject grouping.
     const order = CFG.subjectOrder || [];
     const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
-    // Grouped by subject, also for Top downloads and the Popular filter (those only reorder inside each subject)
-    const grouped = !(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
+    const grouped = state.sort === 'year' && !(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
     return list.sort((a, b) => (grouped ? rank(a) - rank(b) : 0) || by(a, b));
   }
   const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.popOnly);
@@ -504,6 +504,9 @@
 
   /* ---------- reader + deep links ---------- */
   function openReader(r, page, exam) {
+    // One exam at a time: asking for a second one must not open that paper's reader first
+    const running = exam && window.Exam && Exam.active ? Exam.active() : null;
+    if (running && running.id !== r.id) { toast('Finish your current exam first'); return; }
     const u = new URL(location.href);
     u.searchParams.set('file', r.id);
     page ? u.searchParams.set('page', page) : u.searchParams.delete('page');
