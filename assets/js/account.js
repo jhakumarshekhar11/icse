@@ -294,6 +294,7 @@
     if (synced) wipeLocal();
     else { LS.del(K.hint); LS.del(K.queue); queue = {}; }   // never synced (for example an unverified email): keep what is on this device
     status = 'idle';
+    if (root.icseTrack) root.icseTrack.user('guest');
     renderNav(); closeMenu();
     emit('account:state', { user: null });
   }
@@ -303,9 +304,19 @@
   const needsVerify = (u) => !!u && isPasswordUser(u) && !u.emailVerified;
   let verifyPending = false, resendAt = 0;
 
+  // Visitor statistics (only if analytics is on): a signed in flag, plus a sign up or log in event with the method.
+  // Never the email, name or account id.
+  function track(u) {
+    const T = root.icseTrack; if (!T) return;
+    T.user('signed_in');
+    if (!justLoggedIn) return;
+    const m = u.metadata || {}, p = u.providerData && u.providerData[0];
+    T.event(m.creationTime && m.creationTime === m.lastSignInTime ? 'sign_up' : 'login', { method: p && p.providerId === 'google.com' ? 'google' : 'email' });
+  }
   function startSession(u) {
     user = u;
     saveHint(u);
+    track(u);
     initialDone = false; docExists = false; mirror = null;
     if (unsub) { unsub(); unsub = null; }
     renderNav(); closeDialog();

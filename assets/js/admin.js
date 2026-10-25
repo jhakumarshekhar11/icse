@@ -125,6 +125,7 @@
   }
   function signOut(msg) {
     GH.signOut(); SS.del('icse:adm:t'); SS.del('icse:adm:last');
+    window.dispatchEvent(new Event('adm:signout'));   // the Analytics tab drops its Google access
     state.user = null; state.selected.clear();
     while (modals.length) modals[modals.length - 1].close();
     if (window.Viewer && Viewer.isOpen()) Viewer.close();
@@ -1027,6 +1028,7 @@
     if (tab === 'taxonomy' && (!state.tax || !state.tax.dirty)) resetTax();
     if (tab === 'taxonomy' && (!state.xd || !state.xd.dirty)) resetXd();
     if (tab === 'activity') renderActivity();
+    window.dispatchEvent(new CustomEvent('adm:tab', { detail: tab }));   // admin-analytics.js starts and stops its live refresh
   }
   $('.tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) show(b.dataset.tab); });
 
