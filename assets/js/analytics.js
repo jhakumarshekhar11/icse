@@ -11,6 +11,16 @@
   function gtag() { window.dataLayer.push(arguments); }
   window.gtag = gtag;
   gtag('js', new Date());
+  // Whether this visitor has an account on this browser: a yes/no flag only (never the email or any id).
+  // Set before the first page view, so the admin Analytics page can split visitors into signed in and guests.
+  var acct = false;
+  try { acct = !!localStorage.getItem('icse:acct'); } catch (e) {}
+  gtag('set', 'user_properties', { account_status: acct ? 'signed_in' : 'guest' });
+  // Used by account.js to report sign ups, log ins and the flag above when it changes
+  window.icseTrack = {
+    user: function (status) { gtag('set', 'user_properties', { account_status: status }); },
+    event: function (name, params) { gtag('event', name, params || {}); }
+  };
   gtag('config', id, { anonymize_ip: true, allow_google_signals: false, allow_ad_personalization_signals: false });
   var s = document.createElement('script');
   s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);

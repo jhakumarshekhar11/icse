@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#000000">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://api.github.com https://abacus.jasoncameron.dev blob: data:; worker-src 'self' blob:; base-uri 'self'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://api.github.com https://abacus.jasoncameron.dev https://analyticsdata.googleapis.com https://accounts.google.com blob: data:; frame-src https://accounts.google.com/gsi/; worker-src 'self' blob:; base-uri 'self'; form-action 'none'; object-src 'none'">
   <script src="/assets/js/theme-boot.js"></script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +95,7 @@
         <button role="tab" data-tab="library" aria-selected="false">Library <span class="n" id="libCount">0</span></button>
         <button role="tab" data-tab="taxonomy" aria-selected="false">Subjects and types</button>
         <button role="tab" data-tab="activity" aria-selected="false">Activity</button>
+        <button role="tab" data-tab="analytics" aria-selected="false">Analytics</button>
       </nav>
     </header>
 
@@ -163,6 +164,7 @@
           <div class="glass tax-card"><h2>Change history</h2><div id="histList" class="act-list"></div></div>
         </div>
       </section>
+      <section id="tab-analytics" data-panel="analytics" hidden><div id="anHost" class="an"></div></section>
     </main>
   </div>
 </div>
@@ -210,6 +212,7 @@
 <script src="/assets/js/viewer.js"></script>
 <script src="/assets/js/admin-keywords.js"></script>
 <script src="/assets/js/admin.js"></script>
+<script src="/assets/js/admin-analytics.js"></script>
 <script src="/assets/js/to-top.js"></script>
 </body>
 </html>

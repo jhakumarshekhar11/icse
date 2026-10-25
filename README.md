@@ -200,6 +200,24 @@ The top bar has **Undo last change** (reverts the latest `[admin]` commit as a n
 
 ---
 
+## Analytics page
+
+The admin **Analytics** tab shows your Google Analytics 4 numbers: visitors right now (last 30 minutes), visits over a chosen period compared with the period before, visitors per day, signed in against guest visitors, new sign ups and log ins, countries, devices, where visits come from, and the most opened papers.
+
+It reads Google directly from your browser. There is no server and no secret key on the site: you press **Connect Google Analytics**, sign in with Google, and get an access token that lasts about an hour and is kept in memory only. It is dropped when you disconnect or sign out of admin.
+
+**One-time setup** (the tab shows the same steps):
+
+1. Copy the numeric **Property ID** (Analytics, Admin, Property details) into `assets/js/admin-config.js` as `analytics.propertyId`.
+2. In Google Cloud Console (the Firebase project works), enable **Google Analytics Data API**.
+3. OAuth consent screen: External, add yourself under Test users. Testing mode is fine.
+4. Credentials, OAuth client ID, **Web application**, Authorised JavaScript origin `https://icse.shekharjha.tech`. Copy the Client ID into `admin-config.js` as `analytics.clientId`.
+5. For the signed in / guest split: Analytics, Admin, Custom definitions, **Create custom dimension**, name `Account status`, scope **User**, user property `account_status`. It fills in from the day you create it.
+
+**What the site sends to Analytics:** `analytics.js` sets a user property `account_status` (`signed_in` or `guest`), and `account.js` sends the standard `sign_up` and `login` events with a `method` (`google` or `email`). Never an email, name or account id. Sign ups before you deployed this are not counted, and the page cannot show the total number of accounts ever created (that lives in Firebase, which the browser cannot list).
+
+The admin page's security policy (`<meta http-equiv="Content-Security-Policy">` in `admin/index.html`) allows Google's sign-in script and `analyticsdata.googleapis.com` for this tab only.
+
 ## Timed exam mode
 
 Every paper type listed in `exam.types` gets a **Timed exam** button on its card, in the reader and on its own page.
