@@ -566,7 +566,10 @@
   // Starting filters from ?q= / ?subject= / ?type= / ?year= or from a generated landing page
   function readStartFilters() {
     const p = new URLSearchParams(location.search);
-    const pre = Object.assign({}, window.__PRESET || {});
+    // Landing pages carry their starting filters in a JSON data block (an inline script would break the CSP)
+    let seo = {};
+    try { const el = document.getElementById('seo-preset'); if (el) seo = JSON.parse(el.textContent) || {}; } catch (e) { /* ignore */ }
+    const pre = Object.assign({}, seo);
     ['subject', 'type', 'year'].forEach((k) => { if (p.get(k)) pre[k] = p.get(k); });
     const norm = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, '');
     const list = (v) => String(v).split(',').map((x) => x.trim()).filter(Boolean);

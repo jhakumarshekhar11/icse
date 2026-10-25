@@ -111,9 +111,8 @@ function main() {
     const shell = fs.readFileSync(shellFile, 'utf8');
     const headRe = /<title>[\s\S]*?(?=<meta name="theme-color")/, mainRe = /<main class="wrap about">[\s\S]*?<\/main>/;
     if (!headRe.test(shell) || !mainRe.test(shell)) throw new Error('about/index.html shape not recognised');
-    const hit = "<script>(function(){var b=document.getElementById('dl');if(!b)return;b.addEventListener('click',function(){var c=(window.ICSE_CONFIG||{}).counter,id=b.getAttribute('data-id');if(!c||!c.enabled||!id)return;try{if(sessionStorage.getItem('icse:hit:'+id))return;sessionStorage.setItem('icse:hit:'+id,'1');}catch(e){}fetch(c.baseUrl+'/hit/'+c.namespace+'/'+encodeURIComponent(id),{keepalive:true}).catch(function(){});});})();</script>";
-    // While a timed exam with a hidden marking scheme runs on this paper, the Download button is switched off
-    const lock = "<script>(function(){try{var s=JSON.parse(localStorage.getItem('icse:exam:active')),b=document.getElementById('dl');if(s&&b&&s.lockFrom>1&&Date.now()<s.writingEnd&&s.id===b.getAttribute('data-id')){b.removeAttribute('href');b.removeAttribute('download');b.setAttribute('aria-disabled','true');b.textContent='Download opens when your exam ends';b.style.opacity='.5';b.style.pointerEvents='none';}}catch(e){}})();</script>";
+    // Download counter and the exam lock on the Download button live in assets/js/paper-page.js (no inline script, for the CSP)
+    const paperJs = '<script src="/assets/js/paper-page.js"></script>';
     let made = 0;
     live.forEach((r) => {
       const url = paperUrls.get(r), heading = headings.get(r), subj = subjName(r), one = singular(r.type), canon = SITE + url;
@@ -171,8 +170,7 @@ function main() {
       <p class="paper-note">ICSE Resources is an independent project and is not affiliated with CISCE. Exam names and papers belong to their respective owners.</p>
     </section>
     <a class="btn btn-primary back-cta" href="/">Browse all resources</a>
-    ${hit}
-    ${lock}
+    ${paperJs}
   </main>`;
       const ld = [
         { '@context': 'https://schema.org', '@type': 'LearningResource', name: heading, description: r.description || undefined, url: canon,
@@ -333,7 +331,7 @@ function main() {
       '<meta property="og:image:height" content="630">',
       '<meta name="twitter:card" content="summary_large_image">',
       `<meta name="twitter:image" content="${SITE}/assets/og.jpg">`,
-      meta.preset ? `<script>window.__PRESET=${JSON.stringify(meta.preset).replace(/</g, '\\u003c')};</script>` : '',
+      meta.preset ? `<script type="application/json" id="seo-preset">${JSON.stringify(meta.preset).replace(/</g, '\\u003c')}</script>` : '',
       ...meta.ld.map(jsonLd)
     ].filter(Boolean).join('\n  ');
     const body = `<section class="seo-static">${meta.copy || `<div class="seo-copy"><h2>${esc(meta.heading)}</h2><p>${esc(meta.intro)}</p></div>`}<div class="seo-list">${meta.list}</div></section>`;

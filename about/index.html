@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>(function(){var t=null;try{t=localStorage.getItem('icse:theme');}catch(e){}if(t!=='light'&&t!=='dark'){t=(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';}document.documentElement.dataset.theme=t;})();</script>
+  <script src="/assets/js/theme-boot.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>About | ICSE Class 10 Resources</title>
   <meta name="description" content="About ICSE Class 10 Resources: a free, independent library of ICSE Class X previous year papers, specimen papers, sample papers, question banks, maps and notes, made by Shekhar Kumar Jha.">
@@ -114,12 +114,6 @@
 <script src="/assets/js/firebase-config.js"></script>
 <script src="/assets/js/account.js"></script>
 <script src="/assets/js/to-top.js"></script>
-<script>
-  (function () {
-    var c = window.ICSE_CONFIG || {};
-    if (c.notice) document.getElementById('notice').textContent = c.notice;
-    if (c.reportEmail) { var m = document.getElementById('mail'); m.href = 'mailto:' + c.reportEmail; m.textContent = c.reportEmail; }
-  })();
-</script>
+<script src="/assets/js/page-notice.js"></script>
 </body>
 </html>
