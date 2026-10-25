@@ -38,7 +38,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 | **Sorting:** By year (default), Oldest first, Most downloaded. | **Every change is one Git commit**, so Render redeploys on its own and Undo is one click. |
 | **In-page PDF reader** with zoom, page jump, fullscreen, pinch and swipe. | **SEO built at deploy time:** a page for every subject, type, year and paper, plus a sitemap. |
 | **Timed exams** with reading time, a countdown, a beep, History and scores. The marking scheme stays hidden until time is up. | **Per-subject exam defaults** for writing time and total marks, editable in the admin. |
-| **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. **Optional accounts** (email or Google) sync bookmarks, history, progress and theme, with a "Continue where you left off" row. | **Download counter** with no database (a free hit-counter service). |
+| **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. **Optional accounts** (email or Google) sync bookmarks, history, progress and theme, with a "Continue where you left off" row. | **Download counter** kept in your own Firebase project (one Firestore document). |
 | **Countdown to ICSE 2027**, read from the server clock, so a wrong phone clock cannot change it. | **Light and dark mode** on the site and the admin. They follow the device until you pick one. |
 
 ---
@@ -296,7 +296,7 @@ for (const r of list) {
 | `portfolioUrl`, `notice` | The back link and the footer line. |
 | `reportEmail` | Where "Report an error" emails go. |
 | `newDays`, `popularMin` | A resource is **New** for this many days. **Popular** from this many downloads. |
-| `counter` | Download counter: `enabled`, `baseUrl`, `namespace`, `cacheMinutes`. |
+| `counter` | Download counter: `enabled`, `doc` (the Firestore document, default `stats/downloads`), `cacheMinutes`. Needs the rules in `firestore.rules.counter`. |
 | `subjectOrder` | Order of subjects (by id) when no filter or search is active. |
 | `quickSearches` | The suggestion chips under the search bar. |
 | `exam.types` | Types that get a timed exam. |
@@ -467,7 +467,7 @@ node scripts/check-links.js      # every PDF path in resources.json exists, no d
 | WhatsApp shows no share image | Check `/assets/og.jpg` opens in a browser, then refresh the preview with the Facebook Sharing Debugger. |
 | "Timed exam" start dialog says it could not check for a marking scheme | The PDF loaded slowly or failed. Set `msFrom` on the paper by hand. |
 | Wrong time or marks in an exam | Set `minutes` and `marks` on the paper (admin Edit sheet), or fix the subject defaults. |
-| Download counts stay at the starting number | The counter service may be blocked or down. The site still works. Counts are public and can be inflated, so treat them as a rough guide. |
+| Download counts stay at the starting number | Firebase is not set up, the rules from `firestore.rules.counter` are not published, or Firestore is unreachable. Press F12, Network, and look at the request to `firestore.googleapis.com` (a 403 means the rules). The site still works. Counts are public and can be inflated, so treat them as a rough guide. |
 | "This website address is not allowed yet" when signing in | Add the domain under Firebase, Authentication, Settings, Authorized domains. |
 | "This sign-in method is not turned on yet" | Enable Email/Password and Google under Authentication, Sign-in method. |
 | Menu says "Sync is paused" | Create the Firestore database and publish `firestore.rules` (the newest version). Press F12, Console, for the exact reason. Data stays on the device meanwhile. |

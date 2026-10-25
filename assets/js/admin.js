@@ -151,15 +151,12 @@
     state.data = data; renderAll();
   }
   async function loadCounts() {
-    const c = CFG.counter; if (!c || !c.enabled) return;
-    let cache = null; try { cache = JSON.parse(localStorage.getItem('icse:counts')); } catch { /* none */ }
+    const c = CFG.counter, C = window.ICSE_COUNTER; if (!c || !c.enabled || !C || !C.ready()) return;
+    let cache = null; try { cache = JSON.parse(localStorage.getItem('icse:counts2')); } catch { /* none */ }
     if (cache && Date.now() - cache.t < 6e5) { state.live = cache.v; renderLibrary(); return; }
-    const v = {};
-    await Promise.allSettled(state.data.resources.map(async (r) => {
-      const res = await fetch(`${c.baseUrl}/get/${c.namespace}/${encodeURIComponent(r.id)}`);
-      if (res.ok) { const j = await res.json(); v[r.id] = Number(j.value) || 0; }
-    }));
-    if (Object.keys(v).length) { state.live = v; try { localStorage.setItem('icse:counts', JSON.stringify({ t: Date.now(), v })); } catch { /* ignore */ } }
+    const v = await C.fetchAll();            // one request for every paper; null if it failed
+    if (v) { state.live = v; try { localStorage.setItem('icse:counts2', JSON.stringify({ t: Date.now(), v })); } catch { /* ignore */ } }
+    else if (cache) state.live = cache.v;
     renderLibrary();
   }
   async function refreshHead() {

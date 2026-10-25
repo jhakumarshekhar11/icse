@@ -22,15 +22,13 @@ window.ICSE_CONFIG = {
   newDays: 30,          // "New" if added within this many days
   popularMin: 1000,     // "Popular" if downloads reach this number (or set "popular": true in the JSON)
 
-  // Download counter. A static site has no database, so counts are kept by a
-  // free hit-counter service (Abacus). Counts in resources.json are used as the
-  // starting value, and live clicks are added on top. If the service is
-  // unreachable the site still works and just shows the starting numbers.
-  // Set enabled to false to turn it off completely.
+  // Download counter. Counts are kept in your Firebase project (Cloud Firestore), in one document
+  // (stats/downloads), see assets/js/counter.js and firestore.rules.counter. Counts in resources.json are
+  // used as the starting value, and live clicks are added on top. If Firebase is not set up or unreachable
+  // the site still works and just shows the starting numbers. Set enabled to false to turn it off completely.
   counter: {
     enabled: true,
-    baseUrl: "https://abacus.jasoncameron.dev",
-    namespace: "icse-shekharjha-tech",   // keep this unique to your site
+    doc: "stats/downloads",
     cacheMinutes: 10
   },
 

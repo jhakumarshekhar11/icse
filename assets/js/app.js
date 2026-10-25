@@ -421,16 +421,13 @@
 
   /* ---------- downloads + counter ---------- */
   async function loadCounts() {
-    const c = CFG.counter;
-    if (!c || !c.enabled) return;
-    const cache = store.get('icse:counts', null);
+    const c = CFG.counter, C = window.ICSE_COUNTER;
+    if (!c || !c.enabled || !C || !C.ready()) return;
+    const cache = store.get('icse:counts2', null);
     if (cache && Date.now() - cache.t < (c.cacheMinutes || 10) * 6e4) { state.live = cache.v; refreshCounts(); return; }
-    const v = {};
-    await Promise.allSettled(state.res.map(async (r) => {
-      const res = await fetch(`${c.baseUrl}/get/${c.namespace}/${encodeURIComponent(r.id)}`);
-      if (res.ok) { const j = await res.json(); v[r.id] = Number(j.value) || 0; }
-    }));
-    if (Object.keys(v).length) { state.live = v; store.set('icse:counts', { t: Date.now(), v }); }
+    const v = await C.fetchAll();            // one request for every paper; null if it failed
+    if (v) { state.live = v; store.set('icse:counts2', { t: Date.now(), v }); }
+    else if (cache) state.live = cache.v;    // keep the last good numbers instead of dropping to 0
     refreshCounts();
   }
   function download(r) {
@@ -438,9 +435,9 @@
     refreshCounts();
     toast('Download started');
     const c = CFG.counter, key = 'icse:hit:' + r.id;
-    if (c && c.enabled && !session.get(key)) {
+    if (c && c.enabled && window.ICSE_COUNTER && !session.get(key)) {
       session.set(key, '1');
-      fetch(`${c.baseUrl}/hit/${c.namespace}/${encodeURIComponent(r.id)}`, { keepalive: true }).catch(() => {});
+      window.ICSE_COUNTER.hit(r.id);
     }
   }
 
