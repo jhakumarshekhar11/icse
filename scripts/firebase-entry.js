@@ -5,7 +5,7 @@
 import { initializeApp } from 'firebase/app';
 import {
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut,
+  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInWithCredential, signOut,
   sendPasswordResetEmail, updateProfile, sendEmailVerification, updatePassword,
   reauthenticateWithCredential, EmailAuthProvider,
   applyActionCode, checkActionCode, verifyPasswordResetCode, confirmPasswordReset
@@ -17,7 +17,7 @@ import {
 window.ICSE_FB = {
   initializeApp,
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut,
+  signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signInWithCredential, signOut,
   sendPasswordResetEmail, updateProfile, sendEmailVerification, updatePassword,
   reauthenticateWithCredential, EmailAuthProvider,
   applyActionCode, checkActionCode, verifyPasswordResetCode, confirmPasswordReset,

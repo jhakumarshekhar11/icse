@@ -1,7 +1,8 @@
 // Admin "Analytics" tab: reads your Google Analytics 4 numbers (live and past) with the Google Analytics Data API.
 //
 // How it signs in: Google Identity Services opens Google's own sign-in popup in your browser. You get a short-lived
-// access token (about an hour) that is kept in memory only: never saved, never sent anywhere but Google.
+// access token (about an hour). It is kept for this browser tab only (sessionStorage) so a refresh does not lose it, and it is
+// renewed with one tap using the Google account you are signed in with on the site. It is never sent anywhere but Google.
 // There is no secret key anywhere on the site. The two settings in admin-config.js (property ID and OAuth client ID)
 // are public identifiers. Only a Google account with access to the GA4 property can read anything.
 (() => {
@@ -33,7 +34,31 @@
     { id: '365', label: 'Last 12 months', cur: ['364daysAgo', 'today'], prev: ['729daysAgo', '365daysAgo'], vs: 'the 12 months before' }
   ];
 
-  const S = { token: null, expiresAt: 0, client: null, gisReady: null, range: '28', titles: null, live: 0, liveTimer: 0, active: false, loading: false, error: '', resizeT: 0, last: null };
+  const S = { token: null, expiresAt: 0, client: null, gisReady: null, range: '28', titles: null, live: 0, liveTimer: 0, active: false, loading: false, error: '', resizeT: 0, last: null, silent: false, autoTried: false };
+
+  /* ---------- remembered sign-in ---------- */
+  // sessionStorage: the access token, for this tab only, so a refresh keeps the numbers on screen.
+  // localStorage: only a flag (and the email as a hint) that this browser has allowed Analytics before, so the
+  // next connect needs no account chooser. No token is ever kept in localStorage.
+  const TOK = 'icse:an:tok', OK = 'icse:an:ok';
+  const store = (area) => ({
+    get(k) { try { return area.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { area.setItem(k, v); } catch (e) { /* storage unavailable */ } },
+    del(k) { try { area.removeItem(k); } catch (e) { /* ignore */ } }
+  });
+  const ss = store(window.sessionStorage), ls = store(window.localStorage);
+  function siteEmail() {   // the Google account signed in on the main site (see account.js)
+    try { const h = JSON.parse(ls.get('icse:acct') || 'null'); return (h && h.e) || ''; } catch (e) { return ''; }
+  }
+  const remembered = () => { const v = ls.get(OK); return v && v !== '1' ? v : ''; };
+  const hintEmail = () => siteEmail() || remembered();
+  function restoreToken() {
+    try {
+      const v = JSON.parse(ss.get(TOK) || 'null');
+      if (v && v.t && v.x > Date.now()) { S.token = v.t; S.expiresAt = v.x; } else ss.del(TOK);
+    } catch (e) { ss.del(TOK); }
+  }
+  restoreToken();
 
   /* ---------- Google sign-in (access token, in memory only) ---------- */
   function loadGis() {
@@ -47,32 +72,48 @@
     });
     return S.gisReady;
   }
-  function connect() {
-    // Must be called straight from the tap: the browser blocks the Google popup otherwise
-    if (!(window.google && google.accounts && google.accounts.oauth2)) { loadGis().then(() => toast('Google sign-in is ready. Press Connect again.'), (e) => { S.error = e.message; render(); }); return; }
+  function connect(silent) {
+    // A normal connect must be called straight from the tap: the browser blocks the Google popup otherwise.
+    // A silent connect is tried without a tap and just falls back to the button if the browser blocks it.
+    if (!(window.google && google.accounts && google.accounts.oauth2)) { if (silent) return; loadGis().then(() => toast('Google sign-in is ready. Press Connect again.'), (e) => { S.error = e.message; render(); }); return; }
     if (!S.client) {
       S.client = google.accounts.oauth2.initTokenClient({
         client_id: AN.clientId.trim(), scope: SCOPE,
         callback: (r) => {
           if (!r || r.error || !r.access_token) {
+            if (S.silent) { S.silent = false; S.error = ''; render(); return; }
             S.error = r && r.error === 'access_denied' ? 'Access was not allowed. Press Connect and allow read access to Google Analytics.' : 'Google sign-in did not finish' + (r && r.error ? ' (' + r.error + ')' : '') + '.';
             render(); return;
           }
-          S.token = r.access_token; S.expiresAt = Date.now() + (Number(r.expires_in) || 3600) * 1000 - 60000; S.error = '';
+          S.token = r.access_token; S.expiresAt = Date.now() + (Number(r.expires_in) || 3600) * 1000 - 60000; S.error = ''; S.silent = false;
+          saveToken(); ls.set(OK, hintEmail() || '1');
           load();
         },
-        error_callback: (e) => { S.error = e && e.type === 'popup_closed' ? '' : 'Google sign-in could not open (' + ((e && e.type) || 'unknown') + '). Allow pop-ups for this page and try again.'; render(); }
+        error_callback: (e) => { if (S.silent) { S.silent = false; S.error = ''; render(); return; } S.error = e && e.type === 'popup_closed' ? '' : 'Google sign-in could not open (' + ((e && e.type) || 'unknown') + '). Allow pop-ups for this page and try again.'; render(); }
       });
     }
-    S.client.requestAccessToken({});
+    S.silent = !!silent;
+    const hint = hintEmail();
+    S.client.requestAccessToken(hint ? { hint } : {});
   }
-  function disconnect(msg) {
+  function saveToken() { ss.set(TOK, JSON.stringify({ t: S.token, x: S.expiresAt })); }
+  // Tried once per page load when this browser has allowed Analytics before
+  function autoConnect() {
+    if (S.autoTried || !configured || !ls.get(OK)) return;
+    S.autoTried = true;
+    loadGis().then(() => connect(true)).catch(() => {});
+  }
+  // keep = true (admin sign-out, expired access): drop the token but remember that Analytics was allowed, so the next
+  // connect is one tap. keep = false (the Disconnect button): forget it and revoke Google's access as well.
+  function disconnect(msg, keep) {
     const t = S.token; S.token = null; S.last = null; S.error = msg || '';
+    ss.del(TOK);
+    if (!keep) ls.del(OK);
     stopLive();
-    try { if (t && window.google && google.accounts && google.accounts.oauth2) google.accounts.oauth2.revoke(t, () => {}); } catch (e) { /* ignore */ }
+    try { if (!keep && t && window.google && google.accounts && google.accounts.oauth2) google.accounts.oauth2.revoke(t, () => {}); } catch (e) { /* ignore */ }
     render();
   }
-  window.addEventListener('adm:signout', () => disconnect(''));
+  window.addEventListener('adm:signout', () => disconnect('', true));
 
   /* ---------- Data API ---------- */
   async function api(method, body) {
@@ -234,7 +275,7 @@
   function setupGuide(collapsed) {
     const inner = `
       <h2>One-time setup</h2>
-      <p class="hint">Takes about 10 minutes. Nothing secret is stored on your site: you sign in with Google each time you open this page.</p>
+      <p class="hint">Takes about 10 minutes. Nothing secret is stored on your site. The access token stays in this browser tab for about an hour, and a flag remembers that you allowed it, so reconnecting is one tap.</p>
       <ol>
         <li><b>Property ID.</b> In <a href="https://analytics.google.com/" target="_blank" rel="noopener">Google Analytics</a>, open Admin, then Property details, and copy the numeric <b>Property ID</b>. Paste it into <code>assets/js/admin-config.js</code> as <code>analytics.propertyId</code>.</li>
         <li><b>Google Cloud project.</b> Open <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud Console</a>. You can use the project your Firebase already created. Under APIs and services, Library, enable <b>Google Analytics Data API</b>.</li>
@@ -257,9 +298,9 @@
       if (S.token) { S.token = null; stopLive(); }
       shell(`<div class="glass tax-card an-note">
         <h2>Analytics</h2>
-        <p>Connect with the Google account that has access to your Analytics property. Access lasts about an hour and is dropped when you sign out of admin.</p>
+        <p>Connect with the Google account that has access to your Analytics property. Access lasts about an hour and is remembered in this tab. Next time it is one tap.</p>
         ${S.error ? `<p class="err" role="alert">${esc(S.error)}</p>` : ''}
-        <div class="an-acts"><button class="btn btn-primary" id="anConnect" type="button">Connect Google Analytics</button></div>
+        <div class="an-acts"><button class="btn btn-primary" id="anConnect" type="button">${hintEmail() && ls.get(OK) ? 'Continue as ' + esc(hintEmail()) : 'Connect Google Analytics'}</button></div>
       </div>`);
       // Load Google's sign-in script now, so the button press can open its popup straight away
       loadGis().catch((e) => { S.error = e.message; const p = host.querySelector('.an-note'); if (p && !p.querySelector('.err')) p.insertAdjacentHTML('beforeend', `<p class="err" role="alert">${esc(e.message)}</p>`); });
@@ -289,7 +330,7 @@
       await loadTitles();
       const { out, errs } = await settle(reports(rg));
       const exp = Object.values(errs).find((e) => e.expired);
-      if (exp) { S.loading = false; disconnect(exp.message); return; }
+      if (exp) { S.loading = false; disconnect(exp.message, true); return; }
       S.last = { rg, out, errs, at: new Date() };
     } catch (e) { S.error = e.message; }
     S.loading = false;
@@ -436,7 +477,7 @@
       pages: () => f({ dimensions: dims('unifiedScreenName'), metrics: mets('activeUsers'), orderBys: byDesc('activeUsers'), limit: 5 }),
       acct: () => f({ dimensions: dims('customUser:account_status'), metrics: mets('activeUsers') })
     });
-    const exp = Object.values(errs).find((e) => e.expired); if (exp) { disconnect(exp.message); return; }
+    const exp = Object.values(errs).find((e) => e.expired); if (exp) { disconnect(exp.message, true); return; }
     const el = document.getElementById('anLiveBody'); if (!el) return;
     if (errs.total) { el.innerHTML = `<p class="err">${esc(errNote(errs.total))}</p>`; return; }
     const now = (table(out.total)[0] || {}).activeUsers || 0;
@@ -455,7 +496,7 @@
 
   /* ---------- events ---------- */
   host.addEventListener('click', (e) => {
-    if (e.target.closest('#anConnect')) connect();
+    if (e.target.closest('#anConnect')) connect(false);
     else if (e.target.closest('#anRefresh')) load();
     else if (e.target.closest('#anOut')) { disconnect(''); toast('Disconnected from Google Analytics'); }
   });
@@ -470,7 +511,7 @@
 
   window.addEventListener('adm:tab', (e) => {
     S.active = e.detail === 'analytics';
-    if (S.active) { if (!host.innerHTML) render(); if (S.token) { liveTick(); startLive(); } } else stopLive();
+    if (S.active) { if (!host.innerHTML) render(); if (S.token && Date.now() < S.expiresAt) { if (!S.last && !S.loading) load(); else { liveTick(); startLive(); } } else autoConnect(); } else stopLive();
   });
   window.addEventListener('resize', () => { clearTimeout(S.resizeT); S.resizeT = setTimeout(() => { if (S.active && S.last) drawCharts(); }, 150); });
   // Redraw when the light or dark theme changes (the chart colours come from CSS variables)

@@ -204,7 +204,7 @@ The top bar has **Undo last change** (reverts the latest `[admin]` commit as a n
 
 The admin **Analytics** tab shows your Google Analytics 4 numbers: visitors right now (last 30 minutes), visits over a chosen period compared with the period before, visitors per day, signed in against guest visitors, new sign ups and log ins, countries, devices, where visits come from, and the most opened papers.
 
-It reads Google directly from your browser. There is no server and no secret key on the site: you press **Connect Google Analytics**, sign in with Google, and get an access token that lasts about an hour and is kept in memory only. It is dropped when you disconnect or sign out of admin.
+It reads Google directly from your browser. There is no server and no secret key on the site: you press **Connect Google Analytics**, sign in with Google, and get an access token that lasts about an hour. The token is kept for that browser tab only (sessionStorage), so a refresh keeps the numbers on screen, and it is dropped when you press Disconnect or sign out of admin. This browser also remembers (in localStorage, with no token) that you allowed Analytics, and uses the Google account you are signed in with on the site as a hint, so the next time the button reads **Continue as your@email** and needs one tap. If the browser allows it, the tab reconnects by itself when you open it. **Disconnect** forgets this and revokes Google's access.
 
 **One-time setup** (the tab shows the same steps):
 
@@ -442,6 +442,18 @@ On Render, add environment variables `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`,
 ### Your own page for email links
 
 Confirm-email, reset-password and undo-email-change links open `/auth/action/` on this site instead of the plain Firebase page. One-time setup: Firebase console > Authentication > Templates > click the pencil on "Email address verification" > "Customize action URL" > enter `https://icse.shekharjha.tech/auth/action/` > Save. It applies to all the email templates. The page is `auth/action/index.html` with `assets/js/action.js`; it is hidden from search engines.
+
+
+### Google One Tap (optional)
+
+Guests on the home page see Google's "Continue as <name>" prompt. It is off until you set a client ID.
+
+1. Firebase console > Authentication > Sign-in method > Google > **Web SDK configuration**: copy the **Web client ID**.
+2. Paste it into `oneTapClientId` in `assets/js/firebase-config.js`, or set the Render variable `GOOGLE_ONE_TAP_CLIENT_ID`.
+3. Google Cloud console > APIs & Services > Credentials > that Web client > **Authorized JavaScript origins**: add `https://icse.shekharjha.tech` (and your `*.onrender.com` address if you test there).
+4. Redeploy. The prompt only appears on the home page, to guests, and Google decides how often to show it after a dismissal.
+
+Only Google's small script loads for guests. The Firebase bundle loads when the student taps their account. `firebase-lite.js` was rebuilt so it also exports `signInWithCredential` (see `scripts/firebase-entry.js`).
 
 ## Running locally
 

@@ -14,6 +14,7 @@ window.ICSE_FIREBASE = {
 // Account options
 window.ICSE_ACCOUNT = {
   google: true,        // show "Continue with Google"
+  oneTapClientId: "",  // Google One Tap: paste the Web client ID (Firebase console > Authentication > Sign-in method > Google > Web SDK configuration). Empty = One Tap off
   email: true,         // show email + password sign up and log in
   minPassword: 8,      // shortest password accepted on sign up (Firebase itself requires at least 6)
   maxProgress: 60,     // how many "continue reading" papers are remembered

@@ -16,7 +16,7 @@
   'use strict';
   const root = window;
   const FBCFG = root.ICSE_FIREBASE || {};
-  const OPT = Object.assign({ google: true, email: true, minPassword: 8, maxProgress: 60, maxHistory: 200 }, root.ICSE_ACCOUNT || {});
+  const OPT = Object.assign({ google: true, email: true, oneTapClientId: '', minPassword: 8, maxProgress: 60, maxHistory: 200 }, root.ICSE_ACCOUNT || {});
   if (!FBCFG.apiKey || !FBCFG.projectId || root.Account) return;
 
   /* ---------- storage ---------- */
@@ -315,6 +315,7 @@
   }
   function startSession(u) {
     user = u;
+    cancelOneTap();
     saveHint(u);
     track(u);
     initialDone = false; docExists = false; mirror = null;
@@ -541,6 +542,7 @@
       if (!ok && !(await ask('Some recent changes have not reached your account yet. You may be offline. Sign out anyway and lose them?', 'Sign out anyway', 'Stay signed in'))) return;
     }
     try { await fb.signOut(auth); } catch (e) { toast('Could not sign out. Try again.'); return; }
+    try { if (root.google && root.google.accounts) root.google.accounts.id.disableAutoSelect(); } catch (e) { /* ignore */ }
     toast('Signed out');
   }
 
@@ -795,6 +797,50 @@
     openDialog('signup', saved ? 'Create a free account to save papers and see them on every device.' : 'Create a free account to keep your timed-exam scores and see them on every device.');
   }, true);
 
+  /* ---------- Google One Tap ---------- */
+  // Shows Google's "Continue as <name>" prompt to guests on the home page. Only Google's small script is loaded
+  // up front; the Firebase bundle is loaded when the student actually taps their account.
+  // Needs ICSE_ACCOUNT.oneTapClientId (the Web client ID of the Google provider in Firebase). Empty = off.
+  let gisP = null, oneTapShown = false;
+  function loadGis() {
+    if (root.google && root.google.accounts && root.google.accounts.id) return Promise.resolve();
+    if (!gisP) gisP = new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.async = true; s.defer = true;
+      s.onload = res;
+      s.onerror = () => { gisP = null; s.remove(); rej(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return gisP;
+  }
+  function onOneTap(resp) {
+    if (!resp || !resp.credential) return;
+    justLoggedIn = true;
+    init()
+      .then(() => fb.signInWithCredential(auth, fb.GoogleAuthProvider.credential(resp.credential)))
+      .catch((ex) => { justLoggedIn = false; showError(ex); });
+  }
+  function oneTap() {
+    if (!OPT.google || !OPT.oneTapClientId || oneTapShown || user || hint()) return;
+    if (root.location.pathname !== '/' && root.location.pathname !== '/index.html') return;
+    loadGis().then(() => {
+      if (user || hint()) return;
+      oneTapShown = true;
+      root.google.accounts.id.initialize({
+        client_id: OPT.oneTapClientId,
+        callback: onOneTap,
+        cancel_on_tap_outside: true,
+        itp_support: true,
+        use_fedcm_for_prompt: true
+      });
+      root.google.accounts.id.prompt();
+    }).catch(() => { /* offline or blocked: the normal Log in button still works */ });
+  }
+  function cancelOneTap() {
+    try { if (oneTapShown && root.google && root.google.accounts) root.google.accounts.id.cancel(); } catch (e) { /* ignore */ }
+  }
+
   /* ---------- public API ---------- */
   root.Account = {
     open: openDialog,
@@ -811,6 +857,9 @@
   renderNav();
   if (hint()) {   // a student who is already signed in: connect in the background once the page has settled
     const go = () => setTimeout(() => init().catch(() => {}), 400);
+    document.readyState === 'complete' ? go() : root.addEventListener('load', go, { once: true });
+  } else {   // a guest: offer Google One Tap once the page has settled
+    const go = () => setTimeout(oneTap, 1500);
     document.readyState === 'complete' ? go() : root.addEventListener('load', go, { once: true });
   }
 })();
