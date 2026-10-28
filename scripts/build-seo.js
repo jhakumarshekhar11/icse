@@ -13,7 +13,7 @@ const path = require('path');
 
 const ROOT = process.env.ROOT || path.join(__dirname, '..');
 const SITE = (process.env.SITE_URL || 'https://icse.shekharjha.tech').replace(/\/$/, '');
-const OWNER = 'Shekhar Jha';
+const OWNER = 'Shekhar Kumar Jha';
 const RESERVED = new Set(['assets', 'data', 'pdfs', 'admin', 'scripts', 'public', 'tools', 'about', 'privpol', 'tos', 'auth']);
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -385,7 +385,7 @@ function main() {
     if (meta.h1) {
       page = page
         .replace('<h1 id="h1">ICSE Class X, ready to study.</h1>', () => `<h1 id="h1" class="h1-landing">${esc(meta.h1)}</h1>`)
-        .replace('<p>Notes, past papers and solutions by Shekhar Jha. Read them right here, or download the PDF.</p>', () => `<p>${esc(meta.lead)}</p>`);
+        .replace('<p>Notes, past papers and solutions by Shekhar Kumar Jha. Read them right here, or download the PDF.</p>', () => `<p>${esc(meta.lead)}</p>`);
     }
     return page
       .replace(/<!--seo:head-->[\s\S]*?<!--\/seo:head-->/, '<!--seo:head-->\n  ' + head + '\n  <!--/seo:head-->')
