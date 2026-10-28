@@ -34,7 +34,32 @@ function main() {
   try { SEO = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'seo.json'), 'utf8')); } catch (e) { /* optional */ }
   const aliasesOf = (id) => (SEO.subjectAliases || {})[id] || [];
   const extraKeywords = (id) => (SEO.resourceKeywords || {})[id] || [];
-
+  const typeAliasesOf = (t) => (SEO.typeAliases || {})[t] || [];        // PYQ, board question paper, ... (data/seo.json)
+  const topicsOf = (id) => (SEO.subjectKeywords || {})[id] || [];       // chapters and topics students search for
+  const siteKeywords = SEO.siteKeywords || [];
+  // Phrases a student types, built from subject names, type words and the year: "ICSE 2026 Computer PYQ"
+  function searchPhrases(subjId, subj, type, year, max) {
+    const names = [...new Set([subj, ...aliasesOf(subjId)])].slice(0, 3);
+    // "PYQ" and "PYQs" read as one phrase to a searcher, so keep one of each pair
+    const all = typeAliasesOf(type), plain = (k) => k.toLowerCase().replace(/s$/, '');
+    const kinds = all.filter((k, i) => all.findIndex((x) => plain(x) === plain(k)) === i).slice(0, 5);
+    if (!kinds.length) return [];
+    const out = [], seen = new Set();
+    const add = (x) => { const k = x.toLowerCase(); if (!seen.has(k) && out.length < max) { seen.add(k); out.push(x); } };
+    // Many students never type "ICSE": they search "class 10", "10th" or just the subject. Mix all of these shapes,
+    // and rotate through the subject names so one name does not take every phrase.
+    const shapes = [
+      (n, k) => `ICSE ${year} ${n} ${k}`,
+      (n, k) => `class 10 ${n} ${k} ${year}`,
+      (n, k) => `10th ${n} ${k} ${year}`,
+      (n, k) => `${n} ${k} ${year}`,
+      (n, k) => `${n} ${k} ${year} class 10th PDF`,
+      (n, k) => `ICSE class 10 ${n} ${k} ${year} PDF`
+    ];
+    let i = 0;
+    kinds.forEach((k) => shapes.forEach((f) => add(f(names[i++ % names.length], k))));
+    return out;
+  }
   const subjects = new Map((data.subjects || []).map((s) => [s.id, s]));
   const live = (data.resources || []).filter((r) => !r.draft && subjects.has(r.subject));
   const classLabel = '10';
@@ -121,6 +146,10 @@ function main() {
       const size = r.size_kb ? fmtSize(r.size_kb) : '', pg = r.pages ? `${r.pages} page${r.pages === 1 ? '' : 's'}` : '';
       const facts = [pg, size].filter(Boolean).join(', ');
       const lead = `${one} for ICSE Class ${classLabel} ${subj}, ${r.year}.${facts ? ' ' + facts + ',' : ''} free to read online or download.`.replace(/\.\s+(\d)/, '. $1').replace(',,', ',');
+      const kinds = typeAliasesOf(r.type).slice(0, 3);
+      const alsoLead = kinds.length ? ` Also searched as ${joinWords(kinds)}.` : '';
+      const phrases = searchPhrases(r.subject, subj, r.type, r.year, 24);
+      const topics = topicsOf(r.subject).slice(0, 10);
       const dsc = r.description ? String(r.description).trim().replace(/[.\s]*$/, '.') : '';
       const desc = trim(`Free ICSE Class ${classLabel} ${subj} ${one.toLowerCase()} ${r.year} PDF${facts ? ' (' + facts + ')' : ''}. ${dsc} Read online or download.`.replace(/\s+/g, ' '), 158);
       const t1 = `${heading} PDF – Free Download | ${OWNER}`, t2 = `${heading} PDF | ${OWNER}`;
@@ -137,7 +166,7 @@ function main() {
       const main = `<main class="wrap about paper">
     <nav class="crumbs" aria-label="Breadcrumb">${crumbs.map(([u, n], i) => (i ? '<span aria-hidden="true">/</span>' : '') + `<a href="${esc(u)}">${esc(n)}</a>`).join('')}</nav>
     <h1>${esc(heading)}</h1>
-    <p class="lead">${esc(lead)}</p>
+    <p class="lead">${esc(lead + alsoLead)}</p>
     <div class="paper-cta">
       <a class="btn btn-primary" href="/?file=${encodeURIComponent(r.id)}">Read online</a>
       ${PAPER_TYPES.has(r.type) ? `<a class="btn" href="/?file=${encodeURIComponent(r.id)}&amp;exam=1">Timed exam</a>` : ''}
@@ -150,7 +179,15 @@ function main() {
     <section>
       <h2>Details</h2>
       <dl class="paper-facts">${row('Class', classLabel)}${row('Subject', subj)}${row('Type', one)}${row('Year', String(r.year))}${row('Pages', r.pages ? String(r.pages) : '')}${row('File size', size)}${row('Format', 'PDF')}${row('Added', fmtDate(r.added))}</dl>
-    </section>${tags.length ? `
+    </section>${phrases.length ? `
+    <section>
+      <h2>Also searched as</h2>
+      <div class="paper-tags">${phrases.map((x) => `<span>${esc(x)}</span>`).join('')}</div>
+    </section>` : ''}${topics.length && !['Notes', 'Maps'].includes(r.type) ? `
+    <section>
+      <h2>${esc(subj)} topics students look for</h2>
+      <div class="paper-tags">${topics.map((x) => `<span>${esc(x)}</span>`).join('')}</div>
+    </section>` : ''}${tags.length ? `
     <section>
       <h2>Keywords</h2>
       <div class="paper-tags">${tags.map((x) => `<span>${esc(x)}</span>`).join('')}</div>
@@ -175,7 +212,7 @@ function main() {
       const ld = [
         { '@context': 'https://schema.org', '@type': 'LearningResource', name: heading, description: r.description || undefined, url: canon,
           educationalLevel: 'Class ' + classLabel, learningResourceType: r.type, about: subj, inLanguage: r.subject === 'hindi' ? 'hi' : 'en',
-          keywords: tags.length ? tags.join(', ') : undefined,
+          keywords: [...tags, ...phrases.slice(0, 8)].length ? [...tags, ...phrases.slice(0, 8)].join(', ') : undefined,
           datePublished: r.added, dateModified: r.updated || r.added, isAccessibleForFree: true, publisher: { '@type': 'Person', name: OWNER },
           isPartOf: { '@type': 'WebSite', name: 'ICSE Class 10 Resources', url: SITE + '/' },
           encoding: { '@type': 'MediaObject', contentUrl: abs(r.file), encodingFormat: 'application/pdf', contentSize: r.size_kb ? r.size_kb + ' KB' : undefined } },
@@ -216,7 +253,7 @@ function main() {
     let title = `${heading}${/PDF$/.test(heading) ? '' : ' PDF'}${cisce ? ' (CISCE)' : ''}`;
     if ((title + ' | ICSE Resources').length <= 70) title += ' | ICSE Resources';
     const names = [...g.items].sort(byDate).slice(0, 3).map((r) => tidy(r.title)).join('; ');
-    const what = g.type ? (g.type === 'Previous Year Papers' ? (n === 1 ? 'previous year paper (board question paper)' : 'previous year papers (board question papers)') : lc(T)) : 'papers, notes and solutions';
+    const what = g.type ? (g.type === 'Previous Year Papers' ? (n === 1 ? 'previous year paper (PYQ, board question paper)' : 'previous year papers (PYQ, board question papers)') : lc(T)) : 'papers, notes and solutions';
     const desc = trim(`Free ICSE Class ${classLabel} ${[subj, what, year].filter(Boolean).join(' ')} PDF${cisce ? ' as released by CISCE' : ''}. ${n} file${n === 1 ? '' : 's'}: ${names}. Read online or download, no sign up needed.`, 158);
     const intro = `${n} free ICSE Class ${classLabel} ${[subj, g.type ? lc(T) : '', year].filter(Boolean).join(' ') || 'resource'}${g.type ? '' : n === 1 ? ' file' : ' files'} ` +
       `for the ICSE board exam. Read each PDF in your browser or download it.`;
@@ -233,6 +270,14 @@ function main() {
     if (type && TYPE_BLURB[type]) para.push(TYPE_BLURB[type]);
     const al = g.subjectId ? aliasesOf(g.subjectId).filter((a) => lc(a) !== lc(subj)) : [];
     if (al.length) para.push(`${subj} is also searched as ${joinWords(al)}.`);
+    const ka = type ? typeAliasesOf(type) : [];
+    if (ka.length) para.push(`${type} are also searched as ${joinWords(ka)}.`);
+    const tp = g.subjectId ? topicsOf(g.subjectId) : [];
+    if (tp.length) para.push(`Students preparing ${subj} also look for: ${joinWords(tp)}.`);
+    if (g.subjectId && type && year) {
+      const ph = searchPhrases(g.subjectId, subj, type, year, 12);
+      if (ph.length) para.push(`Related searches: ${ph.map((x) => '"' + x + '"').join(', ')}.`);
+    }
     const faq = [];
     const where = ['ICSE Class ' + classLabel, subj, type ? lc(w.T || type) : 'papers', year].filter(Boolean).join(' ');
     faq.push([`Where can I download ${where} PDF?`, `Open any file on this page to read it online, or press Download to save the PDF. It is free and needs no account.`]);
@@ -381,6 +426,7 @@ function main() {
     list: listHtml(live),
     copy: `<div class="seo-copy"><h2>Free ICSE Class 10 papers, specimen papers, sample papers and notes</h2>` +
       `<p>One place for ICSE Class 10 (Class X) study material for the 2027 board exams: previous year board papers, CISCE specimen papers, sample papers, question banks, notes and solutions for English Language, English Literature, Hindi, History and Civics, Geography, Mathematics, Physics, Chemistry, Biology, Commercial Studies (Commerce), Computer Applications and Economic Applications.</p>` +
+      (siteKeywords.length ? `<p>Students also search for: ${esc(joinWords(siteKeywords))}.</p>` : '') +
       `<p>Read every PDF in your browser, download it free, or run a timed exam with a countdown, a beep and a score history. An account is optional and keeps your bookmarks, exam history and place in each paper on all your devices.</p>` +
       `<p>This is an independent library and is not affiliated with CISCE. Check the official CISCE website for the latest specimen papers and notifications.</p></div>`,
     ld: [

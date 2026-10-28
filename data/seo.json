@@ -1,20 +1,330 @@
 {
   "_help": "Search wording used only by scripts/build-seo.js (never by the admin page, so it is safe to edit by hand). subjectAliases: other names students type for a subject. resourceKeywords: extra search phrases for one paper, by its id.",
   "subjectAliases": {
-    "commercialstudies": ["Commerce", "Commercial Studies"],
-    "computer": ["Computer Science", "Computer Applications", "Java"],
-    "maths": ["Maths", "Math", "Mathematics"],
-    "history": ["History and Civics", "History & Civics", "Civics"],
-    "englishlang": ["English", "English Paper 1"],
-    "englishlit": ["English Paper 2", "Literature in English"],
-    "economics": ["Economics", "Economic Applications"],
-    "biology": ["Bio"],
-    "physics": ["Phy"],
-    "chemistry": ["Chem"]
+    "commercialstudies": [
+      "Commerce",
+      "Commercial Studies",
+      "Commercial Applications"
+    ],
+    "computer": [
+      "Computer",
+      "Computer Science",
+      "Computer Applications",
+      "Computer Application",
+      "Java",
+      "BlueJ"
+    ],
+    "maths": [
+      "Maths",
+      "Math",
+      "Mathematics"
+    ],
+    "history": [
+      "History and Civics",
+      "History & Civics",
+      "Civics",
+      "History Civics",
+      "HCG"
+    ],
+    "englishlang": [
+      "English",
+      "English Language",
+      "English Paper 1",
+      "Eng Lang"
+    ],
+    "englishlit": [
+      "English Paper 2",
+      "English Literature",
+      "Literature in English",
+      "Eng Lit"
+    ],
+    "economics": [
+      "Economics",
+      "Economic Applications",
+      "Eco"
+    ],
+    "biology": [
+      "Bio",
+      "Biology Paper",
+      "Science Paper 3"
+    ],
+    "physics": [
+      "Phy",
+      "Physics Paper",
+      "Science Paper 1"
+    ],
+    "chemistry": [
+      "Chem",
+      "Chemistry Paper",
+      "Science Paper 2"
+    ],
+    "geography": [
+      "Geo",
+      "HCG",
+      "Geography Map Work"
+    ],
+    "hindi": [
+      "Hindi Language",
+      "Hindi Paper",
+      "हिंदी"
+    ]
   },
   "resourceKeywords": {
-    "englishlit-2027-solution-3": ["cinna the poet", "julius caesar act 3 scene 3", "cinna the poet questions and answers"],
-    "englishlit-2027-question-bank-3": ["cinna the poet", "julius caesar act 3 scene 3", "cinna the poet questions and answers"],
-    "englishlit-2027-note-5": ["with the photographer", "with the photographer notes", "the photographer class 10 icse"]
-  }
+    "englishlit-2027-solution-3": [
+      "cinna the poet",
+      "julius caesar act 3 scene 3",
+      "cinna the poet questions and answers"
+    ],
+    "englishlit-2027-question-bank-3": [
+      "cinna the poet",
+      "julius caesar act 3 scene 3",
+      "cinna the poet questions and answers"
+    ],
+    "englishlit-2027-note-5": [
+      "with the photographer",
+      "with the photographer notes",
+      "the photographer class 10 icse"
+    ]
+  },
+  "typeAliases": {
+    "Previous Year Papers": [
+      "PYQ",
+      "PYQs",
+      "previous year question paper",
+      "last year question paper",
+      "board question paper",
+      "past papers",
+      "old papers",
+      "last 10 years papers"
+    ],
+    "Specimen Papers": [
+      "specimen paper",
+      "sample question paper",
+      "CISCE specimen paper",
+      "model paper",
+      "new pattern paper"
+    ],
+    "Sample Papers": [
+      "sample paper",
+      "sample question paper",
+      "practice paper",
+      "mock paper",
+      "model paper"
+    ],
+    "Question Banks": [
+      "question bank",
+      "important questions",
+      "QB",
+      "topic wise questions",
+      "practice questions",
+      "most important questions"
+    ],
+    "Notes": [
+      "notes",
+      "study notes",
+      "revision notes",
+      "short notes",
+      "chapter notes",
+      "quick revision notes"
+    ],
+    "Solutions": [
+      "solutions",
+      "answers",
+      "answer key",
+      "solved questions",
+      "question and answers",
+      "step by step solutions"
+    ],
+    "Maps": [
+      "map work",
+      "maps",
+      "map pointing",
+      "map marking",
+      "geography maps"
+    ]
+  },
+  "subjectKeywords": {
+    "computer": [
+      "Java programs",
+      "BlueJ",
+      "arrays",
+      "string handling",
+      "constructors",
+      "library classes",
+      "wrapper classes",
+      "loops and iteration",
+      "user defined methods",
+      "encapsulation",
+      "input in Java",
+      "Boolean and operators",
+      "pattern programs",
+      "ICSE computer applications syllabus 2027"
+    ],
+    "maths": [
+      "quadratic equations",
+      "GST",
+      "banking",
+      "shares and dividend",
+      "linear inequations",
+      "ratio and proportion",
+      "similarity",
+      "circles",
+      "mensuration",
+      "trigonometry",
+      "coordinate geometry",
+      "probability",
+      "statistics",
+      "matrices",
+      "arithmetic and geometric progression"
+    ],
+    "physics": [
+      "force",
+      "work power and energy",
+      "simple machines",
+      "refraction of light",
+      "spectrum",
+      "sound",
+      "current electricity",
+      "household circuits",
+      "electromagnetism",
+      "radioactivity",
+      "calorimetry",
+      "numericals"
+    ],
+    "chemistry": [
+      "periodic table",
+      "chemical bonding",
+      "acids bases and salts",
+      "analytical chemistry",
+      "mole concept",
+      "electrolysis",
+      "metallurgy",
+      "organic chemistry",
+      "ammonia",
+      "nitric acid",
+      "sulphuric acid",
+      "hydrogen chloride",
+      "study of compounds"
+    ],
+    "biology": [
+      "cell cycle and cell division",
+      "genetics",
+      "structure of chromosomes",
+      "absorption by roots",
+      "transpiration",
+      "photosynthesis",
+      "human anatomy",
+      "pollution",
+      "reproductive system",
+      "diagrams"
+    ],
+    "history": [
+      "Indian national movement",
+      "First World War",
+      "Second World War",
+      "United Nations",
+      "Parliament",
+      "Union Executive",
+      "Judiciary",
+      "Mahatma Gandhi",
+      "Non Cooperation Movement",
+      "Civil Disobedience Movement",
+      "Quit India Movement"
+    ],
+    "geography": [
+      "map work",
+      "topographical map",
+      "climate of India",
+      "soil resources",
+      "natural vegetation",
+      "water resources",
+      "minerals and energy resources",
+      "agriculture",
+      "manufacturing industries",
+      "transport",
+      "waste management"
+    ],
+    "englishlang": [
+      "essay writing",
+      "letter writing",
+      "comprehension",
+      "unseen passage",
+      "grammar",
+      "notice writing",
+      "email writing",
+      "composition",
+      "transformation of sentences",
+      "prepositions",
+      "proverbs"
+    ],
+    "englishlit": [
+      "Julius Caesar",
+      "Treasure Trove",
+      "poems",
+      "short stories",
+      "character sketch",
+      "summary",
+      "questions and answers",
+      "reference to the context",
+      "drama",
+      "prose"
+    ],
+    "hindi": [
+      "patra lekhan",
+      "nibandh",
+      "apathit gadyansh",
+      "vyakaran",
+      "Sahitya Sagar",
+      "Ek Kahani Yeh Bhi",
+      "sankshipt lekhan"
+    ],
+    "economics": [
+      "demand and supply",
+      "banking",
+      "inflation",
+      "GST",
+      "public finance",
+      "consumer awareness",
+      "international trade",
+      "globalisation"
+    ],
+    "commercialstudies": [
+      "trade",
+      "banking",
+      "insurance",
+      "transport",
+      "marketing",
+      "consumer protection",
+      "warehousing"
+    ]
+  },
+  "siteKeywords": [
+    "ICSE class 10 previous year question papers",
+    "ICSE class 10 PYQ",
+    "ICSE 2026 question papers all subjects",
+    "ICSE board papers 2026 PDF",
+    "ICSE 2027 specimen papers",
+    "ICSE class 10 sample papers 2027",
+    "ICSE 10th question papers PDF free download",
+    "ICSE last 10 years question papers",
+    "ICSE 10th important questions",
+    "ICSE class 10 notes PDF",
+    "ICSE class X study material free download",
+    "ICSE board exam 2027 preparation",
+    "ICSE class 10 solved papers",
+    "CISCE specimen paper 2027",
+    "ICSE 10th model papers",
+    "class 10 PYQ",
+    "class 10 previous year papers",
+    "10th board question papers",
+    "10th class question paper PDF",
+    "class 10 sample paper 2027",
+    "class X question papers",
+    "10th previous year papers PDF",
+    "class 10 board exam 2027 papers",
+    "class 10 papers all subjects",
+    "10th model papers 2027",
+    "class 10 specimen paper 2027",
+    "10th board papers with solutions"
+  ]
 }
