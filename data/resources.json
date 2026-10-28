@@ -4647,13 +4647,14 @@
       "class": "X",
       "type": "Question Banks",
       "year": 2027,
-      "file": "/pdfs/chemistry-2027-question-bank.pdf",
-      "pages": 8,
-      "size_kb": 329,
+      "file": "/pdfs/chemistry-2027-question-bank-v2.pdf",
+      "pages": 24,
+      "size_kb": 376,
       "added": "2026-10-24",
-      "updated": "2026-10-24",
+      "updated": "2026-10-28",
       "downloads": 0,
       "popular": true,
+      "rev": 2,
       "description": "Question bank for Chemistry with answer key. Covers periodic table, chemical bonding and Acid Bases and Salts.",
       "tags": [
         "answer key",
@@ -4667,7 +4668,15 @@
         "valence electrons",
         "element",
         "sodium chloride",
-        "h₂so₄"
+        "h₂so₄",
+        "marking scheme",
+        "mcq",
+        "lone pair",
+        "hydrochloric acid",
+        "electrons",
+        "atomic number",
+        "periodic table",
+        "ammonia"
       ]
     },
     {
