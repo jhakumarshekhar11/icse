@@ -15,11 +15,10 @@
     }
   } catch (e) { /* storage unavailable or no exam running */ }
 
-  // Count one download per paper per tab session
+  // Every click on Download counts
   b.addEventListener('click', function () {
     var c = (window.ICSE_CONFIG || {}).counter, id = b.getAttribute('data-id');
     if (!c || !c.enabled || !id || !window.ICSE_COUNTER) return;
-    try { if (sessionStorage.getItem('icse:hit:' + id)) return; sessionStorage.setItem('icse:hit:' + id, '1'); } catch (e) {}
     window.ICSE_COUNTER.hit(id);
   });
 })();

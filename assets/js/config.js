@@ -22,15 +22,14 @@ window.ICSE_CONFIG = {
   newDays: 30,          // "New" if added within this many days
   popularMin: 1000,     // "Popular" if downloads reach this number (or set "popular": true in the JSON)
 
-  // Download counter. Counts are kept in your Firebase project (Cloud Firestore), in one document
-  // (stats/downloads), see assets/js/counter.js and firestore.rules.counter. Counts in resources.json are
+  // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
+  // (collection "downloads", one document per paper), see assets/js/counter.js and the rules in README. Counts in resources.json are
   // used as the starting value, and live clicks are added on top. If Firebase is not set up or unreachable
   // the site still works and just shows the starting numbers. Set enabled to false to turn it off completely.
   counter: {
     enabled: true,
-    doc: "stats/downloads",
-    cacheMinutes: 10,
-    shards: 1   // 1 = one document (no rule change). Raise (e.g. 5) only if counts go missing in busy periods; needs the rule in README "Counter shards"
+    collection: "downloads",   // one document per paper: downloads/<paper id> = { n: count }
+    cacheMinutes: 10
   },
 
   // Order of subjects in the library when no filter is selected (use the subject ids from resources.json)

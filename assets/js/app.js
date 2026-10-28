@@ -430,13 +430,11 @@
     else if (cache) state.live = cache.v;    // keep the last good numbers instead of dropping to 0
     refreshCounts();
   }
-  // One count per paper per browser tab session. The number on screen goes up only when the count is really sent,
-  // and the saved copy of the counts is updated too, so the figure never jumps back after the next refresh.
+  // Every click on a Download button counts: the number on screen goes up at once, and the saved copy of the counts follows.
   function download(r) {
     toast('Download started');
-    const c = CFG.counter, key = 'icse:hit:' + r.id;
-    if (c && c.enabled && window.ICSE_COUNTER && window.ICSE_COUNTER.ready() && !session.get(key)) {
-      session.set(key, '1');
+    const c = CFG.counter;
+    if (c && c.enabled && window.ICSE_COUNTER && window.ICSE_COUNTER.ready()) {
       window.ICSE_COUNTER.hit(r.id);
       state.live[r.id] = (state.live[r.id] || 0) + 1;
       const cache = store.get('icse:counts2', null);
