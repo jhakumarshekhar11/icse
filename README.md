@@ -35,7 +35,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 | --- | --- |
 | **Smart search.** Type "ICSE Computer paper 2025" and the right filters switch on by themselves. | **Hidden admin** at `/admin`: upload, edit, drafts, bulk edit, undo, JSON backup. |
 | **Multi-select filters** for class, subject, type and year. Pick everything and it resets to All. | **Autoread on upload.** Subject, type and year from the file name, keywords, a description, time allowed, total marks and marking scheme page from the PDF. |
-| **Sorting:** By year (default), Oldest first, Most downloaded. | **Every change is one Git commit**, so Render redeploys on its own and Undo is one click. |
+| **Sorting:** Latest year (default, newest year first), Oldest added, Most downloaded. | **Every change is one Git commit**, so Render redeploys on its own and Undo is one click. |
 | **In-page PDF reader** with zoom, page jump, fullscreen, pinch and swipe. | **SEO built at deploy time:** a page for every subject, type, year and paper, plus a sitemap. |
 | **Timed exams** with reading time, a countdown, a beep, History and scores. The marking scheme stays hidden until time is up. | **Per-subject exam defaults** for writing time and total marks, editable in the admin. |
 | **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. **Optional accounts** (email or Google) sync bookmarks, history, progress and theme, with a "Continue where you left off" row. | **Download counter** kept in your own Firebase project (one Firestore document). |
@@ -296,7 +296,7 @@ for (const r of list) {
 | `portfolioUrl`, `notice` | The back link and the footer line. |
 | `reportEmail` | Where "Report an error" emails go. |
 | `newDays`, `popularMin` | A resource is **New** for this many days. **Popular** from this many downloads. |
-| `counter` | Download counter: `enabled`, `doc` (the Firestore document, default `stats/downloads`), `cacheMinutes`. Needs the rules in `firestore.rules.counter`. |
+| `counter` | Download counter: `enabled`, `doc` (the Firestore document, default `stats/downloads`), `cacheMinutes`, `shards`. Needs the rules in `firestore.rules.counter`. Failed counts are retried 3 times. If counts still go missing in busy periods (exam season), set `shards` to e.g. 5 and allow the extra documents `stats/downloads-1` to `stats/downloads-4` in the same rules (copy the rule for `stats/downloads` to `match /stats/{doc}` limited to those names). With `shards: 1` nothing changes. |
 | `subjectOrder` | Order of subjects (by id) when no filter or search is active. |
 | `quickSearches` | The suggestion chips under the search bar. |
 | `exam.types` | Types that get a timed exam. |

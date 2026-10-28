@@ -80,6 +80,8 @@
       const start = clamp(parseInt(page || saved, 10) || 1, 1, S.n);
       el.scroll.scrollTop = S.pages[start - 1].offsetTop - 8;
       S.cur = 0; setCur(start, true);
+      // Put focus on the page area so arrows, PageUp/PageDown, Space and Home/End scroll right away (Close is no longer the focus)
+      if (!el.root.contains(document.activeElement) || document.activeElement === el.close) el.scroll.focus({ preventScroll: true });
       S.resolveReady(true);
     } catch (err) {
       if (token !== S.token) return;
@@ -130,7 +132,12 @@
       a.className = 'btn btn-primary'; a.href = S.res.file; a.setAttribute('download', App().fileName(S.res));
       a.textContent = 'Download PDF';
       a.addEventListener('click', () => App().download(S.res));
-      el.status.append(p, a);
+      const retry = document.createElement('button');
+      retry.type = 'button'; retry.className = 'btn'; retry.textContent = 'Try again';
+      retry.addEventListener('click', () => { const r = S.res, pg = S.cur, lf = S.lastFocus; if (!r) return; S.open = false; open(r, pg > 1 ? pg : 0); S.lastFocus = lf; });
+      const row = document.createElement('div'); row.className = 'v-retry';
+      row.append(retry, a);
+      el.status.append(p, row);
     }
   }
 
@@ -173,6 +180,9 @@
   function release(pg) {
     try { pg._task && pg._task.cancel(); } catch { /* ignore */ }
     pg._busy = 0; pg._rs = 0;
+    try { pg._tl && pg._tl.cancel(); } catch { /* ignore */ }
+    pg._tl = null;
+    const tl = pg.querySelector('.textLayer'); if (tl) tl.remove();
     const c = pg.querySelector('canvas');
     if (c) { c.width = c.height = 0; c.remove(); }
     pg.classList.remove('ready');
@@ -199,6 +209,7 @@
       if (token !== S.token || scale !== S.scale) return;
       pg.querySelectorAll('canvas').forEach((o) => o.remove());
       pg.appendChild(c);
+      addText(pg, page, vp);
       pg._rs = scale; pg.classList.add('ready');
       const r = v1.height / v1.width;
       if (Math.abs(r - (pg._ratio || S.ratio)) > 0.002) { pg._ratio = r; pg.style.height = vp.width * r + 'px'; }
@@ -207,6 +218,21 @@
     } finally {
       if (pg._busy === scale) pg._busy = 0;
     }
+  }
+
+  // Invisible, selectable text laid over the page image: lets students select, copy and search (Ctrl+F) the text
+  function addText(pg, page, vp) {
+    try { pg._tl && pg._tl.cancel(); } catch { /* ignore */ }
+    const old = pg.querySelector('.textLayer'); if (old) old.remove();
+    if (!lib.renderTextLayer) return;
+    const box = document.createElement('div');
+    box.className = 'textLayer';
+    box.style.setProperty('--scale-factor', vp.scale);
+    pg.appendChild(box);
+    try {
+      pg._tl = lib.renderTextLayer({ textContentSource: page.streamTextContent(), container: box, viewport: vp });
+      pg._tl.promise.catch(() => {});   // a cancelled or failed text layer must never break the page image
+    } catch { box.remove(); }
   }
 
   function rerenderSoon() {
@@ -399,7 +425,7 @@
       const t = e.changedTouches[0];
       const dx = t.clientX - swipe.x, dy = t.clientY - swipe.y, dt = Date.now() - swipe.t;
       const wide = el.scroll.scrollWidth > el.scroll.clientWidth + 2;
-      if (!wide && dt < 450 && Math.abs(dx) > 70 && Math.abs(dy) < 45) goTo(S.cur + (dx < 0 ? 1 : -1));
+      if (!wide && !String(window.getSelection() || '') && dt < 450 && Math.abs(dx) > 70 && Math.abs(dy) < 45) goTo(S.cur + (dx < 0 ? 1 : -1));
     }
     swipe = null;
   };

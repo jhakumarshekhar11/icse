@@ -188,14 +188,14 @@
       (!state.year.length || state.year.includes(String(r.year))) &&
       tokens.every((t) => r._hay.includes(t)));
     const by = {
-      // By year: oldest year first (2020, 2022, 2023 ... 2027, and any earlier year sorts to the front)
-      year: (a, b) => Number(a.year) - Number(b.year) || a._date - b._date || a.title.localeCompare(b.title),
-      // Oldest first: earliest upload date first
+      // Latest year: newest year first (2027, 2026, 2025 ...), newest upload first inside a year
+      year: (a, b) => Number(b.year) - Number(a.year) || b._date - a._date || a.title.localeCompare(b.title),
+      // Oldest added: earliest upload date first
       old: (a, b) => a._date - b._date || a.title.localeCompare(b.title),
       popular: (a, b) => dlCount(b) - dlCount(a) || a.title.localeCompare(b.title)
-    }[state.sort] || ((a, b) => Number(a.year) - Number(b.year) || a.title.localeCompare(b.title));
-    // With no filter or search active, "By year" groups by subject in the order set in config.js (subjectOrder),
-    // and sorts by year inside each subject. "Oldest first" and "Top downloads" sort the whole list exactly as
+    }[state.sort] || ((a, b) => Number(b.year) - Number(a.year) || a.title.localeCompare(b.title));
+    // With no filter or search active, "Latest year" groups by subject in the order set in config.js (subjectOrder),
+    // and sorts by year inside each subject. "Oldest added" and "Most downloaded" sort the whole list exactly as
     // their label says, with no subject grouping.
     const order = CFG.subjectOrder || [];
     const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
@@ -216,7 +216,7 @@
   const LOCK_TIP = 'Available when your exam ends';
   const dlBtn = (r) => dlLocked(r)
     ? `<button class="btn" type="button" disabled title="${LOCK_TIP}">${icon('download')}Download</button>`
-    : `<a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download">${icon('download')}Download</a>`;
+    : `<a class="btn btn-primary" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}Download</a>`;
   const dlMini = (r) => dlLocked(r)
     ? `<button class="btn" style="height:36px;padding:0 12px" type="button" disabled title="${LOCK_TIP}">${icon('download')}PDF</button>`
     : `<a class="btn btn-primary" style="height:36px;padding:0 12px" href="${esc(r.file)}" download="${esc(fileName(r))}" data-act="download" aria-label="Download ${esc(r.title)}">${icon('download')}PDF</a>`;
@@ -229,7 +229,7 @@
       <div class="tags">
         <span class="sj"><i class="dot"></i>${esc(r.subject_name)}</span><span class="ty">${esc(r.type)}</span>${badges(r)}
       </div>
-      <h3><a href="${esc(readHref(r))}" data-act="read">${esc(r.title)}</a></h3>
+      <h3><a href="${esc(readHref(r))}" data-act="read" tabindex="-1">${esc(r.title)}</a></h3>
       <p class="desc">${esc(r.description || '')}</p>
       <div class="facts">
         <span>Class ${esc(r.class)}, ${esc(r.year)}</span>
@@ -239,7 +239,7 @@
         <span><span data-count="${esc(r.id)}">${fmtCount(dlCount(r))}</span> downloads</span>
       </div>
       <div class="acts">
-        <a class="btn" href="${esc(readHref(r))}" data-act="read">${icon('read')}Read</a>
+        <a class="btn" href="${esc(readHref(r))}" data-act="read" aria-label="Read ${esc(r.title)}">${icon('read')}Read</a>
         ${dlBtn(r)}
       </div>
       <div class="more">
@@ -430,14 +430,18 @@
     else if (cache) state.live = cache.v;    // keep the last good numbers instead of dropping to 0
     refreshCounts();
   }
+  // One count per paper per browser tab session. The number on screen goes up only when the count is really sent,
+  // and the saved copy of the counts is updated too, so the figure never jumps back after the next refresh.
   function download(r) {
-    state.live[r.id] = (state.live[r.id] || 0) + 1;
-    refreshCounts();
     toast('Download started');
     const c = CFG.counter, key = 'icse:hit:' + r.id;
-    if (c && c.enabled && window.ICSE_COUNTER && !session.get(key)) {
+    if (c && c.enabled && window.ICSE_COUNTER && window.ICSE_COUNTER.ready() && !session.get(key)) {
       session.set(key, '1');
       window.ICSE_COUNTER.hit(r.id);
+      state.live[r.id] = (state.live[r.id] || 0) + 1;
+      const cache = store.get('icse:counts2', null);
+      if (cache && cache.v) { cache.v[r.id] = (cache.v[r.id] || 0) + 1; store.set('icse:counts2', cache); }
+      refreshCounts();
     }
   }
 
@@ -789,6 +793,25 @@
     } catch (e) { /* no countdown if the file is missing or invalid */ }
   }
 
+
+  /* ---------- "filters on" reminder: shown while a search or filter is active and the result line is scrolled away ---------- */
+  const flag = document.createElement('button');
+  flag.type = 'button'; flag.className = 'pill glass filter-flag'; flag.hidden = true;
+  flag.setAttribute('data-act', 'reset');
+  document.body.appendChild(flag);
+  flag.addEventListener('click', () => { resetAll(); $('#library').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+  let flagRaf = 0;
+  function checkFlag() {
+    flagRaf = 0;
+    const on = filtering() && el.count.getBoundingClientRect().bottom < 0 && !Viewer.isOpen();
+    if (on) flag.innerHTML = `<b>${el.grid.querySelectorAll('.card').length}</b> shown, filters on<span>Clear</span>`;
+    flag.hidden = !on;
+  }
+  const queueFlag = () => { if (!flagRaf) flagRaf = requestAnimationFrame(checkFlag); };
+  addEventListener('scroll', queueFlag, { passive: true });
+  addEventListener('resize', queueFlag);
+  new MutationObserver(queueFlag).observe(el.grid, { childList: true });
+  addEventListener('viewer:close', queueFlag);
 
   /* ---------- back to top: appears once the end of all resources has scrolled into view ---------- */
   const topBtn = $('#toTop');

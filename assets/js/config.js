@@ -29,7 +29,8 @@ window.ICSE_CONFIG = {
   counter: {
     enabled: true,
     doc: "stats/downloads",
-    cacheMinutes: 10
+    cacheMinutes: 10,
+    shards: 1   // 1 = one document (no rule change). Raise (e.g. 5) only if counts go missing in busy periods; needs the rule in README "Counter shards"
   },
 
   // Order of subjects in the library when no filter is selected (use the subject ids from resources.json)
