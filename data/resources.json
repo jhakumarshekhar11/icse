@@ -4798,6 +4798,36 @@
         "medulla oblongata",
         "brain"
       ]
+    },
+    {
+      "id": "computer-2027-question-bank-4",
+      "title": "ICSE 2027 Computer Applications Class X Question Bank",
+      "subject": "computer",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/computer-2027-question-bank-4.pdf",
+      "pages": 11,
+      "size_kb": 199,
+      "added": "2026-10-30",
+      "updated": "2026-10-30",
+      "downloads": 0,
+      "popular": true,
+      "description": "Question bank for Computer Applications with answer key. Covers java, array, string and constructor.",
+      "tags": [
+        "answer key",
+        "mcq",
+        "java",
+        "array",
+        "string",
+        "constructor",
+        "scanner",
+        "encapsulation",
+        "wrapper class",
+        "operators",
+        "user defined method",
+        "number"
+      ]
     }
   ],
   "examDefaults": {
