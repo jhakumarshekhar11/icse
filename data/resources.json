@@ -4828,6 +4828,36 @@
         "user defined method",
         "number"
       ]
+    },
+    {
+      "id": "computer-2027-solution",
+      "title": "ICSE Class X Computer Applications Question Bank Solutions",
+      "subject": "computer",
+      "class": "X",
+      "type": "Solutions",
+      "year": 2027,
+      "file": "/pdfs/computer-2027-solution.pdf",
+      "pages": 13,
+      "size_kb": 267,
+      "added": "2026-10-30",
+      "updated": "2026-10-30",
+      "downloads": 0,
+      "popular": true,
+      "description": "Solutions with Instructions for Computer Applications 2027. Covers java, array, string and constructor.",
+      "tags": [
+        "mcq",
+        "java",
+        "array",
+        "string",
+        "constructor",
+        "scanner",
+        "number",
+        "method",
+        "encapsulation",
+        "nested loop",
+        "wrapper class",
+        "binary search"
+      ]
     }
   ],
   "examDefaults": {
