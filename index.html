@@ -71,14 +71,17 @@
         <svg class="ic"><use href="#i-left"/></svg><span class="t">shekharjha.tech</span>
       </a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
-      <a class="pill nav-about" href="/about/">About</a>
-      <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
+      <div class="nav-links" id="navLinks">
+        <a class="pill nav-about" href="/about/">About</a>
+      <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg><span class="nav-lbl">Theme</span></button>
       <button class="pill" id="savedBtn" type="button" aria-pressed="false" aria-label="Saved resources" title="Show only saved resources">
         <svg class="ic"><use href="#i-bookmark"/></svg><span class="lbl">Saved</span> <span class="n" id="savedCount">0</span>
       </button>
       <button class="pill" id="histBtn" type="button" aria-pressed="false" aria-label="Exam history" title="Your timed exam attempts and scores">
         <svg class="ic"><use href="#i-timer"/></svg><span class="lbl">History</span> <span class="n" id="histCount">0</span>
       </button>
+      </div>
+      <button class="ib nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><svg class="ic" aria-hidden="true"><path class="p-open" d="M4 7h16M4 12h16M4 17h16"/><path class="p-close" d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
   </header>
 
@@ -255,6 +258,7 @@
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js"></script>
 <script src="/assets/js/theme.js"></script>
+<script src="/assets/js/nav.js"></script>
 <script src="/assets/js/viewer.js"></script>
 <script src="/assets/js/exam.js"></script>
 <script src="/assets/js/firebase-config.js"></script>

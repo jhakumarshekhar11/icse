@@ -16,7 +16,7 @@
   'use strict';
   const root = window;
   const FBCFG = root.ICSE_FIREBASE || {};
-  const OPT = Object.assign({ google: true, email: true, oneTapClientId: '', minPassword: 8, maxProgress: 60, maxHistory: 200 }, root.ICSE_ACCOUNT || {});
+  const OPT = Object.assign({ google: true, email: true, oneTapClientId: '', adminEmailHashes: [], minPassword: 8, maxProgress: 60, maxHistory: 200 }, root.ICSE_ACCOUNT || {});
   if (!FBCFG.apiKey || !FBCFG.projectId || root.Account) return;
 
   /* ---------- storage ---------- */
@@ -403,6 +403,7 @@
     return e;
   }
   const ICON = {
+    shield: '<svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3l7.5 3v5.5c0 4.6-3.1 8.4-7.5 9.5-4.4-1.1-7.5-4.9-7.5-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg>',
     user: '<svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>',
     out: '<svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>',
     close: '<svg class="ic" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
@@ -471,8 +472,38 @@
   if (navIn) {
     btn = h('button', { class: 'pill acct-btn', id: 'acctBtn', type: 'button', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' });
     btn.addEventListener('click', () => (signedIn() ? toggleMenu() : openDialog('login')));
-    navIn.appendChild(btn);
+    navIn.insertBefore(btn, document.getElementById('navToggle'));   // the hamburger (if the page has one) stays last
   }
+
+  /* ---------- Admin button ---------- */
+  // Shown only while the admin's own Google account is signed in. It is a plain link to /admin: it does not sign
+  // anyone in. The admin page still asks for its own GitHub token, so this button is a convenience, not a lock.
+  // The admin's email is kept in firebase-config.js only as a SHA-256 hash, so it is not readable from the site.
+  let adminBtn = null, adminFor = null;
+  async function sha256(text) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  function showAdmin(on) {
+    if (!on) { if (adminBtn) { adminBtn.remove(); adminBtn = null; } return; }
+    if (adminBtn || !navIn) return;
+    adminBtn = h('a', { class: 'pill admin-pill', href: '/admin/', title: 'Open the admin page (it asks for your GitHub token)', html: ICON.shield + '<span class="lbl">Admin</span>' });
+    (document.getElementById('navLinks') || navIn).appendChild(adminBtn);
+  }
+  async function renderAdmin() {
+    const u = publicUser();
+    const email = u && u.email ? u.email.trim().toLowerCase() : '';
+    const hashes = (OPT.adminEmailHashes || []).map((x) => String(x).toLowerCase());
+    // an unverified email/password account could type any address, so it never gets the button
+    if (!email || !hashes.length || needsVerify(user) || !(root.crypto && crypto.subtle)) { adminFor = null; showAdmin(false); return; }
+    if (adminFor === email) return;
+    adminFor = email;
+    let ok = false;
+    try { ok = hashes.includes(await sha256(email)); } catch (e) { ok = false; }
+    if (adminFor === email) showAdmin(ok);   // ignore the answer if the account changed meanwhile
+  }
+  root.addEventListener('account:state', renderAdmin);
+  renderAdmin();   // the saved sign-in hint is enough to show the button straight away on return visits
   const first = (s) => String(s || '').trim().split(/\s+/)[0] || '';
   function avatar(u, cls) {
     const letter = (u.name || u.email || '?').trim().charAt(0).toUpperCase();

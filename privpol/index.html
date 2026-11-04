@@ -36,8 +36,11 @@
     <div class="nav-in glass">
       <a class="back" id="backLink" href="/"><svg class="ic"><use href="#i-left"/></svg><span class="t">icse.shekharjha.tech</span></a>
       <a class="brand" href="/">ICSE <span>Resources</span></a>
-      <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg></button>
-      <a class="pill" href="/">Library</a>
+      <div class="nav-links" id="navLinks">
+        <button class="ib theme-btn" id="themeBtn" type="button" aria-label="Switch to light mode" title="Switch to light mode"><svg class="ic i-sun"><use href="#i-sun"/></svg><svg class="ic i-moon"><use href="#i-moon"/></svg><span class="nav-lbl">Theme</span></button>
+        <a class="pill" href="/">Library</a>
+      </div>
+      <button class="ib nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><svg class="ic" aria-hidden="true"><path class="p-open" d="M4 7h16M4 12h16M4 17h16"/><path class="p-close" d="M6 6l12 12M18 6 6 18"/></svg></button>
     </div>
   </header>
 
@@ -107,6 +110,7 @@
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/analytics.js"></script>
 <script src="/assets/js/theme.js"></script>
+<script src="/assets/js/nav.js"></script>
 <script src="/assets/js/firebase-config.js"></script>
 <script src="/assets/js/account.js"></script>
 <script src="/assets/js/to-top.js"></script>
