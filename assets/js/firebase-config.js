@@ -15,7 +15,10 @@ window.ICSE_FIREBASE = {
 window.ICSE_ACCOUNT = {
   google: true,        // show "Continue with Google"
   oneTapClientId: "",  // Google One Tap: paste the Web client ID (Firebase console > Authentication > Sign-in method > Google > Web SDK configuration). Empty = One Tap off
-  adminEmailHashes: ["ef6f25337bd32a4e3ffa6ca1b7a1d26bbde29db470b6652bf7200ef24e7987d4"],  // SHA-256 of the admin's Google email (lowercase). Signed in with that account = an "Admin" button appears. It only links to /admin, which still needs the GitHub token. Make a hash: in the browser console run  crypto.subtle.digest('SHA-256', new TextEncoder().encode('you@gmail.com')).then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
+  adminEmailHashes: [
+  "09f47f846e1221c8b09e820b33d2615c89b8750d36d4e32038bcd483c78590b5",  // jhakumarshekhar11@gmail.com
+  "77697c53691970a853b020b13124880106d1cf90f7772c8e4e6fe6e878ed64ff"   // jhakumarshekhar11@atomicmail.io
+],  // SHA-256 of the admin's Google email (lowercase). Signed in with that account = an "Admin" button appears. It only links to /admin, which still needs the GitHub token. Make a hash: in the browser console run  crypto.subtle.digest('SHA-256', new TextEncoder().encode('you@gmail.com')).then(b => console.log([...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('')))
   email: true,         // show email + password sign up and log in
   minPassword: 8,      // shortest password accepted on sign up (Firebase itself requires at least 6)
   maxProgress: 60,     // how many "continue reading" papers are remembered
