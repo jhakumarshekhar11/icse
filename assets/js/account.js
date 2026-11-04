@@ -670,6 +670,7 @@
     'auth/invalid-email': 'That email address does not look right.',
     'auth/email-already-in-use': 'That email already has an account. Log in instead.',
     'auth/weak-password': 'Choose a stronger password (at least 6 characters).',
+    'auth/password-does-not-meet-requirements': 'Your password is not strong enough. Mix uppercase and lowercase letters, numbers and a symbol, and make it longer.',
     'auth/missing-password': 'Enter your password.',
     'auth/too-many-requests': 'Too many attempts. Wait a few minutes and try again.',
     'auth/network-request-failed': 'No internet connection. Try again.',
@@ -681,8 +682,22 @@
     'auth/invalid-api-key': 'The Firebase settings in firebase-config.js are not correct.',
     'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'The Firebase settings in firebase-config.js are not correct.'
   };
+  // Firebase's password policy (Authentication > Settings > Password policy) answers with
+  // "Missing password requirements: [Password must contain an upper case character, ...]".
+  // Turn that into a plain list so the student sees exactly what is still missing.
+  function passwordProblem(ex) {
+    if (!ex || ex.code !== 'auth/password-does-not-meet-requirements') return '';
+    let raw = String(ex.message || '');
+    try { raw += ' ' + JSON.stringify(ex.customData || {}); } catch (e) { /* ignore */ }
+    const m = raw.match(/requirements:\s*\[([^\]]*)\]/i);
+    const items = m ? m[1].split(/,\s*(?=Password\b)/i).map((t) => t.replace(/^Password (must|should)( contain| have| be)?\s*/i, '').replace(/^an? /i, '').replace(/\.$/, '').replace(/\\"/g, '').trim()).filter(Boolean) : [];
+    const nice = (t) => t.replace(/upper case/i, 'uppercase').replace(/lower case/i, 'lowercase').replace(/non-alphanumeric/i, 'special').replace(/numeric character/i, 'number').replace(/\bcharacters?\b/i, (c) => c);
+    return items.length ? 'Your password still needs: ' + items.map(nice).join('; ') + '.' : 'Your password is not strong enough. Mix uppercase and lowercase letters, numbers and a symbol, and make it longer.';
+  }
   function showError(ex) {
     const code = ex && ex.code;
+    const pwProblem = passwordProblem(ex);
+    if (pwProblem) { if (dlg && !dlg.hidden) setMsg(pwProblem); else toast(pwProblem, 5200); return; }
     if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return;
     if (!dlg || dlg.hidden) { if (code) toast(MESSAGES[code] || 'Could not sign in. Try again.'); return; }
     setMsg(MESSAGES[code] || 'Something went wrong. Please try again.');
@@ -806,7 +821,7 @@
       toast('Password updated');
     } catch (ex) {
       const c = ex && ex.code;
-      setNote(S.pwMsg, c === 'auth/invalid-credential' || c === 'auth/wrong-password' ? 'Your current password is wrong.' : MESSAGES[c] || 'Could not update the password. Try again.');
+      setNote(S.pwMsg, c === 'auth/invalid-credential' || c === 'auth/wrong-password' ? 'Your current password is wrong.' : passwordProblem(ex) || MESSAGES[c] || 'Could not update the password. Try again.');
     }
     S.pwBtn.disabled = false;
   }
