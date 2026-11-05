@@ -367,9 +367,8 @@
       "pages": 32,
       "size_kb": 2957,
       "added": "2026-10-11",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "popular": true,
       "description": "Question Bank for Chapters:\nNatural Vegetation\nWater Resources\nMineral and Energy Resources\nAgriculture",
       "tags": [
         "Question Bank",
@@ -541,7 +540,7 @@
       "added": "2026-10-11",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen Paper of English Language 2027",
       "tags": [
         "english",
@@ -551,7 +550,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 13
+      "msFrom": 13,
+      "popular": true
     },
     {
       "id": "englishlit-2026-previous-year-paper",
@@ -899,7 +899,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of Geography 2027. Covers monsoon, transport, irrigation and coal.",
       "tags": [
         "specimen",
@@ -920,7 +920,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 16
+      "msFrom": 16,
+      "popular": true
     },
     {
       "id": "history-2026-previous-year-paper",
@@ -1170,7 +1171,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of History & Civics 2027",
       "tags": [
         "president",
@@ -1188,7 +1189,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 14
+      "msFrom": 14,
+      "popular": true
     },
     {
       "id": "physics-2026-previous-year-paper",
@@ -1453,7 +1455,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of Physics 2027",
       "tags": [
         "application",
@@ -1469,7 +1471,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 20
+      "msFrom": 20,
+      "popular": true
     },
     {
       "id": "chemistry-2026-previous-year-paper",
@@ -1733,7 +1736,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of Chemistry 2027",
       "tags": [
         "sulphuric acid",
@@ -1751,7 +1754,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 17
+      "msFrom": 17,
+      "popular": true
     },
     {
       "id": "biology-2026-previous-year-paper",
@@ -2016,7 +2020,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of Biology 2027",
       "tags": [
         "blood",
@@ -2034,7 +2038,8 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 14
+      "msFrom": 14,
+      "popular": true
     },
     {
       "id": "hindi-2026-previous-year-paper",
@@ -2368,7 +2373,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Specimen paper of Mathematics 2027. Covers tangents, gst, matrix and sphere.",
       "tags": [
         "gst",
@@ -2387,7 +2392,8 @@
       ],
       "minutes": 180,
       "marks": 80,
-      "msFrom": 15
+      "msFrom": 15,
+      "popular": true
     },
     {
       "id": "maths-2024-specimen-paper",
@@ -2433,7 +2439,7 @@
       "added": "2026-10-13",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "River Maps for Geography.",
       "tags": [
         "2027",
@@ -2445,7 +2451,8 @@
         "map",
         "river",
         "india"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "commercialstudies-2026-question-bank",
@@ -2476,12 +2483,13 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "State Boundary Maps for Geography 2027",
       "tags": [
         "states",
         "indian"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "economics-2022-specimen-paper",
@@ -3125,7 +3133,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Computer Applications",
       "tags": [
         "ascending order",
@@ -3144,7 +3152,8 @@
         "2025",
         "2024",
         "2023"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-13",
@@ -3159,7 +3168,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Notes for Julius Caesar",
       "tags": [
         "mcq",
@@ -3173,7 +3182,8 @@
         "bad strokes",
         "arming myself",
         "conflict"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "computer-2027-question-bank-2",
@@ -3188,7 +3198,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Computer Applications.",
       "tags": [
         "number",
@@ -3207,7 +3217,8 @@
         "2025",
         "2024",
         "2023"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "physics-2027-question-bank",
@@ -3222,7 +3233,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Physics. Covers sound, total internal reflection, echo and pulley.",
       "tags": [
         "refractive index",
@@ -3237,7 +3248,8 @@
         "echo",
         "pulley",
         "resonance"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "biology-2027-question-bank",
@@ -3252,7 +3264,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Biology. Covers blood, population, nervous system and chromosomes.",
       "tags": [
         "mcq",
@@ -3267,7 +3279,8 @@
         "human evolution",
         "reproductive system",
         "arrange"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "computer-2025-question-bank",
@@ -3282,7 +3295,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Computer Applications with answer key. Covers java, array and scanner.",
       "tags": [
         "answer key",
@@ -3297,7 +3310,8 @@
         "scanner",
         "understanding",
         "void"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "history-2025-question-bank",
@@ -3312,7 +3326,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for History & Civics with answer key.",
       "tags": [
         "answer key",
@@ -3327,7 +3341,8 @@
         "union legislature",
         "british",
         "understanding"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "biology-2025-question-bank",
@@ -3342,7 +3357,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Biology with answer key. Covers blood, pollution, population and photosynthesis.",
       "tags": [
         "answer key",
@@ -3357,7 +3372,8 @@
         "transpiration",
         "cell division",
         "human evolution"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "chemistry-2025-question-bank",
@@ -3372,7 +3388,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers ammonia, metallurgy, electrolysis and stoichiometry.",
       "tags": [
         "answer key",
@@ -3387,7 +3403,8 @@
         "metallurgy",
         "electrolysis",
         "stoichiometry"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlang-2025-question-bank",
@@ -3402,7 +3419,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Language with answer key. Covers notice, composition, comprehension and letter writing.",
       "tags": [
         "answer key",
@@ -3417,7 +3434,8 @@
         "letter writing",
         "books",
         "manager said"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "geography-2025-question-bank",
@@ -3432,7 +3450,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Geography with answer key. Covers transport, agriculture, manufacturing industries and irrigation.",
       "tags": [
         "answer key",
@@ -3447,7 +3465,8 @@
         "water resources",
         "waste management",
         "topographical map"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2025-question-bank",
@@ -3462,7 +3481,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature with answer key. Covers poem and extract.",
       "tags": [
         "answer key",
@@ -3477,7 +3496,8 @@
         "poem",
         "extract",
         "personal response"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "maths-2025-question-bank",
@@ -3492,7 +3512,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Mathematics with answer key. Covers gst, matrix, cone and statistics.",
       "tags": [
         "answer key",
@@ -3507,7 +3527,8 @@
         "statistics",
         "mensuration",
         "probability"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "physics-2025-question-bank",
@@ -3522,7 +3543,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Physics with answer key. Covers lens, sound and pulley.",
       "tags": [
         "answer key",
@@ -3537,7 +3558,8 @@
         "lens",
         "sound",
         "pulley"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "physics-2027-sample-paper",
@@ -3552,7 +3574,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Sample paper of Physics 2027. Covers lens, sound, pulley and echo.",
       "tags": [
         "lens",
@@ -3569,7 +3591,8 @@
         "tackle system"
       ],
       "minutes": 120,
-      "marks": 80
+      "marks": 80,
+      "popular": true
     },
     {
       "id": "commercialstudies-2026-sample-paper",
@@ -3615,7 +3638,7 @@
       "added": "2026-10-14",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Sample paper of Economic Applications 2027",
       "tags": [
         "price",
@@ -3632,7 +3655,8 @@
         "curve"
       ],
       "minutes": 120,
-      "marks": 100
+      "marks": 100,
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-5",
@@ -3647,7 +3671,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3659,7 +3683,8 @@
         "dialogue",
         "characterisation",
         "critique of society"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-6",
@@ -3674,7 +3699,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3684,7 +3709,8 @@
         "style",
         "tone",
         "mood"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-7",
@@ -3699,7 +3725,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3708,7 +3734,8 @@
         "horrors of everyday life",
         "the consequences of fear",
         "parental influence and support"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-8",
@@ -3723,7 +3750,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3733,7 +3760,8 @@
         "mood",
         "satire",
         "irony"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-9",
@@ -3748,7 +3776,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3758,7 +3786,8 @@
         "expectations",
         "women's",
         "roles"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-10",
@@ -3773,7 +3802,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3784,7 +3813,8 @@
         "style",
         "tone",
         "mood"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-11",
@@ -3799,7 +3829,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3807,7 +3837,8 @@
         "alienation",
         "individuality",
         "non-conformity"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-12",
@@ -3822,7 +3853,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3833,7 +3864,8 @@
         "satire",
         "collectivistic",
         "ideology"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-13",
@@ -3848,7 +3880,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3858,7 +3890,8 @@
         "empowerment",
         "individual",
         "identity"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-14",
@@ -3873,7 +3906,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3883,7 +3916,8 @@
         "rhyme-scheme",
         "humour",
         "satire"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-15",
@@ -3898,7 +3932,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3908,7 +3942,8 @@
         "brutus",
         "manipulation",
         "octavius"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-16",
@@ -3923,7 +3958,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3933,7 +3968,8 @@
         "octavius",
         "lepidus",
         "convince"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-note-17",
@@ -3948,7 +3984,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3959,7 +3995,8 @@
         "military",
         "money",
         "difference"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-solution",
@@ -3974,7 +4011,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "floor",
@@ -3988,7 +4025,8 @@
         "nervous",
         "pressed",
         "uncomfortable"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-solution-2",
@@ -4003,7 +4041,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "honourable men",
@@ -4020,7 +4058,8 @@
         "ambitious",
         "conspirators",
         "crowd"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-solution-3",
@@ -4035,14 +4074,15 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Literature 2027. Covers extract and julius caesar.",
       "tags": [
         "scene",
         "cinna",
         "extract",
         "julius caesar"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-solution-4",
@@ -4057,7 +4097,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "great things",
@@ -4072,7 +4112,8 @@
         "earlier",
         "ruthless",
         "situation"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-solution-5",
@@ -4087,7 +4128,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "royal sport",
@@ -4101,7 +4142,8 @@
         "threw",
         "struck",
         "attention"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank",
@@ -4116,7 +4158,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4132,7 +4174,8 @@
         "cassius",
         "body",
         "julius caesar"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-2",
@@ -4147,7 +4190,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4162,7 +4205,8 @@
         "death",
         "scene",
         "loved"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-3",
@@ -4177,7 +4221,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4192,7 +4236,8 @@
         "tear",
         "death",
         "irrational"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-4",
@@ -4207,7 +4252,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4222,7 +4267,8 @@
         "take",
         "tried",
         "theme"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-5",
@@ -4237,7 +4283,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4252,7 +4298,8 @@
         "lucilius",
         "scene",
         "front"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-6",
@@ -4267,7 +4314,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4282,7 +4329,8 @@
         "brutus character",
         "death",
         "brutus mean"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-7",
@@ -4297,7 +4345,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4312,7 +4360,8 @@
         "makes martin",
         "feel trapped",
         "poor lighting"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-8",
@@ -4327,7 +4376,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4342,7 +4391,8 @@
         "grandmother",
         "gleaming cup",
         "actions rather"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-9",
@@ -4357,7 +4407,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4372,7 +4422,8 @@
         "watching television",
         "world",
         "walking"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-10",
@@ -4387,7 +4438,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4402,7 +4453,8 @@
         "test",
         "scene",
         "bravery"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-11",
@@ -4417,7 +4469,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "poem",
@@ -4432,7 +4484,8 @@
         "distant hills",
         "peace blooms",
         "personal loss"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2027-question-bank-12",
@@ -4447,7 +4500,7 @@
       "added": "2026-10-15",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4464,7 +4517,8 @@
         "regimenting",
         "even",
         "creativity"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlit-2025-question-bank-2",
@@ -4524,7 +4578,7 @@
       "added": "2026-10-20",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for English Language.",
       "tags": [
         "ran away",
@@ -4539,7 +4593,8 @@
         "sooner",
         "well",
         "phrase appropriate"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "englishlang-2027-solution",
@@ -4554,7 +4609,7 @@
       "added": "2026-10-20",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions for English Language 2027.",
       "tags": [
         "prepositions",
@@ -4569,7 +4624,8 @@
         "late",
         "never",
         "sooner"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "computer-2027-question-bank-3",
@@ -4584,7 +4640,7 @@
       "added": "2026-10-21",
       "updated": "2026-10-21",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Computer Applications.",
       "tags": [
         "number",
@@ -4599,7 +4655,8 @@
         "println",
         "double",
         "java"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "biology-2027-question-bank-2",
@@ -4614,7 +4671,7 @@
       "added": "2026-10-22",
       "updated": "2026-10-26",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "rev": 2,
       "description": "Question bank for Biology with marking scheme. Covers Excretory System.",
       "tags": [
@@ -4638,7 +4695,8 @@
         "collecting duct",
         "convoluted tubule",
         "prostate gland"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "chemistry-2027-question-bank",
@@ -4653,7 +4711,7 @@
       "added": "2026-10-24",
       "updated": "2026-10-28",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "rev": 2,
       "description": "Question bank for Chemistry with answer key. Covers periodic table, chemical bonding and Acid Bases and Salts.",
       "tags": [
@@ -4677,7 +4735,8 @@
         "atomic number",
         "periodic table",
         "ammonia"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "chemistry-2027-question-bank-2",
@@ -4692,7 +4751,7 @@
       "added": "2026-10-25",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers electrode, electrolysis, ammonia and ionisation.",
       "tags": [
         "answer key",
@@ -4707,7 +4766,8 @@
         "mass",
         "ionisation",
         "gives"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "chemistry-2027-question-bank-3",
@@ -4722,7 +4782,7 @@
       "added": "2026-10-25",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers hydrocarbons, alkane, hydrogen chloride and alkene.",
       "tags": [
         "answer key",
@@ -4737,7 +4797,8 @@
         "hydrogen chloride",
         "alkene",
         "alkyne"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "geography-2027-question-bank-2",
@@ -4752,7 +4813,7 @@
       "added": "2026-10-25",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Geography. Covers climate, monsoon and waste management.",
       "tags": [
         "mcq",
@@ -4767,7 +4828,8 @@
         "t24 spec",
         "alluvial soil",
         "rainfall"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "biology-2027-question-bank-3",
@@ -4782,7 +4844,7 @@
       "added": "2026-10-25",
       "updated": "2026-10-25",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Biology with answer key. Covers nervous system and sense organs.",
       "tags": [
         "answer key",
@@ -4797,7 +4859,8 @@
         "axon endings",
         "medulla oblongata",
         "brain"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "computer-2027-question-bank-4",
@@ -4812,7 +4875,7 @@
       "added": "2026-10-30",
       "updated": "2026-10-30",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Question bank for Computer Applications with answer key. Covers java, array, string and constructor.",
       "tags": [
         "answer key",
@@ -4827,7 +4890,8 @@
         "operators",
         "user defined method",
         "number"
-      ]
+      ],
+      "popular": true
     },
     {
       "id": "computer-2027-solution",
@@ -4842,7 +4906,7 @@
       "added": "2026-10-30",
       "updated": "2026-10-30",
       "downloads": 0,
-      "popular": true,
+      "tier": "popular",
       "description": "Solutions with Instructions for Computer Applications 2027. Covers java, array, string and constructor.",
       "tags": [
         "mcq",
@@ -4857,7 +4921,8 @@
         "nested loop",
         "wrapper class",
         "binary search"
-      ]
+      ],
+      "popular": true
     }
   ],
   "examDefaults": {
