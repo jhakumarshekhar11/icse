@@ -295,7 +295,8 @@ for (const r of list) {
 | `dataUrl`, `basePath` | Where the resource list lives, and the site's public path (`/`). |
 | `portfolioUrl`, `notice` | The back link and the footer line. |
 | `reportEmail` | Where "Report an error" emails go. |
-| `newDays`, `popularMin` | A resource is **New** for this many days. **Popular** from this many downloads. |
+| `newDays` | A resource is **New** for this many days. |
+| `tiers` | Download badges, lowest first: `id`, `name`, `min` (downloads). Default: Popular 100+, Hot 150+, Topper's Choice 200+. A card shows only the highest tier it has reached. |
 | `counter` | Download counter: `enabled`, `doc` (the Firestore document, default `stats/downloads`), `cacheMinutes`, `shards`. Needs the rules in `firestore.rules.counter`. Failed counts are retried 3 times. If counts still go missing in busy periods (exam season), set `shards` to e.g. 5 and allow the extra documents `stats/downloads-1` to `stats/downloads-4` in the same rules (copy the rule for `stats/downloads` to `match /stats/{doc}` limited to those names). With `shards: 1` nothing changes. |
 | `subjectOrder` | Order of subjects (by id) when no filter or search is active. |
 | `quickSearches` | The suggestion chips under the search bar. |
@@ -348,7 +349,7 @@ The countdown reads the **server's** clock from the response headers, then ticks
 | `subject`, `type`, `class`, `year` | `subject` and `type` must exist in the lists above. |
 | `file`, `pages`, `size_kb` | The PDF path, and facts shown on the card. |
 | `added`, `updated` | `YYYY-MM-DD`. `added` drives the New badge and the Just added row. |
-| `downloads`, `popular` | Starting count. `"popular": true` forces the badge. |
+| `downloads`, `tier` | Starting count. `"tier": "hot"` (an id from `tiers`) sets the lowest badge the paper can show; it still moves up as downloads grow. The old `"popular": true` counts as the first tier and is replaced by `tier` the next time the paper is saved in the admin. |
 | `draft` | `true` hides it from the public site. |
 | `rev` | Bumped when the PDF is replaced. |
 | `description`, `tags` | A line for the card, and words that make search find it. |

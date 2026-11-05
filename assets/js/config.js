@@ -20,7 +20,13 @@ window.ICSE_CONFIG = {
 
   // Badges
   newDays: 30,          // "New" if added within this many days
-  popularMin: 1000,     // "Popular" if downloads reach this number (or set "popular": true in the JSON)
+  // Download tiers, lowest first. A paper shows ONE badge: the highest tier it has reached by downloads, or the
+  // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download count.
+  tiers: [
+    { id: "popular", name: "Popular", min: 100 },
+    { id: "hot", name: "Hot", min: 150 },
+    { id: "topper", name: "Topper's Choice", min: 200 }
+  ],
 
   // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
   // (collection "downloads", one document per paper), see assets/js/counter.js and the rules in README. Counts in resources.json are
@@ -50,4 +56,13 @@ window.ICSE_CONFIG = {
 
   // Quick-search suggestions under the search bar
   quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
+};
+
+// tierOf(resource, downloadCount): the highest tier that applies, or null.
+// resource.tier (set in the admin) is a minimum; the old "popular": true flag counts as the lowest tier.
+window.ICSE_CONFIG.tierOf = function (r, n) {
+  var C = window.ICSE_CONFIG, t = C.tiers || [], best = -1;
+  var manual = r && (r.tier || (r.popular === true && t[0] ? t[0].id : ''));
+  t.forEach(function (x, i) { if (x.id === manual || n >= x.min) best = Math.max(best, i); });
+  return best < 0 ? null : t[best];
 };

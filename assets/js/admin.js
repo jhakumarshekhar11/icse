@@ -41,6 +41,7 @@
   const MARKS_OK = (n) => Number.isInteger(n) && n >= 10 && n <= 200;
   const fmtMins = (m) => (m >= 60 ? Math.floor(m / 60) + 'h' + (m % 60 ? ' ' + (m % 60) + 'm' : '') : m + 'm');
   const codeText = (s) => [s.code, s.altCode].filter(Boolean).join(', ');
+  const tierOpts = (autoLabel) => `<option value="">${autoLabel}</option>` + (CFG.tiers || []).map((t) => `<option value="${esc(t.id)}">${esc(t.name)} (${t.min}+ downloads)</option>`).join('');
   const dlTotal = (r) => (r.downloads || 0) + (state.live[r.id] || 0);
 
   /* ---------- toasts, dialogs ---------- */
@@ -169,12 +170,13 @@
     b.title = ok ? 'Undo: ' + state.headMsg.replace(AC.commitPrefix, '').trim() : 'The latest commit was not made by this page';
   }
 
-  const ORDER = ['id', 'title', 'subject', 'class', 'type', 'year', 'file', 'pages', 'size_kb', 'added', 'updated', 'downloads', 'popular', 'draft', 'rev', 'description', 'tags', 'minutes', 'marks', 'msFrom'];
+  const ORDER = ['id', 'title', 'subject', 'class', 'type', 'year', 'file', 'pages', 'size_kb', 'added', 'updated', 'downloads', 'tier', 'draft', 'rev', 'description', 'tags', 'minutes', 'marks', 'msFrom'];
   function tidy(r) {
     const o = {};
     ORDER.forEach((k) => {
       let v = r[k];
-      if ((k === 'popular' || k === 'draft') && !v) return;
+      if (k === 'tier') { v = r.tier || (r.popular === true ? (CFG.tiers[0] || {}).id : ''); if (!v) return; }   // the old "popular" flag becomes the lowest tier
+      if (k === 'draft' && !v) return;
       if ((k === 'pages' || k === 'size_kb' || k === 'updated') && !v) return;
       if (k === 'rev' && !(v > 1)) return;
       if (k === 'downloads') v = v || 0;
@@ -312,7 +314,7 @@
           <div class="field"><label>Year</label><input type="number" data-f="year" min="1990" max="2100" inputmode="numeric"></div>
           <div class="field"><label>Class</label><input type="text" data-f="cls" maxlength="6" value="X"></div>
           <div class="field"><label>Added on</label><input type="date" data-f="added"></div>
-          <div class="field"><label>Popular badge</label><label class="switch"><input type="checkbox" data-f="popular"> Show the Popular badge</label></div>
+          <div class="field"><label>Badge</label><select data-f="tier">${tierOpts('Automatic (by downloads)')}</select><div class="sub">A paper shows only its highest tier. This sets the lowest it can show.</div></div>
           <div class="field full"><label>Link name (share link)</label><input type="text" data-f="id" maxlength="80" spellcheck="false" ${edit ? 'disabled' : ''}><div class="sub" data-el="idSub"></div></div>
           <div class="field full"><label>Description</label><textarea data-f="desc" maxlength="240" placeholder="One line about what is inside."></textarea><div class="sub" data-el="descSub"></div></div>
           <div class="field full xbox" data-el="xbox" hidden>
@@ -352,14 +354,14 @@
       f.year.value = res.year || ''; f.cls.value = res['class'] || 'X'; f.added.value = res.added || today();
       f.xmin.value = res.minutes > 0 ? res.minutes : ''; f.xmarks.value = res.marks > 0 ? res.marks : '';
       if (Number.isInteger(res.msFrom)) { f.xms.value = res.msFrom === 0 ? 'none' : 'page'; f.xpage.value = res.msFrom > 0 ? res.msFrom : ''; }
-      f.popular.checked = !!res.popular; f.id.value = res.id; f.desc.value = res.description || ''; f.tags.value = (res.tags || []).join(', ');
+      f.tier.value = res.tier || (res.popular === true ? (CFG.tiers[0] || {}).id : '') || ''; f.id.value = res.id; f.desc.value = res.description || ''; f.tags.value = (res.tags || []).join(', ');
       el('fname').textContent = res.file.split('/').pop();
       el('fmeta').textContent = [res.pages && plural(res.pages, 'page'), res.size_kb && fmtSize(res.size_kb)].filter(Boolean).join(', ');
     } else { f.added.value = today(); }
 
     const val = () => ({
       title: f.title.value.trim(), subject: f.subject.value, type: f.type.value, year: parseInt(f.year.value, 10),
-      cls: f.cls.value.trim() || 'X', added: f.added.value, popular: f.popular.checked, id: f.id.value.trim(),
+      cls: f.cls.value.trim() || 'X', added: f.added.value, tier: f.tier.value, id: f.id.value.trim(),
       description: f.desc.value.trim(), tags: f.tags.value.split(',').map((s) => s.trim()).filter(Boolean),
       xmin: parseInt(f.xmin.value, 10), xmarks: parseInt(f.xmarks.value, 10), xms: f.xms.value, xpage: parseInt(f.xpage.value, 10)
     });
@@ -416,7 +418,7 @@
       const isNewB = v.added && (Date.now() - new Date(v.added + 'T00:00:00')) / 864e5 <= CFG.newDays;
       const pages = st.pdf ? st.pdf.pages : res && res.pages, size = st.pdf ? st.pdf.size_kb : res && res.size_kb;
       return `<article class="card glass gh" style="--accent:${esc(accent)}">
-        <div class="tags"><span class="sj"><i class="dot"></i>${esc(s ? s.name : 'Subject')}</span><span class="ty">${esc(v.type || 'Type')}</span>${isNewB ? '<span class="badge new">New</span>' : ''}${v.popular ? '<span class="badge pop">Popular</span>' : ''}</div>
+        <div class="tags"><span class="sj"><i class="dot"></i>${esc(s ? s.name : 'Subject')}</span><span class="ty">${esc(v.type || 'Type')}</span>${isNewB ? '<span class="badge new">New</span>' : ''}${(() => { const t = CFG.tierOf({ tier: v.tier }, (res && dlTotal(res)) || 0); return t ? `<span class="badge pop t-${esc(t.id)}">${esc(t.name)}</span>` : ''; })()}</div>
         <h3><a>${esc(v.title || 'Untitled resource')}</a></h3>
         <p class="desc">${esc(v.description || 'Your description appears here.')}</p>
         <div class="facts"><span>Class ${esc(v.cls)}, ${isNaN(v.year) ? 'year' : v.year}</span>${s && codeText(s) ? `<span>Code ${esc(codeText(s))}</span>` : ''}${pages ? `<span>${plural(pages, 'page')}</span>` : ''}${size ? `<span>${fmtSize(size)}</span>` : ''}<span>${fmtCount(res ? dlTotal(res) : 0)} downloads</span></div>
@@ -633,7 +635,7 @@
     }
 
     async function saveNew(v, asDraft) {
-      const r = tidy(Object.assign({ id: v.id, title: v.title, subject: v.subject, class: v.cls, type: v.type, year: v.year, file: `/${AC.pdfDir}/${v.id}.pdf`, pages: st.pdf.pages, size_kb: st.pdf.size_kb, added: v.added, updated: today(), downloads: 0, popular: v.popular, draft: asDraft, description: v.description, tags: v.tags }, examFields(v)));
+      const r = tidy(Object.assign({ id: v.id, title: v.title, subject: v.subject, class: v.cls, type: v.type, year: v.year, file: `/${AC.pdfDir}/${v.id}.pdf`, pages: st.pdf.pages, size_kb: st.pdf.size_kb, added: v.added, updated: today(), downloads: 0, tier: v.tier || undefined, draft: asDraft, description: v.description, tags: v.tags }, examFields(v)));
       const c = await withBusy(asDraft ? 'Saving draft' : 'Publishing', async (step) => {
         step('Reading the PDF');
         const b64 = await GH.fileToBase64(st.file);
@@ -661,7 +663,7 @@
           const i = data.resources.findIndex((x) => x.id === res.id);
           if (i < 0) throw new Error('This resource no longer exists. Reload the page.');
           const cur = data.resources[i];
-          data.resources[i] = Object.assign({}, cur, { title: v.title, subject: v.subject, type: v.type, year: isNaN(v.year) ? '' : v.year, class: v.cls, added: v.added, popular: v.popular, description: v.description, tags: v.tags, updated: today(), draft: makeDraft }, examFields(v),
+          data.resources[i] = Object.assign({}, cur, { title: v.title, subject: v.subject, type: v.type, year: isNaN(v.year) ? '' : v.year, class: v.cls, added: v.added, tier: v.tier || undefined, popular: undefined, description: v.description, tags: v.tags, updated: today(), draft: makeDraft }, examFields(v),
             st.file ? { file: newFile, pages: st.pdf.pages, size_kb: st.pdf.size_kb, rev } : {});
           return data;
         }, { upserts, deletes }, step);
@@ -741,14 +743,14 @@
     const rows = list.map((r) => {
       const s = subj(r.subject), sel = state.selected.has(r.id);
       const isNew = r.added && (Date.now() - new Date(r.added + 'T00:00:00')) / 864e5 <= CFG.newDays;
-      const pop = r.popular || dlTotal(r) >= CFG.popularMin;
+      const tier = CFG.tierOf(r, dlTotal(r));
       return `<tr data-id="${esc(r.id)}" class="${sel ? 'sel' : ''}">
         <td class="c-sel"><input type="checkbox" data-sel ${sel ? 'checked' : ''} aria-label="Select ${esc(r.title)}"></td>
         <td class="c-title"><button class="ttl" data-act="edit" type="button">${esc(r.title)}</button><span class="id">${esc(r.id)}</span></td>
         <td class="c-sub">${s ? `<span class="sj" style="--accent:${esc(s.accent)}"><i class="dot"></i>${esc(s.name)}</span>${codeText(s) ? `<span class="id">${esc(codeText(s))}</span>` : ''}` : '<span class="dim">Not set</span>'}</td>
         <td class="c-type dim">${esc(r.type || 'Not set')}</td>
         <td class="c-year dim">${esc(r.year || '–')}</td>
-        <td class="c-st"><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${pop && !r.draft ? '<span class="badge pop">Popular</span>' : ''}${timerBadge(r)}</div></td>
+        <td class="c-st"><div class="st"><span class="badge ${r.draft ? 'draft' : 'live'}">${r.draft ? 'Draft' : 'Live'}</span>${isNew && !r.draft ? '<span class="badge new">New</span>' : ''}${tier && !r.draft ? `<span class="badge pop t-${esc(tier.id)}">${esc(tier.name)}</span>` : ''}${timerBadge(r)}</div></td>
         <td class="c-dl dim" data-l="Downloads" title="${esc((r.downloads || 0) + ' starting + ' + (state.live[r.id] || 0) + ' counted')}">${fmtCount(dlTotal(r))}</td>
         <td class="c-up dim" data-l="Updated">${esc(fmtDate(r.updated || r.added))}</td>
         <td class="c-act">
@@ -814,23 +816,23 @@
         <div class="field"><label>Subject</label><select data-b="subject">${sOpts}</select></div>
         <div class="field"><label>Type</label><select data-b="type">${tOpts}</select></div>
         <div class="field"><label>Year</label><input type="number" data-b="year" min="1990" max="2100" placeholder="No change"></div>
-        <div class="field"><label>Popular badge</label><select data-b="popular"><option value="">No change</option><option value="on">Mark as popular</option><option value="off">Remove the badge</option></select></div>
+        <div class="field"><label>Badge</label><select data-b="tier"><option value="">No change</option>${(CFG.tiers || []).map((t) => `<option value="${esc(t.id)}">Set to ${esc(t.name)}</option>`).join('')}<option value="auto">Automatic (by downloads)</option></select></div>
         <div class="field"><label>Status</label><select data-b="status"><option value="">No change</option><option value="live">Publish</option><option value="draft">Move to drafts</option></select></div>
       </div>
       <div class="row-acts"><button class="btn" data-no type="button">Cancel</button><button class="btn btn-primary" data-yes type="button">Apply to ${ids.length}</button></div>`, { cls: 'mid' });
     m.card.querySelector('[data-no]').onclick = () => m.close();
     m.card.querySelector('[data-yes]').onclick = async () => {
       const g = (k) => m.card.querySelector(`[data-b="${k}"]`).value;
-      const p = { subject: g('subject'), type: g('type'), year: g('year') ? parseInt(g('year'), 10) : '', popular: g('popular'), status: g('status') };
+      const p = { subject: g('subject'), type: g('type'), year: g('year') ? parseInt(g('year'), 10) : '', tier: g('tier'), status: g('status') };
       if (p.year && (p.year < 1990 || p.year > 2100)) { toast('Enter a year between 1990 and 2100.'); return; }
-      if (!p.subject && !p.type && !p.year && !p.popular && !p.status) { toast('Nothing to change.'); return; }
+      if (!p.subject && !p.type && !p.year && !p.tier && !p.status) { toast('Nothing to change.'); return; }
       m.close();
       try {
         await withBusy('Applying changes', (step) => commitMutation(`Bulk edit: ${plural(ids.length, 'resource')}`, (data) => {
           data.resources.forEach((r) => {
             if (!ids.includes(r.id)) return;
             if (p.subject) r.subject = p.subject; if (p.type) r.type = p.type; if (p.year) r.year = p.year;
-            if (p.popular) r.popular = p.popular === 'on';
+            if (p.tier) { r.tier = p.tier === 'auto' ? undefined : p.tier; delete r.popular; }
             if (p.status) r.draft = p.status === 'draft';
             r.updated = today();
           });

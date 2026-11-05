@@ -9,7 +9,7 @@
     strip: $('#strip'), subjects: $('#subjectGrid'), grid: $('#grid'), count: $('#count'),
     chipsClass: $('#chipsClass'), rowClass: $('#rowClass'), chipsSubject: $('#chipsSubject'),
     chipsType: $('#chipsType'), chipsYear: $('#chipsYear'), sort: $('#sortSeg'),
-    savedBtn: $('#savedBtn'), filterBtn: $('#filterBtn'), filterCount: $('#filterCount'), filters: $('#filters'), popBtn: $('#popBtn'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
+    savedBtn: $('#savedBtn'), filterBtn: $('#filterBtn'), filterCount: $('#filterCount'), filters: $('#filters'), chipsTier: $('#chipsTier'), rowTier: $('#rowTier'), savedCount: $('#savedCount'), recentSub: $('#recentSub'),
     spot: $('#spot'), page: $('#page'),
     dlg: $('#shareDlg'), shName: $('#shName'), shLink: $('#shLink'), shQr: $('#shQr'),
     shCopy: $('#shCopy'), shNative: $('#shNative'), shWa: $('#shWa'), shReport: $('#shReport'), shClose: $('#shClose'),
@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false, popOnly: false,
+    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false, tier: '',
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -40,7 +40,7 @@
   const fmtSize = (kb) => (kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB');
   const daysAgo = (r) => Math.floor((Date.now() - r._date) / 864e5);
   const isNew = (r) => daysAgo(r) <= CFG.newDays;
-  const isPopular = (r) => r.popular === true || dlCount(r) >= CFG.popularMin;
+  const tierOf = (r) => CFG.tierOf(r, dlCount(r));
   const fileName = (r) => slug(r.title) + '.pdf';
   const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 
@@ -181,7 +181,7 @@
     const tokens = state.rest.split(/\s+/).filter(Boolean);
     const list = state.res.filter((r) =>
       (!state.savedOnly || state.saved.has(r.id)) &&
-      (!state.popOnly || isPopular(r)) &&
+      (!state.tier || (tierOf(r) || {}).id === state.tier) &&
       (!state.cls.length || state.cls.includes(r.class)) &&
       (!state.subject.length || state.subject.includes(r.subject)) &&
       (!state.type.length || state.type.includes(r.type)) &&
@@ -202,11 +202,11 @@
     const grouped = state.sort === 'year' && !(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
     return list.sort((a, b) => (grouped ? rank(a) - rank(b) : 0) || by(a, b));
   }
-  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.popOnly);
+  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.tier);
 
   /* ---------- rendering ---------- */
   function badges(r) {
-    return (isNew(r) ? '<span class="badge new">New</span>' : '') + (isPopular(r) ? '<span class="badge pop">Popular</span>' : '');
+    return (isNew(r) ? '<span class="badge new">New</span>' : '') + (tierOf(r) ? `<span class="badge pop t-${esc(tierOf(r).id)}">${esc(tierOf(r).name)}</span>` : '');
   }
   function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
 
@@ -318,8 +318,13 @@
     el.chipsYear.innerHTML = chip('All', '', allOf('year')) + options('year').map((y) => chip(y, y, on('year', y))).join('');
     el.sort.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sort === state.sort));
     el.savedBtn.setAttribute('aria-pressed', state.savedOnly);
-    el.popBtn.setAttribute('aria-pressed', state.popOnly);
-    const nf = ['cls', 'subject', 'type', 'year'].filter((k) => state[k].length).length;
+    // Badge row: only tiers that at least one paper currently shows
+    const present = new Set(state.res.map((r) => (tierOf(r) || {}).id).filter(Boolean));
+    const tiers = (CFG.tiers || []).filter((t) => present.has(t.id));
+    if (state.tier && !present.has(state.tier)) state.tier = '';
+    el.rowTier.hidden = !tiers.length;
+    el.chipsTier.innerHTML = chip('All', '', !state.tier) + tiers.map((t) => chip(t.name, t.id, state.tier === t.id)).join('');
+    const nf = ['cls', 'subject', 'type', 'year'].filter((k) => state[k].length).length + (state.tier ? 1 : 0);
     el.filterCount.textContent = nf; el.filterCount.hidden = !nf;
     el.savedCount.textContent = state.saved.size;
   }
@@ -590,7 +595,7 @@
     el.q.focus({ preventScroll: true }); el.q.select();
   }
   function resetAll() {
-    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, popOnly: false });
+    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, tier: '' });
     el.q.value = ''; renderChips(); renderGrid(); syncQueryUrl();
   }
 
@@ -623,7 +628,10 @@
     const open = el.filters.hidden;
     el.filters.hidden = !open; el.filterBtn.setAttribute('aria-expanded', open);
   });
-  el.popBtn.addEventListener('click', () => { state.popOnly = !state.popOnly; renderChips(); renderGrid(); });
+  el.chipsTier.addEventListener('click', (e) => {
+    const b = e.target.closest('.chip'); if (!b) return;
+    state.tier = b.dataset.v || ''; renderChips(); renderGrid();
+  });
   el.savedBtn.addEventListener('click', () => {
     state.savedOnly = !state.savedOnly; renderChips(); renderGrid();
     if (state.savedOnly) $('#library').scrollIntoView({ behavior: 'smooth' });
