@@ -23,9 +23,9 @@ window.ICSE_CONFIG = {
   // Download tiers, lowest first. A paper shows ONE badge: the highest tier it has reached by downloads, or the
   // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download count.
   tiers: [
-    { id: "popular", name: "Popular", min: 100 },
-    { id: "hot", name: "Hot", min: 150 },
-    { id: "topper", name: "Topper's Choice", min: 200 }
+    { id: "popular", name: "Popular", min: 50 },
+    { id: "hot", name: "Hot", min: 100 },
+    { id: "topper", name: "Topper's Choice", min: 150 }
   ],
 
   // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
