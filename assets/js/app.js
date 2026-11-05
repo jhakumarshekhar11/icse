@@ -68,6 +68,7 @@
       const r = await fetch(CFG.dataUrl, { cache: 'no-cache' });
       if (!r.ok) throw new Error(r.status);
       const data = await r.json();
+      if (CFG.applyTiers) CFG.applyTiers(data);   // admin-edited tiers from resources.json, if any
       data.subjects.forEach((s) => state.subjects.set(s.id, s));
       state.types = data.types || [];
       state.res = data.resources.filter((r) => !r.draft).map((r) => {
@@ -206,7 +207,7 @@
 
   /* ---------- rendering ---------- */
   function badges(r) {
-    return (isNew(r) ? '<span class="badge new">New</span>' : '') + (tierOf(r) ? `<span class="badge pop t-${esc(tierOf(r).id)}">${esc(tierOf(r).name)}</span>` : '');
+    return (isNew(r) ? '<span class="badge new">New</span>' : '') + (CFG.tierBadge ? CFG.tierBadge(tierOf(r)) : '');
   }
   function readHref(r) { return location.pathname + '?file=' + encodeURIComponent(r.id); }
 
@@ -323,7 +324,7 @@
     const tiers = (CFG.tiers || []).filter((t) => present.has(t.id));
     if (state.tier && !present.has(state.tier)) state.tier = '';
     el.rowTier.hidden = !tiers.length;
-    el.chipsTier.innerHTML = chip('All', '', !state.tier) + tiers.map((t) => chip(t.name, t.id, state.tier === t.id)).join('');
+    el.chipsTier.innerHTML = chip('All', '', !state.tier) + tiers.map((t) => chip(t.name, t.id, state.tier === t.id, t.color)).join('');
     const nf = ['cls', 'subject', 'type', 'year'].filter((k) => state[k].length).length + (state.tier ? 1 : 0);
     el.filterCount.textContent = nf; el.filterCount.hidden = !nf;
     el.savedCount.textContent = state.saved.size;

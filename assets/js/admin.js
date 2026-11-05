@@ -28,7 +28,7 @@
   const state = {
     user: null, data: { subjects: [], types: [], resources: [] }, live: {}, headMsg: '',
     sort: { key: 'updated', dir: -1 }, filters: { q: '', subject: '', type: '', year: '', status: '' },
-    selected: new Set(), tab: 'upload', last: Date.now(), tax: null, editor: null, urls: []
+    selected: new Set(), tab: 'upload', last: Date.now(), tax: null, tiers: null, editor: null, urls: []
   };
   const subj = (id) => state.data.subjects.find((s) => s.id === id);
   // Timed exam helpers. The reading logic is shared with the public site (exam.js exposes it as ExamCore).
@@ -149,7 +149,8 @@
   /* ---------- data ---------- */
   async function reload() {
     const { data } = await GH.readJson();
-    state.data = data; renderAll();
+    state.data = data; if (CFG.applyTiers) CFG.applyTiers(data);
+    renderAll();
   }
   async function loadCounts() {
     const c = CFG.counter, C = window.ICSE_COUNTER; if (!c || !c.enabled || !C || !C.ready()) return;
@@ -203,6 +204,7 @@
       deletes, onStep: step
     });
     state.data = next; state.headMsg = `${AC.commitPrefix} ${message}`;
+    if (CFG.applyTiers) CFG.applyTiers(next);
     renderAll(); refreshHead();
     return c;
   }
@@ -948,6 +950,83 @@
     } catch (e) { showError(e); }
   });
 
+  /* ---------- download tiers ---------- */
+  // Saved in resources.json as "tiers" (same shape as the built-in list in config.js). When present it replaces
+  // window.ICSE_CONFIG.tiers on every page (see CFG.applyTiers); when absent the built-in list from config.js is used.
+  function resetTiers() {
+    const list = (state.data.tiers && state.data.tiers.length) ? state.data.tiers : CFG.defaultTiers;
+    state.tiers = {
+      items: list.map((t) => ({ id: t.id, name: t.name, color: t.color || '#ffffff', min: t.min, note: t.note || '', code: !!t.code, isNew: false })),
+      dirty: false
+    };
+    renderTiers();
+  }
+  function renderTiers() {
+    const box = $('#tierList'), t = state.tiers; if (!box || !t) return;
+    const count = (id) => state.data.resources.filter((r) => r.tier === id).length;
+    box.innerHTML = (t.items.length ? '<div class="trow tier head" aria-hidden="true"><span></span><span>Tier name</span><span>Downloads</span><span>Tooltip note</span><span>Code</span><span></span></div>' : '') + t.items.map((x, i) => {
+      const n = x.isNew ? 0 : count(x.id);
+      return `<div class="trow tier" data-i="${i}">
+        <input type="color" value="${esc(x.color)}" data-k="color" aria-label="Colour for ${esc(x.name || 'tier ' + (i + 1))}">
+        <label class="fld f-name"><span>Name</span><input type="text" value="${esc(x.name)}" data-k="name" maxlength="60" placeholder="Tier name" aria-label="Tier name"></label>
+        <label class="fld f-min"><span>Downloads</span><input type="number" min="1" max="1000000" step="1" inputmode="numeric" value="${esc(x.min)}" data-k="min" aria-label="Download threshold for ${esc(x.name || 'this tier')}"></label>
+        <label class="fld f-note"><span>Tooltip note</span><input type="text" value="${esc(x.note)}" data-k="note" maxlength="160" placeholder="Shown on hover" aria-label="Tooltip note for ${esc(x.name || 'this tier')}"></label>
+        <label class="fld f-codechk"><span>Code</span><input type="checkbox" data-k="code" ${x.code ? 'checked' : ''} aria-label="Code-style badge for ${esc(x.name || 'this tier')}"></label>
+        <button class="ib del" type="button" data-k="del" ${n ? 'disabled title="Remove this tier from resources first"' : 'title="Remove tier"'} aria-label="Remove ${esc(x.name || 'this tier')}">${icon('trash')}</button>
+      </div>`;
+    }).join('') || '<p class="hint">No tiers yet.</p>';
+    $('#tierSave').disabled = !t.dirty; $('#tierReset').disabled = !t.dirty;
+    $('#tierHint').textContent = t.dirty ? 'Unsaved changes. Tiers are shown lowest to highest; saving reorders them by download threshold.' : 'Badge colours and thresholds shown here are what the public site and the Edit sheet use right now.';
+  }
+  const tierDirty = () => { state.tiers.dirty = true; $('#tierSave').disabled = false; $('#tierReset').disabled = false; $('#tierHint').textContent = 'Unsaved changes. Tiers are shown lowest to highest; saving reorders them by download threshold.'; };
+  $('#tierList').addEventListener('input', (e) => {
+    const row = e.target.closest('.trow'); if (!row) return; const x = state.tiers.items[row.dataset.i]; const k = e.target.dataset.k;
+    if (k === 'name' || k === 'color' || k === 'note') x[k] = e.target.value;
+    else if (k === 'min') { const v = parseInt(e.target.value, 10); x.min = isNaN(v) ? '' : v; }
+    tierDirty();
+  });
+  $('#tierList').addEventListener('change', (e) => {
+    if (e.target.dataset.k !== 'code') return;
+    const row = e.target.closest('.trow'); if (!row) return;
+    state.tiers.items[row.dataset.i].code = e.target.checked; tierDirty();
+  });
+  $('#tierList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tiers.items.splice(b.closest('.trow').dataset.i, 1); tierDirty(); renderTiers(); });
+  $('#addTier').addEventListener('click', () => {
+    const mins = state.tiers.items.map((x) => x.min).filter((n) => Number.isInteger(n));
+    const used = state.tiers.items.length;
+    state.tiers.items.push({ id: '', name: '', color: PALETTE[used % PALETTE.length], min: mins.length ? Math.max(...mins) + 5 : 5, note: '', code: false, isNew: true });
+    tierDirty(); renderTiers();
+    const rows = $$('#tierList .trow'); rows[rows.length - 1].querySelector('[data-k="name"]').focus();
+  });
+  $('#tierDefault').addEventListener('click', () => {
+    state.tiers = { items: CFG.defaultTiers.map((t) => ({ id: t.id, name: t.name, color: t.color || '#ffffff', min: t.min, note: t.note || '', code: !!t.code, isNew: false })), dirty: true };
+    renderTiers(); toast('Built-in tiers loaded. Save to apply them.');
+  });
+  $('#tierReset').addEventListener('click', resetTiers);
+  $('#tierSave').addEventListener('click', async () => {
+    const t = state.tiers, names = t.items.map((x) => x.name.trim());
+    if (!t.items.length) return toast('Add at least one tier, or every paper loses its badge.');
+    if (names.some((n) => !n)) return toast('Every tier needs a name.');
+    if (new Set(names.map((n) => n.toLowerCase())).size !== names.length) return toast('Two tiers have the same name.');
+    if (t.items.some((x) => !Number.isInteger(x.min) || x.min < 1)) return toast('Each tier needs a whole-number download threshold of at least 1.');
+    const taken = new Set(t.items.filter((x) => !x.isNew).map((x) => x.id));
+    t.items.forEach((x) => { if (x.isNew) { let b = slug(x.name) || 'tier', id = b, n = 2; while (taken.has(id)) id = b + '-' + n++; x.id = id; taken.add(id); } });
+    const sorted = [...t.items].sort((a, b) => a.min - b.min);
+    try {
+      await withBusy('Saving tiers', (step) => commitMutation('Update download tiers', (data) => {
+        data.tiers = sorted.map((x) => {
+          const o = { id: x.id, name: x.name.trim(), min: x.min, color: x.color || '#ffffff' };
+          if (x.note.trim()) o.note = x.note.trim();
+          if (x.code) o.code = true;
+          return o;
+        });
+        return data;
+      }, {}, step));
+      resetTiers();
+      toast('Saved. Render will redeploy shortly.');
+    } catch (e) { showError(e); }
+  });
+
   /* ---------- timed exam defaults per subject ---------- */
   // Saved in resources.json as "examDefaults": { minutes: { default, <subjectId> }, marks: { default, <subjectId> } }
   function resetXd() {
@@ -1025,6 +1104,7 @@
     $$('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab; });
     if (tab === 'library') { renderFilters(); renderLibrary(); }
     if (tab === 'taxonomy' && (!state.tax || !state.tax.dirty)) resetTax();
+    if (tab === 'taxonomy' && (!state.tiers || !state.tiers.dirty)) resetTiers();
     if (tab === 'taxonomy' && (!state.xd || !state.xd.dirty)) resetXd();
     if (tab === 'activity') renderActivity();
     window.dispatchEvent(new CustomEvent('adm:tab', { detail: tab }));   // admin-analytics.js starts and stops its live refresh
@@ -1034,6 +1114,7 @@
   function renderAll() {
     renderFilters(); renderLibrary();
     if (state.tax && !state.tax.dirty) resetTax();
+    if (state.tiers && !state.tiers.dirty) resetTiers();
     if (state.xd && !state.xd.dirty) resetXd();
     $('#libCount').textContent = state.data.resources.length;
   }

@@ -24,22 +24,22 @@ window.ICSE_CONFIG = {
   // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download
   // count, "color" tints the badge and "note" is the tooltip. "code": true gives a code-style badge. Keep ids short and without spaces.
   tiers: [
-    { id: "null", name: "The Null Pointer", min: 5, color: "#94a3b8", note: "You have to start somewhere, even if it points to nothing yet." },
-    { id: "litmus", name: "Litmus Amateur", min: 10, color: "#7dd3fc", note: "Just testing the waters to see if you turn red or blue." },
-    { id: "vernier", name: "Vernier Caliper", min: 15, color: "#60a5fa", note: "Getting precise with your measurements." },
-    { id: "latent", name: "Latent Heat", min: 20, color: "#5eead4", note: "The energy is building up inside, even if it's not showing as a temperature change yet." },
-    { id: "nested", name: "Nested Loop", min: 25, color: "#4ade80", note: "You are officially stuck in a deep, repetitive study cycle." },
-    { id: "aqua", name: "Aqua Regia", min: 30, color: "#a3e635", note: "Highly concentrated and strong enough to dissolve the toughest problems." },
-    { id: "tir", name: "Total Internal Reflection", min: 35, color: "#fbbf24", note: "Brilliant, sharp, and keeping 100% of the knowledge trapped inside your brain." },
-    { id: "overload", name: "Overloaded Method", min: 40, color: "#fb923c", note: "You have so much capacity, you can handle multiple parameters at once." },
-    { id: "decay", name: "Radioactive Decay", min: 45, color: "#f87171", note: "You are breaking down massive syllabus chunks at an unstoppable half-life speed." },
-    { id: "centum", name: "System.out.println(\"Centum\");", min: 50, color: "#ffd76a", note: "The ultimate execution command that prints a perfect 100 on your report card.", code: true },
-    { id: "catalyst", name: "The Catalyst", min: 75, color: "#f0abfc", note: "Your study speed has just increased exponentially without you even burning out." },
-    { id: "superclass", name: "Superclass Centum", min: 100, color: "#c084fc", note: "The ultimate parent class from which all top-tier ICSE marks are inherited." },
-    { id: "escape", name: "Escape Velocity", min: 125, color: "#a78bfa", note: "You have officially broken free from the gravitational pull of the standard syllabus." },
-    { id: "gc", name: "Garbage Collector", min: 150, color: "#818cf8", note: "You move through the most complex, cluttered past-year papers and effortlessly clear them out." },
-    { id: "steam", name: "Superheated Steam", min: 175, color: "#e0f2fe", note: "Carrying a massive amount of latent thermal energy, you are ready to power through any board exam." },
-    { id: "loop", name: "while(true) { Centum(); }", min: 200, color: "#fff3b0", note: "An infinite loop of absolute academic perfection that can never be stopped.", code: true }
+    { id: "null", name: "The Null Pointer", min: 5, color: "#7A869A", note: "You have to start somewhere, even if it points to nothing yet." },
+    { id: "litmus", name: "Litmus Amateur", min: 10, color: "#E15B64", note: "Just testing the waters to see if you turn red or blue." },
+    { id: "vernier", name: "Vernier Caliper", min: 15, color: "#84BA5B", note: "Getting precise with your measurements." },
+    { id: "latent", name: "Latent Heat", min: 20, color: "#F4A261", note: "The energy is building up inside, even if it's not showing as a temperature change yet." },
+    { id: "nested", name: "Nested Loop", min: 25, color: "#4EA8DE", note: "You are officially stuck in a deep, repetitive study cycle." },
+    { id: "aqua", name: "Aqua Regia", min: 30, color: "#E76F51", note: "Highly concentrated and strong enough to dissolve the toughest problems." },
+    { id: "tir", name: "Total Internal Reflection", min: 35, color: "#00F5D4", note: "Brilliant, sharp, and keeping 100% of the knowledge trapped inside your brain." },
+    { id: "overload", name: "Overloaded Method", min: 40, color: "#9B5DE5", note: "You have so much capacity, you can handle multiple parameters at once." },
+    { id: "decay", name: "Radioactive Decay", min: 45, color: "#CCFF00", note: "You are breaking down massive syllabus chunks at an unstoppable half-life speed." },
+    { id: "centum", name: "System.out.println(\"Centum\");", min: 50, color: "#39FF14", note: "The ultimate execution command that prints a perfect 100 on your report card.", code: true },
+    { id: "catalyst", name: "The Catalyst", min: 75, color: "#FF007F", note: "Your study speed has just increased exponentially without you even burning out." },
+    { id: "superclass", name: "Superclass Centum", min: 100, color: "#FFD700", note: "The ultimate parent class from which all top-tier ICSE marks are inherited." },
+    { id: "escape", name: "Escape Velocity", min: 125, color: "#00B4D8", note: "You have officially broken free from the gravitational pull of the standard syllabus." },
+    { id: "gc", name: "Garbage Collector", min: 150, color: "#4A4E69", note: "You move through the most complex, cluttered past-year papers and effortlessly clear them out." },
+    { id: "steam", name: "Superheated Steam", min: 175, color: "#E0FAFF", note: "Carrying a massive amount of latent thermal energy, you are ready to power through any board exam." },
+    { id: "loop", name: "while(true) { Centum(); }", min: 200, color: "#FF3131", note: "An infinite loop of absolute academic perfection that can never be stopped.", code: true }
   ],
 
   // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
@@ -70,6 +70,18 @@ window.ICSE_CONFIG = {
 
   // Quick-search suggestions under the search bar
   quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
+};
+
+// The tiers written above, kept untouched as a fallback. The admin page (Subjects and types tab) can save a
+// custom tier list into resources.json ("tiers"); when present it replaces window.ICSE_CONFIG.tiers at load time
+// (see applyTiers below), and this array is what "Reset to built-in tiers" in the admin restores.
+window.ICSE_CONFIG.defaultTiers = window.ICSE_CONFIG.tiers;
+
+// applyTiers(data): called once resources.json has loaded (by app.js and admin.js) to switch
+// window.ICSE_CONFIG.tiers to the admin-edited list in data.tiers, or back to the built-in list if there isn't one.
+window.ICSE_CONFIG.applyTiers = function (data) {
+  var C = window.ICSE_CONFIG;
+  C.tiers = (data && Array.isArray(data.tiers) && data.tiers.length) ? data.tiers : C.defaultTiers;
 };
 
 // tierOf(resource, downloadCount): the highest tier that applies, or null.

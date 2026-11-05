@@ -149,6 +149,17 @@
             <div id="typeList" class="tax-list"></div>
           </div>
         </div>
+        <div class="glass tax-card xd-card" id="tierCard">
+          <div class="tax-head"><h2>Download tiers</h2>
+            <div class="tax-head-btns">
+              <button class="btn" id="tierDefault" type="button" title="Replace this list with the built-in tiers from config.js">Restore built-in tiers</button>
+              <button class="btn" id="addTier" type="button"><svg class="ic"><use href="#i-plus"/></svg>Add tier</button>
+            </div>
+          </div>
+          <p class="hint xd-lead">A paper shows one badge: the highest tier it has reached by downloads, or the tier set on it by hand on its Edit sheet, whichever is higher. Saving reorders tiers lowest to highest by download threshold. "Code style" renders the name in a monospace, code-like badge.</p>
+          <div id="tierList" class="tax-list tier-list"></div>
+          <div class="tax-save"><button class="btn btn-primary" id="tierSave" type="button" disabled>Save tiers</button><button class="btn" id="tierReset" type="button" disabled>Discard</button><span class="hint" id="tierHint"></span></div>
+        </div>
         <div class="glass tax-card xd-card" id="xdCard">
           <div class="tax-head"><h2>Timed exam defaults</h2></div>
           <p class="hint xd-lead">Used when a paper does not state its own writing time or total marks, and the PDF cannot be read. Leave a box empty to keep the built-in value shown in grey. A paper's own value, set on its Edit sheet, always wins.</p>
