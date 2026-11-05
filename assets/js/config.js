@@ -19,13 +19,27 @@ window.ICSE_CONFIG = {
   reportEmail: "jhakumarshekhar11@gmail.com",
 
   // Badges
-  newDays: 15,          // "New" if added within this many days
+  newDays: 30,          // "New" if added within this many days
   // Download tiers, lowest first. A paper shows ONE badge: the highest tier it has reached by downloads, or the
-  // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download count.
+  // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download
+  // count, "color" tints the badge and "note" is the tooltip. "code": true gives a code-style badge. Keep ids short and without spaces.
   tiers: [
-    { id: "popular", name: "Popular", min: 50 },
-    { id: "hot", name: "Hot", min: 100 },
-    { id: "topper", name: "Topper's Choice", min: 150 }
+    { id: "null", name: "The Null Pointer", min: 5, color: "#94a3b8", note: "You have to start somewhere, even if it points to nothing yet." },
+    { id: "litmus", name: "Litmus Amateur", min: 10, color: "#7dd3fc", note: "Just testing the waters to see if you turn red or blue." },
+    { id: "vernier", name: "Vernier Caliper", min: 15, color: "#60a5fa", note: "Getting precise with your measurements." },
+    { id: "latent", name: "Latent Heat", min: 20, color: "#5eead4", note: "The energy is building up inside, even if it's not showing as a temperature change yet." },
+    { id: "nested", name: "Nested Loop", min: 25, color: "#4ade80", note: "You are officially stuck in a deep, repetitive study cycle." },
+    { id: "aqua", name: "Aqua Regia", min: 30, color: "#a3e635", note: "Highly concentrated and strong enough to dissolve the toughest problems." },
+    { id: "tir", name: "Total Internal Reflection", min: 35, color: "#fbbf24", note: "Brilliant, sharp, and keeping 100% of the knowledge trapped inside your brain." },
+    { id: "overload", name: "Overloaded Method", min: 40, color: "#fb923c", note: "You have so much capacity, you can handle multiple parameters at once." },
+    { id: "decay", name: "Radioactive Decay", min: 45, color: "#f87171", note: "You are breaking down massive syllabus chunks at an unstoppable half-life speed." },
+    { id: "centum", name: "System.out.println(\"Centum\");", min: 50, color: "#ffd76a", note: "The ultimate execution command that prints a perfect 100 on your report card.", code: true },
+    { id: "catalyst", name: "The Catalyst", min: 75, color: "#f0abfc", note: "Your study speed has just increased exponentially without you even burning out." },
+    { id: "superclass", name: "Superclass Centum", min: 100, color: "#c084fc", note: "The ultimate parent class from which all top-tier ICSE marks are inherited." },
+    { id: "escape", name: "Escape Velocity", min: 125, color: "#a78bfa", note: "You have officially broken free from the gravitational pull of the standard syllabus." },
+    { id: "gc", name: "Garbage Collector", min: 150, color: "#818cf8", note: "You move through the most complex, cluttered past-year papers and effortlessly clear them out." },
+    { id: "steam", name: "Superheated Steam", min: 175, color: "#e0f2fe", note: "Carrying a massive amount of latent thermal energy, you are ready to power through any board exam." },
+    { id: "loop", name: "while(true) { Centum(); }", min: 200, color: "#fff3b0", note: "An infinite loop of absolute academic perfection that can never be stopped.", code: true }
   ],
 
   // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
@@ -65,4 +79,11 @@ window.ICSE_CONFIG.tierOf = function (r, n) {
   var manual = r && (r.tier || (r.popular === true && t[0] ? t[0].id : ''));
   t.forEach(function (x, i) { if (x.id === manual || n >= x.min) best = Math.max(best, i); });
   return best < 0 ? null : t[best];
+};
+
+// tierBadge(tier): the badge HTML for a tier (name escaped, note as tooltip)
+window.ICSE_CONFIG.tierBadge = function (t) {
+  if (!t) return '';
+  var e = function (x) { return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  return '<span class="badge pop tier' + (t.code ? ' code' : '') + ' t-' + e(t.id) + '" style="--tc:' + e(t.color || '#ffffff') + '" title="' + e(t.note || t.name) + '">' + e(t.name) + '</span>';
 };

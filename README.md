@@ -296,7 +296,7 @@ for (const r of list) {
 | `portfolioUrl`, `notice` | The back link and the footer line. |
 | `reportEmail` | Where "Report an error" emails go. |
 | `newDays` | A resource is **New** for this many days. |
-| `tiers` | Download badges, lowest first: `id`, `name`, `min` (downloads). Default: Popular 100+, Hot 150+, Topper's Choice 200+. A card shows only the highest tier it has reached. |
+| `tiers` | Download badges, lowest first: `id`, `name`, `min` (downloads). Default: sixteen tiers from The Null Pointer (5+) to while(true) { Centum(); } (200+). A card shows only the highest tier it has reached; each tier has a colour and a tooltip. |
 | `counter` | Download counter: `enabled`, `doc` (the Firestore document, default `stats/downloads`), `cacheMinutes`, `shards`. Needs the rules in `firestore.rules.counter`. Failed counts are retried 3 times. If counts still go missing in busy periods (exam season), set `shards` to e.g. 5 and allow the extra documents `stats/downloads-1` to `stats/downloads-4` in the same rules (copy the rule for `stats/downloads` to `match /stats/{doc}` limited to those names). With `shards: 1` nothing changes. |
 | `subjectOrder` | Order of subjects (by id) when no filter or search is active. |
 | `quickSearches` | The suggestion chips under the search bar. |
