@@ -106,7 +106,7 @@
       "pages": 19,
       "size_kb": 725,
       "added": "2026-10-11",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper and Marking scheme of Computer Applications",
       "tags": [
@@ -129,7 +129,7 @@
       "pages": 10,
       "size_kb": 89,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen of Computer Applications 2024",
       "tags": [
@@ -152,7 +152,7 @@
       "pages": 9,
       "size_kb": 209,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Computer Applications 2023",
       "tags": [
@@ -175,7 +175,7 @@
       "pages": 8,
       "size_kb": 91,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Computer Applications 2023",
       "tags": [
@@ -199,7 +199,7 @@
       "pages": 11,
       "size_kb": 274,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Computer Applications 2024",
       "tags": [
@@ -223,7 +223,7 @@
       "pages": 12,
       "size_kb": 376,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Computer Applications",
       "tags": [
@@ -247,7 +247,7 @@
       "pages": 12,
       "size_kb": 405,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Computer Applications 2026",
       "tags": [
@@ -271,7 +271,7 @@
       "pages": 11,
       "size_kb": 264,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of English Language 2026.",
       "tags": [
@@ -307,7 +307,7 @@
       "pages": 9,
       "size_kb": 220,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of English Language 2024",
       "tags": [
@@ -331,7 +331,7 @@
       "pages": 8,
       "size_kb": 110,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of English Language 2023.",
       "tags": [
@@ -395,7 +395,7 @@
       "pages": 8,
       "size_kb": 311,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of English Language 2024.",
       "tags": [
@@ -431,7 +431,7 @@
       "pages": 10,
       "size_kb": 315,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of English Language 2025. Covers composition and story writing.",
       "tags": [
@@ -467,7 +467,7 @@
       "pages": 8,
       "size_kb": 317,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "rev": 2,
       "description": "Specimen Paper of English Language 2023",
@@ -491,7 +491,7 @@
       "pages": 13,
       "size_kb": 654,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of English Language 2025",
       "tags": [
@@ -515,7 +515,7 @@
       "pages": 6,
       "size_kb": 225,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen Paper of English Language 2026",
       "tags": [
@@ -538,9 +538,8 @@
       "pages": 18,
       "size_kb": 293,
       "added": "2026-10-11",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen Paper of English Language 2027",
       "tags": [
         "english",
@@ -550,8 +549,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 13,
-      "popular": true
+      "msFrom": 13
     },
     {
       "id": "englishlit-2026-previous-year-paper",
@@ -564,7 +562,7 @@
       "pages": 12,
       "size_kb": 204,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "rev": 2,
       "description": "PYQ of English Literature 2026",
@@ -601,7 +599,7 @@
       "pages": 12,
       "size_kb": 205,
       "added": "2026-10-11",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of English Literature 2025. Covers poem, extract, julius caesar and short story.",
       "tags": [
@@ -637,7 +635,7 @@
       "pages": 15,
       "size_kb": 1445,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Geography 2026. Covers irrigation, monsoon, transport and map of india.",
       "tags": [
@@ -678,7 +676,7 @@
       "pages": 10,
       "size_kb": 217,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Geography 2023. Covers transport, irrigation, monsoon and map of india.",
       "tags": [
@@ -713,7 +711,7 @@
       "pages": 11,
       "size_kb": 582,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Geography 2024. Covers irrigation, monsoon, transport and agriculture.",
       "tags": [
@@ -748,7 +746,7 @@
       "pages": 13,
       "size_kb": 683,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Geography 2025. Covers transport, irrigation, map of india and survey of india.",
       "tags": [
@@ -783,7 +781,7 @@
       "pages": 9,
       "size_kb": 290,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen Paper of Geography 2023",
       "tags": [
@@ -805,7 +803,7 @@
       "pages": 19,
       "size_kb": 1393,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Geography 2025",
       "tags": [
@@ -828,7 +826,7 @@
       "pages": 10,
       "size_kb": 174,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Geography 2024. Covers monsoon, survey of india, map of india and natural vegetation.",
       "tags": [
@@ -862,7 +860,7 @@
       "pages": 22,
       "size_kb": 2183,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Geography 2026. Covers monsoon, transport, irrigation and forests.",
       "tags": [
@@ -897,9 +895,8 @@
       "pages": 24,
       "size_kb": 1242,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of Geography 2027. Covers monsoon, transport, irrigation and coal.",
       "tags": [
         "specimen",
@@ -920,8 +917,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 16,
-      "popular": true
+      "msFrom": 16
     },
     {
       "id": "history-2026-previous-year-paper",
@@ -934,7 +930,7 @@
       "pages": 12,
       "size_kb": 397,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of History & Civics 2026. Covers president, united nations, prime minister and cabinet.",
       "tags": [
@@ -968,7 +964,7 @@
       "pages": 10,
       "size_kb": 206,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2024",
       "tags": [
@@ -990,7 +986,7 @@
       "pages": 8,
       "size_kb": 358,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of History & Civics 2023. Covers president, parliament, high court and muslim league.",
       "tags": [
@@ -1024,7 +1020,7 @@
       "pages": 8,
       "size_kb": 417,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of History & Civics 2024. Covers president, parliament, high court and prime minister.",
       "tags": [
@@ -1058,7 +1054,7 @@
       "pages": 12,
       "size_kb": 952,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of History & Civics 2025. Covers president, lok sabha, high court and parliament.",
       "tags": [
@@ -1092,7 +1088,7 @@
       "pages": 8,
       "size_kb": 235,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2023",
       "tags": [
@@ -1114,7 +1110,7 @@
       "pages": 17,
       "size_kb": 997,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2025",
       "tags": [
@@ -1137,7 +1133,7 @@
       "pages": 19,
       "size_kb": 1313,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of History & Civics 2026",
       "tags": [
@@ -1169,9 +1165,8 @@
       "pages": 20,
       "size_kb": 715,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of History & Civics 2027",
       "tags": [
         "president",
@@ -1189,8 +1184,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 14,
-      "popular": true
+      "msFrom": 14
     },
     {
       "id": "physics-2026-previous-year-paper",
@@ -1203,7 +1197,7 @@
       "pages": 19,
       "size_kb": 640,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Physics 2026",
       "tags": [
@@ -1234,7 +1228,7 @@
       "pages": 11,
       "size_kb": 297,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of ICSE 2023",
       "tags": [
@@ -1265,7 +1259,7 @@
       "pages": 12,
       "size_kb": 797,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Physics 2024",
       "tags": [
@@ -1296,7 +1290,7 @@
       "pages": 16,
       "size_kb": 525,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Physics 2025",
       "tags": [
@@ -1327,7 +1321,7 @@
       "pages": 12,
       "size_kb": 391,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Physics 2023",
       "tags": [
@@ -1358,7 +1352,7 @@
       "pages": 21,
       "size_kb": 885,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Physics 2025",
       "tags": [
@@ -1390,7 +1384,7 @@
       "pages": 13,
       "size_kb": 293,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Physics 2024",
       "tags": [
@@ -1421,7 +1415,7 @@
       "pages": 23,
       "size_kb": 1311,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Physics 2026",
       "tags": [
@@ -1453,9 +1447,8 @@
       "pages": 25,
       "size_kb": 715,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of Physics 2027",
       "tags": [
         "application",
@@ -1471,8 +1464,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 20,
-      "popular": true
+      "msFrom": 20
     },
     {
       "id": "chemistry-2026-previous-year-paper",
@@ -1485,7 +1477,7 @@
       "pages": 16,
       "size_kb": 523,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Chemistry 2026",
       "tags": [
@@ -1516,7 +1508,7 @@
       "pages": 11,
       "size_kb": 126,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Chemistry 2023",
       "tags": [
@@ -1547,7 +1539,7 @@
       "pages": 12,
       "size_kb": 309,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Chemistry 2024",
       "tags": [
@@ -1578,7 +1570,7 @@
       "pages": 16,
       "size_kb": 473,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Chemistry 2025.",
       "tags": [
@@ -1609,7 +1601,7 @@
       "pages": 10,
       "size_kb": 289,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2023",
       "tags": [
@@ -1640,7 +1632,7 @@
       "pages": 19,
       "size_kb": 728,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2025",
       "tags": [
@@ -1672,7 +1664,7 @@
       "pages": 11,
       "size_kb": 106,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2024",
       "tags": [
@@ -1703,7 +1695,7 @@
       "pages": 20,
       "size_kb": 875,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Chemistry 2026",
       "tags": [
@@ -1734,9 +1726,8 @@
       "pages": 21,
       "size_kb": 602,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of Chemistry 2027",
       "tags": [
         "sulphuric acid",
@@ -1754,8 +1745,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 17,
-      "popular": true
+      "msFrom": 17
     },
     {
       "id": "biology-2026-previous-year-paper",
@@ -1768,7 +1758,7 @@
       "pages": 16,
       "size_kb": 784,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Biology 2026",
       "tags": [
@@ -1799,7 +1789,7 @@
       "pages": 11,
       "size_kb": 497,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Biology 2023",
       "tags": [
@@ -1830,7 +1820,7 @@
       "pages": 11,
       "size_kb": 525,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ for Biology 2024",
       "tags": [
@@ -1861,7 +1851,7 @@
       "pages": 16,
       "size_kb": 1105,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Biology 2025",
       "tags": [
@@ -1892,7 +1882,7 @@
       "pages": 9,
       "size_kb": 239,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Biology 2023",
       "tags": [
@@ -1923,7 +1913,7 @@
       "pages": 17,
       "size_kb": 677,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Biology 2025",
       "tags": [
@@ -1955,7 +1945,7 @@
       "pages": 9,
       "size_kb": 157,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Biology 2024",
       "tags": [
@@ -1986,7 +1976,7 @@
       "pages": 19,
       "size_kb": 1782,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Biology 2026",
       "tags": [
@@ -2018,9 +2008,8 @@
       "pages": 18,
       "size_kb": 661,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of Biology 2027",
       "tags": [
         "blood",
@@ -2038,8 +2027,7 @@
       ],
       "minutes": 120,
       "marks": 80,
-      "msFrom": 14,
-      "popular": true
+      "msFrom": 14
     },
     {
       "id": "hindi-2026-previous-year-paper",
@@ -2052,7 +2040,7 @@
       "pages": 12,
       "size_kb": 230,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Hindi 2026.",
       "tags": [
@@ -2072,7 +2060,7 @@
       "pages": 12,
       "size_kb": 136,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Hindi 2023.",
       "tags": [
@@ -2092,7 +2080,7 @@
       "pages": 12,
       "size_kb": 110,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Hindi 2024.",
       "tags": [
@@ -2112,7 +2100,7 @@
       "pages": 12,
       "size_kb": 100,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Hindi 2025.",
       "tags": [
@@ -2132,7 +2120,7 @@
       "pages": 10,
       "size_kb": 357,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Hindi 2023.",
       "tags": [
@@ -2152,7 +2140,7 @@
       "pages": 16,
       "size_kb": 1281,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Mathematics 2026",
       "tags": [
@@ -2183,7 +2171,7 @@
       "pages": 11,
       "size_kb": 416,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Mathematics 2023",
       "tags": [
@@ -2214,7 +2202,7 @@
       "pages": 12,
       "size_kb": 1072,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Mathematics 2024",
       "tags": [
@@ -2245,7 +2233,7 @@
       "pages": 16,
       "size_kb": 1566,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Mathematics 2025",
       "tags": [
@@ -2274,7 +2262,7 @@
       "pages": 11,
       "size_kb": 301,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2023",
       "tags": [
@@ -2305,7 +2293,7 @@
       "pages": 20,
       "size_kb": 1180,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2025.",
       "tags": [
@@ -2337,7 +2325,7 @@
       "pages": 23,
       "size_kb": 3158,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2026.",
       "tags": [
@@ -2371,9 +2359,8 @@
       "pages": 24,
       "size_kb": 916,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Specimen paper of Mathematics 2027. Covers tangents, gst, matrix and sphere.",
       "tags": [
         "gst",
@@ -2392,8 +2379,7 @@
       ],
       "minutes": 180,
       "marks": 80,
-      "msFrom": 15,
-      "popular": true
+      "msFrom": 15
     },
     {
       "id": "maths-2024-specimen-paper",
@@ -2406,7 +2392,7 @@
       "pages": 12,
       "size_kb": 824,
       "added": "2026-10-13",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Mathematics 2024",
       "tags": [
@@ -2437,9 +2423,8 @@
       "pages": 1,
       "size_kb": 2269,
       "added": "2026-10-13",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "River Maps for Geography.",
       "tags": [
         "2027",
@@ -2451,8 +2436,7 @@
         "map",
         "river",
         "india"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "commercialstudies-2026-question-bank",
@@ -2465,7 +2449,7 @@
       "pages": 4,
       "size_kb": 7490,
       "added": "2026-10-13",
-      "updated": "2026-10-14",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "School question paper uploaded by Ashu Choudhary.",
       "tags": []
@@ -2481,15 +2465,13 @@
       "pages": 1,
       "size_kb": 3225,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "State Boundary Maps for Geography 2027",
       "tags": [
         "states",
         "indian"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "economics-2022-specimen-paper",
@@ -2502,7 +2484,7 @@
       "pages": 10,
       "size_kb": 175,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2022",
       "tags": [
@@ -2533,7 +2515,7 @@
       "pages": 5,
       "size_kb": 28,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2022",
       "tags": [
@@ -2559,7 +2541,7 @@
       "pages": 10,
       "size_kb": 62,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies 2022",
       "tags": [
@@ -2590,7 +2572,7 @@
       "pages": 6,
       "size_kb": 35,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies 2022",
       "tags": [
@@ -2621,7 +2603,7 @@
       "pages": 8,
       "size_kb": 237,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications.",
       "tags": [
@@ -2652,7 +2634,7 @@
       "pages": 6,
       "size_kb": 172,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies.",
       "tags": [
@@ -2683,7 +2665,7 @@
       "pages": 7,
       "size_kb": 39,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies 2024",
       "tags": [
@@ -2726,7 +2708,7 @@
       "pages": 10,
       "size_kb": 139,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2024",
       "tags": [
@@ -2769,7 +2751,7 @@
       "pages": 15,
       "size_kb": 928,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Commercial Studies",
       "tags": [
@@ -2801,7 +2783,7 @@
       "pages": 20,
       "size_kb": 1083,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Specimen paper of Economic Applications 2025",
       "tags": [
@@ -2833,7 +2815,7 @@
       "pages": 4,
       "size_kb": 140,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2020",
       "tags": [
@@ -2855,7 +2837,7 @@
       "pages": 5,
       "size_kb": 126,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2020",
       "tags": [
@@ -2885,7 +2867,7 @@
       "pages": 7,
       "size_kb": 63,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2023",
       "tags": [
@@ -2914,7 +2896,7 @@
       "pages": 8,
       "size_kb": 39,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2023",
       "tags": [
@@ -2945,7 +2927,7 @@
       "pages": 11,
       "size_kb": 470,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2025",
       "tags": [
@@ -2976,7 +2958,7 @@
       "pages": 15,
       "size_kb": 562,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2025",
       "tags": [
@@ -3007,7 +2989,7 @@
       "pages": 7,
       "size_kb": 256,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2024",
       "tags": [
@@ -3038,7 +3020,7 @@
       "pages": 11,
       "size_kb": 503,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2024",
       "tags": [
@@ -3069,7 +3051,7 @@
       "pages": 11,
       "size_kb": 299,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Commercial Studies 2026",
       "tags": [
@@ -3100,7 +3082,7 @@
       "pages": 12,
       "size_kb": 914,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "PYQ of Economic Applications 2026",
       "tags": [
@@ -3131,9 +3113,8 @@
       "pages": 6,
       "size_kb": 318,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Computer Applications",
       "tags": [
         "ascending order",
@@ -3152,8 +3133,7 @@
         "2025",
         "2024",
         "2023"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-13",
@@ -3166,9 +3146,8 @@
       "pages": 7,
       "size_kb": 291,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Notes for Julius Caesar",
       "tags": [
         "mcq",
@@ -3182,8 +3161,7 @@
         "bad strokes",
         "arming myself",
         "conflict"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "computer-2027-question-bank-2",
@@ -3196,9 +3174,8 @@
       "pages": 47,
       "size_kb": 632,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Computer Applications.",
       "tags": [
         "number",
@@ -3217,8 +3194,7 @@
         "2025",
         "2024",
         "2023"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "physics-2027-question-bank",
@@ -3231,9 +3207,8 @@
       "pages": 19,
       "size_kb": 633,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Physics. Covers sound, total internal reflection, echo and pulley.",
       "tags": [
         "refractive index",
@@ -3248,8 +3223,7 @@
         "echo",
         "pulley",
         "resonance"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "biology-2027-question-bank",
@@ -3262,9 +3236,8 @@
       "pages": 15,
       "size_kb": 353,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Biology. Covers blood, population, nervous system and chromosomes.",
       "tags": [
         "mcq",
@@ -3279,8 +3252,7 @@
         "human evolution",
         "reproductive system",
         "arrange"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "computer-2025-question-bank",
@@ -3293,9 +3265,8 @@
       "pages": 40,
       "size_kb": 921,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Computer Applications with answer key. Covers java, array and scanner.",
       "tags": [
         "answer key",
@@ -3310,8 +3281,7 @@
         "scanner",
         "understanding",
         "void"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "history-2025-question-bank",
@@ -3324,9 +3294,8 @@
       "pages": 35,
       "size_kb": 1285,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for History & Civics with answer key.",
       "tags": [
         "answer key",
@@ -3341,8 +3310,7 @@
         "union legislature",
         "british",
         "understanding"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "biology-2025-question-bank",
@@ -3355,9 +3323,8 @@
       "pages": 20,
       "size_kb": 905,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Biology with answer key. Covers blood, pollution, population and photosynthesis.",
       "tags": [
         "answer key",
@@ -3372,8 +3339,7 @@
         "transpiration",
         "cell division",
         "human evolution"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "chemistry-2025-question-bank",
@@ -3386,9 +3352,8 @@
       "pages": 48,
       "size_kb": 1390,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers ammonia, metallurgy, electrolysis and stoichiometry.",
       "tags": [
         "answer key",
@@ -3403,8 +3368,7 @@
         "metallurgy",
         "electrolysis",
         "stoichiometry"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlang-2025-question-bank",
@@ -3417,9 +3381,8 @@
       "pages": 23,
       "size_kb": 718,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Language with answer key. Covers notice, composition, comprehension and letter writing.",
       "tags": [
         "answer key",
@@ -3434,8 +3397,7 @@
         "letter writing",
         "books",
         "manager said"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "geography-2025-question-bank",
@@ -3448,9 +3410,8 @@
       "pages": 29,
       "size_kb": 1896,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Geography with answer key. Covers transport, agriculture, manufacturing industries and irrigation.",
       "tags": [
         "answer key",
@@ -3465,8 +3426,7 @@
         "water resources",
         "waste management",
         "topographical map"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2025-question-bank",
@@ -3479,9 +3439,8 @@
       "pages": 44,
       "size_kb": 853,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature with answer key. Covers poem and extract.",
       "tags": [
         "answer key",
@@ -3496,8 +3455,7 @@
         "poem",
         "extract",
         "personal response"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "maths-2025-question-bank",
@@ -3510,9 +3468,8 @@
       "pages": 49,
       "size_kb": 1737,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Mathematics with answer key. Covers gst, matrix, cone and statistics.",
       "tags": [
         "answer key",
@@ -3527,8 +3484,7 @@
         "statistics",
         "mensuration",
         "probability"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "physics-2025-question-bank",
@@ -3541,9 +3497,8 @@
       "pages": 52,
       "size_kb": 2292,
       "added": "2026-10-14",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Physics with answer key. Covers lens, sound and pulley.",
       "tags": [
         "answer key",
@@ -3558,8 +3513,7 @@
         "lens",
         "sound",
         "pulley"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "physics-2027-sample-paper",
@@ -3572,9 +3526,8 @@
       "pages": 7,
       "size_kb": 35,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Sample paper of Physics 2027. Covers lens, sound, pulley and echo.",
       "tags": [
         "lens",
@@ -3591,8 +3544,7 @@
         "tackle system"
       ],
       "minutes": 120,
-      "marks": 80,
-      "popular": true
+      "marks": 80
     },
     {
       "id": "commercialstudies-2026-sample-paper",
@@ -3605,7 +3557,7 @@
       "pages": 6,
       "size_kb": 217,
       "added": "2026-10-14",
-      "updated": "2026-10-20",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Sample paper of Commercial Studies 2026. Covers insurance, advertising, marketing and e-commerce.",
       "tags": [
@@ -3636,9 +3588,8 @@
       "pages": 7,
       "size_kb": 330,
       "added": "2026-10-14",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Sample paper of Economic Applications 2027",
       "tags": [
         "price",
@@ -3655,8 +3606,7 @@
         "curve"
       ],
       "minutes": 120,
-      "marks": 100,
-      "popular": true
+      "marks": 100
     },
     {
       "id": "englishlit-2027-note-5",
@@ -3669,9 +3619,8 @@
       "pages": 2,
       "size_kb": 921,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3683,8 +3632,7 @@
         "dialogue",
         "characterisation",
         "critique of society"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-6",
@@ -3697,9 +3645,8 @@
       "pages": 2,
       "size_kb": 628,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3709,8 +3656,7 @@
         "style",
         "tone",
         "mood"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-7",
@@ -3723,9 +3669,8 @@
       "pages": 3,
       "size_kb": 1099,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3734,8 +3679,7 @@
         "horrors of everyday life",
         "the consequences of fear",
         "parental influence and support"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-8",
@@ -3748,9 +3692,8 @@
       "pages": 2,
       "size_kb": 704,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "theme",
@@ -3760,8 +3703,7 @@
         "mood",
         "satire",
         "irony"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-9",
@@ -3774,9 +3716,8 @@
       "pages": 1,
       "size_kb": 511,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3786,8 +3727,7 @@
         "expectations",
         "women's",
         "roles"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-10",
@@ -3800,9 +3740,8 @@
       "pages": 2,
       "size_kb": 913,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3813,8 +3752,7 @@
         "style",
         "tone",
         "mood"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-11",
@@ -3827,9 +3765,8 @@
       "pages": 1,
       "size_kb": 620,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3837,8 +3774,7 @@
         "alienation",
         "individuality",
         "non-conformity"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-12",
@@ -3851,9 +3787,8 @@
       "pages": 2,
       "size_kb": 701,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3864,8 +3799,7 @@
         "satire",
         "collectivistic",
         "ideology"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-13",
@@ -3878,9 +3812,8 @@
       "pages": 2,
       "size_kb": 746,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3890,8 +3823,7 @@
         "empowerment",
         "individual",
         "identity"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-14",
@@ -3904,9 +3836,8 @@
       "pages": 2,
       "size_kb": 930,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3916,8 +3847,7 @@
         "rhyme-scheme",
         "humour",
         "satire"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-15",
@@ -3930,9 +3860,8 @@
       "pages": 3,
       "size_kb": 1154,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3942,8 +3871,7 @@
         "brutus",
         "manipulation",
         "octavius"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-16",
@@ -3956,9 +3884,8 @@
       "pages": 2,
       "size_kb": 765,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3968,8 +3895,7 @@
         "octavius",
         "lepidus",
         "convince"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-note-17",
@@ -3982,9 +3908,8 @@
       "pages": 2,
       "size_kb": 593,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Handwritten Notes By Mitchell Harris ma'am, Teacher at Rose Bud School, Liluah.",
       "tags": [
         "themes",
@@ -3995,8 +3920,7 @@
         "military",
         "money",
         "difference"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-solution",
@@ -4009,9 +3933,8 @@
       "pages": 5,
       "size_kb": 119,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "floor",
@@ -4025,8 +3948,7 @@
         "nervous",
         "pressed",
         "uncomfortable"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-solution-2",
@@ -4039,9 +3961,8 @@
       "pages": 6,
       "size_kb": 121,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "honourable men",
@@ -4058,8 +3979,7 @@
         "ambitious",
         "conspirators",
         "crowd"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-solution-3",
@@ -4072,17 +3992,15 @@
       "pages": 2,
       "size_kb": 94,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Literature 2027. Covers extract and julius caesar.",
       "tags": [
         "scene",
         "cinna",
         "extract",
         "julius caesar"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-solution-4",
@@ -4095,9 +4013,8 @@
       "pages": 5,
       "size_kb": 111,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "great things",
@@ -4112,8 +4029,7 @@
         "earlier",
         "ruthless",
         "situation"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-solution-5",
@@ -4126,9 +4042,8 @@
       "pages": 4,
       "size_kb": 108,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Literature 2027.",
       "tags": [
         "royal sport",
@@ -4142,8 +4057,7 @@
         "threw",
         "struck",
         "attention"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank",
@@ -4156,9 +4070,8 @@
       "pages": 11,
       "size_kb": 105,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4174,8 +4087,7 @@
         "cassius",
         "body",
         "julius caesar"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-2",
@@ -4188,9 +4100,8 @@
       "pages": 8,
       "size_kb": 317,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4205,8 +4116,7 @@
         "death",
         "scene",
         "loved"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-3",
@@ -4219,9 +4129,8 @@
       "pages": 3,
       "size_kb": 60,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4236,8 +4145,7 @@
         "tear",
         "death",
         "irrational"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-4",
@@ -4250,9 +4158,8 @@
       "pages": 5,
       "size_kb": 66,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4267,8 +4174,7 @@
         "take",
         "tried",
         "theme"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-5",
@@ -4281,9 +4187,8 @@
       "pages": 5,
       "size_kb": 65,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4298,8 +4203,7 @@
         "lucilius",
         "scene",
         "front"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-6",
@@ -4312,9 +4216,8 @@
       "pages": 9,
       "size_kb": 296,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4329,8 +4232,7 @@
         "brutus character",
         "death",
         "brutus mean"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-7",
@@ -4343,9 +4245,8 @@
       "pages": 10,
       "size_kb": 107,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4360,8 +4261,7 @@
         "makes martin",
         "feel trapped",
         "poor lighting"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-8",
@@ -4374,9 +4274,8 @@
       "pages": 7,
       "size_kb": 291,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4391,8 +4290,7 @@
         "grandmother",
         "gleaming cup",
         "actions rather"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-9",
@@ -4405,9 +4303,8 @@
       "pages": 8,
       "size_kb": 297,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4422,8 +4319,7 @@
         "watching television",
         "world",
         "walking"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-10",
@@ -4436,9 +4332,8 @@
       "pages": 9,
       "size_kb": 341,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "mcq",
@@ -4453,8 +4348,7 @@
         "test",
         "scene",
         "bravery"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-11",
@@ -4467,9 +4361,8 @@
       "pages": 9,
       "size_kb": 494,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature",
       "tags": [
         "poem",
@@ -4484,8 +4377,7 @@
         "distant hills",
         "peace blooms",
         "personal loss"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2027-question-bank-12",
@@ -4498,9 +4390,8 @@
       "pages": 8,
       "size_kb": 312,
       "added": "2026-10-15",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Literature.",
       "tags": [
         "mcq",
@@ -4517,8 +4408,7 @@
         "regimenting",
         "even",
         "creativity"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlit-2025-question-bank-2",
@@ -4531,7 +4421,7 @@
       "pages": 54,
       "size_kb": 4248,
       "added": "2026-10-15",
-      "updated": "2026-10-15",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Frank Test Papers",
       "tags": [
@@ -4553,7 +4443,7 @@
       "pages": 49,
       "size_kb": 4089,
       "added": "2026-10-15",
-      "updated": "2026-10-15",
+      "updated": "2026-11-05",
       "downloads": 0,
       "description": "Frank Test Papers",
       "tags": [
@@ -4576,9 +4466,8 @@
       "pages": 26,
       "size_kb": 286,
       "added": "2026-10-20",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for English Language.",
       "tags": [
         "ran away",
@@ -4593,8 +4482,7 @@
         "sooner",
         "well",
         "phrase appropriate"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "englishlang-2027-solution",
@@ -4607,9 +4495,8 @@
       "pages": 12,
       "size_kb": 241,
       "added": "2026-10-20",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions for English Language 2027.",
       "tags": [
         "prepositions",
@@ -4624,8 +4511,7 @@
         "late",
         "never",
         "sooner"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "computer-2027-question-bank-3",
@@ -4638,9 +4524,8 @@
       "pages": 47,
       "size_kb": 535,
       "added": "2026-10-21",
-      "updated": "2026-10-21",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Computer Applications.",
       "tags": [
         "number",
@@ -4655,8 +4540,7 @@
         "println",
         "double",
         "java"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "biology-2027-question-bank-2",
@@ -4669,9 +4553,8 @@
       "pages": 6,
       "size_kb": 176,
       "added": "2026-10-22",
-      "updated": "2026-10-26",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "rev": 2,
       "description": "Question bank for Biology with marking scheme. Covers Excretory System.",
       "tags": [
@@ -4695,8 +4578,7 @@
         "collecting duct",
         "convoluted tubule",
         "prostate gland"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "chemistry-2027-question-bank",
@@ -4709,9 +4591,8 @@
       "pages": 24,
       "size_kb": 376,
       "added": "2026-10-24",
-      "updated": "2026-10-28",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "rev": 2,
       "description": "Question bank for Chemistry with answer key. Covers periodic table, chemical bonding and Acid Bases and Salts.",
       "tags": [
@@ -4735,8 +4616,7 @@
         "atomic number",
         "periodic table",
         "ammonia"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "chemistry-2027-question-bank-2",
@@ -4749,9 +4629,8 @@
       "pages": 12,
       "size_kb": 350,
       "added": "2026-10-25",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers electrode, electrolysis, ammonia and ionisation.",
       "tags": [
         "answer key",
@@ -4766,8 +4645,7 @@
         "mass",
         "ionisation",
         "gives"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "chemistry-2027-question-bank-3",
@@ -4780,9 +4658,8 @@
       "pages": 12,
       "size_kb": 346,
       "added": "2026-10-25",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Chemistry with answer key. Covers hydrocarbons, alkane, hydrogen chloride and alkene.",
       "tags": [
         "answer key",
@@ -4797,8 +4674,7 @@
         "hydrogen chloride",
         "alkene",
         "alkyne"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "geography-2027-question-bank-2",
@@ -4811,9 +4687,8 @@
       "pages": 11,
       "size_kb": 168,
       "added": "2026-10-25",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Geography. Covers climate, monsoon and waste management.",
       "tags": [
         "mcq",
@@ -4828,8 +4703,7 @@
         "t24 spec",
         "alluvial soil",
         "rainfall"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "biology-2027-question-bank-3",
@@ -4842,9 +4716,8 @@
       "pages": 14,
       "size_kb": 209,
       "added": "2026-10-25",
-      "updated": "2026-10-25",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Biology with answer key. Covers nervous system and sense organs.",
       "tags": [
         "answer key",
@@ -4859,8 +4732,7 @@
         "axon endings",
         "medulla oblongata",
         "brain"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "computer-2027-question-bank-4",
@@ -4873,9 +4745,8 @@
       "pages": 11,
       "size_kb": 199,
       "added": "2026-10-30",
-      "updated": "2026-10-30",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Question bank for Computer Applications with answer key. Covers java, array, string and constructor.",
       "tags": [
         "answer key",
@@ -4890,8 +4761,7 @@
         "operators",
         "user defined method",
         "number"
-      ],
-      "popular": true
+      ]
     },
     {
       "id": "computer-2027-solution",
@@ -4904,9 +4774,8 @@
       "pages": 13,
       "size_kb": 267,
       "added": "2026-10-30",
-      "updated": "2026-10-30",
+      "updated": "2026-11-05",
       "downloads": 0,
-      "tier": "popular",
       "description": "Solutions with Instructions for Computer Applications 2027. Covers java, array, string and constructor.",
       "tags": [
         "mcq",
@@ -4921,8 +4790,7 @@
         "nested loop",
         "wrapper class",
         "binary search"
-      ],
-      "popular": true
+      ]
     }
   ],
   "examDefaults": {
