@@ -19,7 +19,7 @@ window.ICSE_CONFIG = {
   reportEmail: "jhakumarshekhar11@gmail.com",
 
   // Badges
-  newDays: 30,          // "New" if added within this many days
+  newDays: 15,          // "New" if added within this many days
   // Download tiers, lowest first. A paper shows ONE badge: the highest tier it has reached by downloads, or the
   // tier set on it in the admin page (whichever is higher). "id" is stored in resources.json, "min" is the download count.
   tiers: [
