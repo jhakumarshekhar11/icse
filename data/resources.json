@@ -4849,6 +4849,35 @@
         "transport",
         "banking"
       ]
+    },
+    {
+      "id": "physics-2027-question-bank-2",
+      "title": "ICSE 2027 Physics Question Bank FWPE",
+      "subject": "physics",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/physics-2027-question-bank-2.pdf",
+      "pages": 15,
+      "size_kb": 341,
+      "added": "2026-11-13",
+      "updated": "2026-11-13",
+      "downloads": 0,
+      "description": "Question bank for Physics. Covers Force, Work, Power and Energy.",
+      "tags": [
+        "mcq",
+        "kinetic energy",
+        "potential energy",
+        "tackle system",
+        "velocity ratio",
+        "force",
+        "pulley",
+        "mechanical advantage",
+        "sound",
+        "work done",
+        "body",
+        "block"
+      ]
     }
   ],
   "examDefaults": {
