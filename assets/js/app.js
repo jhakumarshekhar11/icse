@@ -41,6 +41,7 @@
   const daysAgo = (r) => Math.floor((Date.now() - r._date) / 864e5);
   const isNew = (r) => daysAgo(r) <= CFG.newDays;
   const tierOf = (r) => CFG.tierOf(r, dlCount(r));
+  const tierRank = (r) => { const t = tierOf(r), list = CFG.tiers || []; return t ? list.indexOf(t) : -1; };
   const fileName = (r) => slug(r.title) + '.pdf';
   const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 
@@ -193,10 +194,11 @@
       year: (a, b) => Number(b.year) - Number(a.year) || b._date - a._date || a.title.localeCompare(b.title),
       // Oldest added: earliest upload date first
       old: (a, b) => a._date - b._date || a.title.localeCompare(b.title),
-      popular: (a, b) => dlCount(b) - dlCount(a) || a.title.localeCompare(b.title)
+      // Tier Rank: highest achievement tier first, ties broken by download count then title
+      tier: (a, b) => tierRank(b) - tierRank(a) || dlCount(b) - dlCount(a) || a.title.localeCompare(b.title)
     }[state.sort] || ((a, b) => Number(b.year) - Number(a.year) || a.title.localeCompare(b.title));
     // With no filter or search active, "Latest year" groups by subject in the order set in config.js (subjectOrder),
-    // and sorts by year inside each subject. "Oldest added" and "Most downloaded" sort the whole list exactly as
+    // and sorts by year inside each subject. "Oldest added" and "Tier Rank" sort the whole list exactly as
     // their label says, with no subject grouping.
     const order = CFG.subjectOrder || [];
     const rank = (r) => { const i = order.indexOf(r.subject); return i < 0 ? order.length : i; };
@@ -419,7 +421,7 @@
     if (state.savedOnly && state.byId.size) renderGrid();
   }
   function applyPrefs(p) {
-    if (p && ['year', 'old', 'popular'].includes(p.sort) && p.sort !== state.sort) {
+    if (p && ['year', 'old', 'tier'].includes(p.sort) && p.sort !== state.sort) {
       state.sort = p.sort;
       if (state.byId.size) { renderChips(); renderGrid(); }
     }
@@ -854,7 +856,7 @@
     $('#backLink').href = CFG.portfolioUrl;
     $('#notice').textContent = CFG.notice;
     state.sort = store.get('icse:sort', 'year');
-    if (!['year', 'old', 'popular'].includes(state.sort)) state.sort = 'year'; // old saved choices (Newest, A to Z) no longer exist
+    if (!['year', 'old', 'tier'].includes(state.sort)) state.sort = 'year'; // old saved choices (Newest, A to Z) no longer exist
     renderQuick();
     if (!(await load())) return;
     readStartFilters();
