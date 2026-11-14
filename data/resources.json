@@ -4785,6 +4785,36 @@
         "circuit",
         "2023"
       ]
+    },
+    {
+      "id": "chemistry-2027-question-bank",
+      "title": "Chemistry All Chapter-wise Question Bank",
+      "subject": "chemistry",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/chemistry-2027-question-bank.pdf",
+      "pages": 80,
+      "size_kb": 589,
+      "added": "2026-11-14",
+      "updated": "2026-11-14",
+      "downloads": 0,
+      "tier": "catalyst",
+      "description": "Question bank for Chemistry.",
+      "tags": [
+        "sulphuric acid",
+        "solution",
+        "copper",
+        "nitric acid",
+        "ammonium hydroxide",
+        "compound",
+        "mcq",
+        "chloride",
+        "hydrochloric acid",
+        "concentrated sulphuric",
+        "hydrogen",
+        "sodium"
+      ]
     }
   ],
   "examDefaults": {
