@@ -4851,6 +4851,36 @@
         "label",
         "transport"
       ]
+    },
+    {
+      "id": "physics-2027-question-bank-3",
+      "title": "Physics All Chapter-wise Question Bank",
+      "subject": "physics",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/physics-2027-question-bank-3.pdf",
+      "pages": 56,
+      "size_kb": 539,
+      "added": "2026-11-14",
+      "updated": "2026-11-14",
+      "downloads": 0,
+      "tier": "catalyst",
+      "description": "Question bank for Physics.",
+      "tags": [
+        "specific heat capacity",
+        "light",
+        "lens",
+        "energy",
+        "latent heat",
+        "2027",
+        "current",
+        "2025",
+        "2026",
+        "mcq",
+        "circuit",
+        "2023"
+      ]
     }
   ],
   "examDefaults": {
