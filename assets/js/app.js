@@ -749,6 +749,7 @@
     fileName, reportHref, download, toggleSave, isSaved, share, closeReader, pageChanged, toast, openReader,
     applySaved, applyPrefs,
     byId: (id) => state.byId.get(id),
+    all: () => state.res,   // full resource list, for compare.js's search picker
     shareOpen: () => !el.dlg.hidden || !!(window.Exam && Exam.dialogOpen())
   };
 
