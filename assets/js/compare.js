@@ -391,23 +391,88 @@
     }
   }
 
-  function setScale(newScale) {
+  // fx/fy (optional, in el.scroll's own coordinates) are the point to zoom AROUND — the
+  // cursor position for ctrl+wheel, the pinch midpoint for touch — so that point stays put
+  // instead of the view jumping. Omit them to just zoom on the centre, as the +/- buttons do.
+  function setScale(newScale, fx, fy) {
     if (!S.doc) return;
-    S.scale = clamp(newScale, MIN_SCALE * S.base, MAX_SCALE * S.base);
+    const next = clamp(newScale, MIN_SCALE * S.base, MAX_SCALE * S.base);
+    if (Math.abs(next - S.scale) < 1e-4) return;
+    const sc = el.scroll;
+    if (fx == null) fx = sc.clientWidth / 2;
+    if (fy == null) fy = sc.clientHeight / 2;
+    const cx = sc.scrollLeft + fx, cy = sc.scrollTop + fy, k = next / S.scale;
+    S.scale = next;
     for (const p of S.pages) {
       p.style.width = (S.pw * S.scale) + 'px';
       p.style.height = (S.pw * S.scale * S.ratio) + 'px';
       p._rs = 0;
     }
     el.zoom.textContent = Math.round((S.scale / S.base) * 100) + '%';
-    const sr = el.scroll.getBoundingClientRect();
+    sc.scrollLeft = cx * k - fx;
+    sc.scrollTop = cy * k - fy;
+    const sr = sc.getBoundingClientRect();
     for (const p of S.pages) {
       const r = p.getBoundingClientRect();
       if (r.bottom > sr.top && r.top < sr.bottom) renderPage(p);
     }
   }
 
-  function rezoom(mult) { setScale(S.scale * mult); }
+  function rezoom(mult, fx, fy) { setScale(S.scale * mult, fx, fy); }
+
+  /* ---------- zoom via ctrl/cmd+wheel, pinch, and keyboard (mirrors the main viewer) ---------- */
+  el.scroll.addEventListener('wheel', (e) => {
+    if (!(e.ctrlKey || e.metaKey) || !S.doc) return;
+    e.preventDefault();
+    const r = el.scroll.getBoundingClientRect();
+    rezoom(Math.exp(-e.deltaY * 0.01), e.clientX - r.left, e.clientY - r.top);
+  }, { passive: false });
+
+  let pinch = null;
+  const pinchDist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  el.scroll.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2 && S.doc) {
+      const r = el.scroll.getBoundingClientRect();
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left;
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top;
+      pinch = { d: pinchDist(e.touches), k: 1, mx, my };
+      el.pages.style.transformOrigin = (el.scroll.scrollLeft + mx) + 'px ' + (el.scroll.scrollTop + my) + 'px';
+    }
+  }, { passive: true });
+  el.scroll.addEventListener('touchmove', (e) => {
+    if (pinch && e.touches.length === 2) {
+      e.preventDefault();
+      const lo = (MIN_SCALE * S.base) / S.scale, hi = (MAX_SCALE * S.base) / S.scale;
+      pinch.k = clamp(pinchDist(e.touches) / pinch.d, lo, hi);
+      el.pages.style.transform = 'scale(' + pinch.k + ')';
+    }
+  }, { passive: false });
+  const endPinch = (e) => {
+    if (pinch && e.touches.length < 2) {
+      const { k, mx, my } = pinch;
+      pinch = null;
+      el.pages.style.transform = ''; el.pages.style.transformOrigin = '';
+      rezoom(k, mx, my);
+    }
+  };
+  el.scroll.addEventListener('touchend', endPinch, { passive: true });
+  el.scroll.addEventListener('touchcancel', () => { if (pinch) { el.pages.style.transform = ''; pinch = null; } }, { passive: true });
+
+  // +/- only zooms the compare pane while the pointer is actually over it — otherwise the main
+  // viewer's own (document-level, capturing) +/- shortcut would also try to fire on the same
+  // keypress. stopPropagation here, from a listener registered on window in the capture phase
+  // (so it runs before that document-level one), is what keeps the two from fighting.
+  let hoverCompare = false;
+  el.scroll.addEventListener('pointerenter', () => { hoverCompare = true; });
+  el.scroll.addEventListener('pointerleave', () => { hoverCompare = false; });
+  window.addEventListener('keydown', (e) => {
+    if (!S.open || !hoverCompare || !S.doc) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = document.activeElement;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+    if (e.key === '+' || e.key === '=') { e.preventDefault(); e.stopPropagation(); rezoom(1.2); }
+    else if (e.key === '-' || e.key === '_') { e.preventDefault(); e.stopPropagation(); rezoom(1 / 1.2); }
+  }, true);
 
   // Called after the divider is dragged: the pane's own width/height just changed, so its
   // "fit the pane" scale has too. If the reader was sitting at that auto-fit scale (i.e. the
