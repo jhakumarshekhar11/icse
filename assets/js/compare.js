@@ -173,13 +173,17 @@
           const codeM = /\b(\d{3})\b/.exec(block);
           const code = codeM ? codeM[1] : fallbackCode;
           const desc = block.replace(/[—-]?\s*paste from[\s\S]*$/i, '').trim();
+          // The actual question wording usually sits right before "[FIGURE: ...]" in the Bank's
+          // own text, copied near-verbatim from the source paper — a much stronger clue to the
+          // right PAGE than the question number alone. Grab a chunk of it.
+          const context = text.slice(Math.max(0, bm.index - 200), bm.index).trim();
           refRe.lastIndex = 0;
           let rm, found = false;
           while ((rm = refRe.exec(block))) {
             found = true;
-            out.push({ desc, year: +rm[1], letter: rm[2] ? rm[2].toUpperCase() : '', q: 'Q' + rm[3], code });
+            out.push({ desc, year: +rm[1], letter: rm[2] ? rm[2].toUpperCase() : '', q: 'Q' + rm[3], code, context });
           }
-          if (!found) out.push({ desc, year: null, letter: '', q: '', code });   // no ref found at all — still show it, unresolved
+          if (!found) out.push({ desc, year: null, letter: '', q: '', code, context });   // no ref found at all — still show it, unresolved
         }
       }
     } catch (e) { console.warn('Figure-reference scan failed', e); }
@@ -212,7 +216,7 @@
         ? ('Jump to ' + target.title)
         : ('Source paper not in the library yet' + (f.year ? ' (' + f.year + f.letter + ' ' + (f.code || '?') + ' ' + f.q + ')' : ''));
       b.append(strong, span);
-      if (target) b.addEventListener('click', () => loadInto(target));
+      if (target) b.addEventListener('click', () => loadInto(target, f.q, f.context));
       else b.disabled = true;
       el.refs.appendChild(b);
     }
@@ -246,7 +250,10 @@
   }
 
   /* ---------- loading a paper into the pane ---------- */
-  async function loadInto(res) {
+  // qRef (e.g. "Q1(v)") and context (the Bank's own text just before the figure placeholder)
+  // are both optional: when given, the pane jumps to the page that looks like it holds that
+  // question once the paper's loaded.
+  async function loadInto(res, qRef, context) {
     teardown();
     S.res = res;
     el.pick.hidden = true;
@@ -267,11 +274,64 @@
       S.scale = fitScale(); S.base = S.scale;
       build();
       setStatus('');
+      if (qRef || context) {
+        locateQuestionPage(doc, qRef, context).then((n) => {
+          if (token === S.token && n) gotoPage(n);
+        });
+      }
     } catch (e) {
       if (token !== S.token) return;
       console.warn('Compare PDF load failed', e);
       setStatus('error');
     }
+  }
+
+  const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+  // Best-effort page finder, strongest signal first:
+  //  1. The Bank's own wording right before the figure placeholder, which is usually copied
+  //     near-verbatim from the source paper — far more specific than a bare question number,
+  //     and not fooled by some unrelated earlier question that happens to also be numbered "1."
+  //  2. If that text doesn't line up closely enough with any page (paraphrased, reformatted,
+  //     OCR noise...), fall back to a bare question-number marker: "Question <n>", "Q<n>", or a
+  //     standalone "<n>." not glued to another digit and not a mark allocation like "(1)".
+  // Either way this only finds the PAGE for the main question number, not the exact line for a
+  // lettered/numbered sub-part inside it — that's a much less reliable thing to pattern-match.
+  async function locateQuestionPage(doc, qRef, context) {
+    const pages = [];
+    try {
+      for (let i = 1; i <= doc.numPages; i++) {
+        const page = await doc.getPage(i);
+        const tc = await page.getTextContent();
+        pages.push(tc.items.map((it) => it.str).join(' '));
+      }
+    } catch (e) { console.warn('Question-page lookup failed', e); return null; }
+
+    const ctxWords = norm(context).split(' ').filter((w) => w.length >= 4);
+    if (ctxWords.length >= 6) {
+      const tail = norm(context).slice(-120);   // closest text to the figure, most likely shared wording
+      let best = -1, bestScore = 0;
+      for (let i = 0; i < pages.length; i++) {
+        const hay = norm(pages[i]);
+        if (tail.length > 20 && hay.includes(tail)) return i + 1;   // close to exact — good enough, stop
+        const have = new Set(hay.split(' '));
+        const score = ctxWords.reduce((n, w) => n + (have.has(w) ? 1 : 0), 0);
+        if (score > bestScore) { bestScore = score; best = i; }
+      }
+      if (best >= 0 && bestScore >= Math.min(6, Math.ceil(ctxWords.length * 0.6))) return best + 1;
+    }
+
+    const m = /Q\.?\s*(\d+)/i.exec(String(qRef || ''));
+    if (!m) return null;
+    const num = m[1];
+    const re = new RegExp('(?:\\bQuestion\\s+' + num + '\\b|\\bQ\\.?\\s*' + num + '\\b|(?<![\\d(])\\b' + num + '\\.(?!\\d))', 'i');
+    for (let i = 0; i < pages.length; i++) if (re.test(pages[i])) return i + 1;
+    return null;
+  }
+
+  function gotoPage(n) {
+    const pg = S.pages[clamp(n, 1, S.n) - 1];
+    if (pg) pg.scrollIntoView({ block: 'start' });
   }
 
   function fitScale() {
