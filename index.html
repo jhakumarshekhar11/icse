@@ -58,6 +58,7 @@
   <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 3h5M12 3v3M18.6 6.9l1.2-1.2"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-split" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16"/></symbol>
+  <symbol id="i-stack" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/></symbol>
 </svg>
 
 <div class="ambient" aria-hidden="true">
@@ -227,9 +228,12 @@
         <div class="v-status" id="vStatus"></div>
       </div>
 
+      <div class="v-resizer" id="vResizer" hidden role="separator" aria-orientation="vertical" aria-label="Resize compare pane" tabindex="0"></div>
+
       <div class="v-cmp" id="vCmp" hidden>
         <div class="v-cmp-bar">
           <button class="ib" id="cmpClose" type="button" aria-label="Close compare pane" title="Close compare"><svg class="ic"><use href="#i-close"/></svg></button>
+          <button class="ib" id="cmpLayout" type="button" aria-pressed="false" aria-label="Open below instead of beside" title="Open below instead of beside"><svg class="ic"><use href="#i-stack"/></svg></button>
           <div class="v-cmp-title" id="cmpTitle">Compare</div>
           <div class="grp" role="group" aria-label="Compare zoom" id="cmpZoomGrp" hidden>
             <button class="ib zbtn" id="cmpZout" type="button" aria-label="Zoom out" title="Zoom out"><svg class="ic"><use href="#i-zout"/></svg></button>

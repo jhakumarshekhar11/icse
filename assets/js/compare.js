@@ -8,7 +8,7 @@
   const CFG = window.ICSE_CONFIG;
   const $ = (id) => document.getElementById(id);
   const el = {
-    toggle: $('vCompare'), pane: $('vCmp'), close: $('cmpClose'), title: $('cmpTitle'),
+    toggle: $('vCompare'), body: $('vBody'), resizer: $('vResizer'), pane: $('vCmp'), close: $('cmpClose'), layout: $('cmpLayout'), title: $('cmpTitle'),
     zoomGrp: $('cmpZoomGrp'), zin: $('cmpZin'), zout: $('cmpZout'), zoom: $('cmpZoom'),
     pick: $('cmpPick'), refs: $('cmpRefs'), search: $('cmpSearch'), results: $('cmpResults'),
     scroll: $('cmpScroll'), pages: $('cmpPages'), status: $('cmpStatus')
@@ -20,11 +20,29 @@
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
   const S = { open: false, res: null, doc: null, task: null, pages: [], n: 0, scale: 1, base: 1, pw: 595, ratio: 1.414, io: null, token: 0, refs: [], refToken: 0 };
 
+  /* ---------- layout: beside (default) or below, remembered across visits ---------- */
+  function applyLayout(stacked) {
+    el.body.classList.toggle('stacked', stacked);
+    el.layout.setAttribute('aria-pressed', String(stacked));
+    const label = stacked ? 'Open beside instead of below' : 'Open below instead of beside';
+    el.layout.title = label;
+    el.layout.setAttribute('aria-label', label);
+  }
+  let stackedPref = false;
+  try { stackedPref = localStorage.getItem('icseCompareLayout') === 'stacked'; } catch { /* storage unavailable */ }
+  applyLayout(stackedPref);
+  el.layout.addEventListener('click', () => {
+    const next = !el.body.classList.contains('stacked');
+    applyLayout(next);
+    try { localStorage.setItem('icseCompareLayout', next ? 'stacked' : 'side'); } catch { /* storage unavailable */ }
+  });
+
   /* ---------- open / close the pane ---------- */
   function openPane() {
     if (S.open) return;
     S.open = true;
     el.pane.hidden = false;
+    el.resizer.hidden = false;
     el.toggle.setAttribute('aria-pressed', 'true');
     showPicker();
     el.search.value = '';
@@ -39,7 +57,61 @@
     el.toggle.setAttribute('aria-pressed', 'false');
     teardown();
     el.pane.hidden = true;
+    el.resizer.hidden = true;
+    el.pane.style.flex = '';   // reset to 50/50 for next time
   }
+
+  /* ---------- dragging the divider ---------- */
+  let dragging = false, dragVertical = false;
+
+  function isVertical() { return el.body.classList.contains('stacked') || innerWidth <= 900; }
+
+  function pctFor(clientPos) {
+    const rect = el.body.getBoundingClientRect();
+    const total = dragVertical ? rect.height : rect.width;
+    const pos = dragVertical ? (clientPos - rect.top) : (clientPos - rect.left);
+    return clamp(100 - (pos / total) * 100, 20, 80);   // % of v-body given to the compare pane
+  }
+
+  function onDragMove(e) {
+    if (!dragging) return;
+    const pos = dragVertical ? e.clientY : e.clientX;
+    el.pane.style.flex = '0 0 ' + pctFor(pos).toFixed(2) + '%';
+    e.preventDefault();
+  }
+
+  function onDragEnd() {
+    if (!dragging) return;
+    dragging = false;
+    document.body.style.cursor = '';
+    removeEventListener('pointermove', onDragMove);
+    removeEventListener('pointerup', onDragEnd);
+    refit();
+  }
+
+  el.resizer.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    dragVertical = isVertical();
+    document.body.style.cursor = dragVertical ? 'row-resize' : 'col-resize';
+    try { el.resizer.setPointerCapture(e.pointerId); } catch { /* not supported */ }
+    addEventListener('pointermove', onDragMove);
+    addEventListener('pointerup', onDragEnd);
+    e.preventDefault();
+  });
+  el.resizer.addEventListener('dblclick', () => { el.pane.style.flex = ''; refit(); });
+  el.resizer.addEventListener('keydown', (e) => {
+    const v = isVertical();
+    const grow = (v && e.key === 'ArrowUp') || (!v && e.key === 'ArrowLeft');
+    const shrink = (v && e.key === 'ArrowDown') || (!v && e.key === 'ArrowRight');
+    if (!grow && !shrink) return;
+    e.preventDefault();
+    const rect = el.pane.getBoundingClientRect(), bodyRect = el.body.getBoundingClientRect();
+    const total = v ? bodyRect.height : bodyRect.width;
+    const current = v ? rect.height : rect.width;
+    const pct = clamp((current / total) * 100 + (grow ? 5 : -5), 20, 80);
+    el.pane.style.flex = '0 0 ' + pct.toFixed(2) + '%';
+    refit();
+  });
 
   function showPicker() {
     el.pick.hidden = false;
@@ -259,9 +331,9 @@
     }
   }
 
-  function rezoom(mult) {
+  function setScale(newScale) {
     if (!S.doc) return;
-    S.scale = clamp(S.scale * mult, MIN_SCALE * S.base, MAX_SCALE * S.base);
+    S.scale = clamp(newScale, MIN_SCALE * S.base, MAX_SCALE * S.base);
     for (const p of S.pages) {
       p.style.width = (S.pw * S.scale) + 'px';
       p.style.height = (S.pw * S.scale * S.ratio) + 'px';
@@ -273,6 +345,19 @@
       const r = p.getBoundingClientRect();
       if (r.bottom > sr.top && r.top < sr.bottom) renderPage(p);
     }
+  }
+
+  function rezoom(mult) { setScale(S.scale * mult); }
+
+  // Called after the divider is dragged: the pane's own width/height just changed, so its
+  // "fit the pane" scale has too. If the reader was sitting at that auto-fit scale (i.e. the
+  // user hadn't manually zoomed), follow the resize and refit; if they'd deliberately zoomed
+  // in/out, leave their chosen scale alone and just move the min/max zoom range's baseline.
+  function refit() {
+    if (!S.doc) return;
+    const wasAtFit = Math.abs(S.scale - S.base) < 0.01;
+    S.base = fitScale();
+    if (wasAtFit) setScale(S.base);
   }
 
   function setStatus(kind, text) {

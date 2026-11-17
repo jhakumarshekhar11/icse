@@ -321,9 +321,21 @@ section[id] { scroll-margin-top: 84px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 /* ---------- Compare (split view) ---------- */
 .v-body { display: flex; flex: 1; min-height: 0; }
-.v-body .v-scroll, .v-body .v-cmp { min-width: 0; }
+.v-body .v-scroll, .v-body .v-cmp { min-width: 0; min-height: 0; }
 .v-cmp { flex: 1; display: flex; flex-direction: column; border-left: 1px solid var(--line); background: var(--shell-bg); }
 .v-cmp[hidden] { display: none; }
+/* Compare "below" layout: stack the two panes instead of placing them side by side */
+.v-body.stacked { flex-direction: column; }
+.v-body.stacked .v-cmp { border-left: 0; border-top: 1px solid var(--line); }
+
+/* Draggable divider between the main pane and the compare pane */
+.v-resizer { flex: 0 0 10px; position: relative; cursor: col-resize; touch-action: none; }
+.v-resizer[hidden] { display: none; }
+.v-resizer::after { content: ""; position: absolute; inset: 0; margin: auto; width: 2px; height: 32px; border-radius: 2px; background: var(--line); }
+.v-resizer:hover::after, .v-resizer:focus-visible::after { background: var(--strong); }
+.v-resizer:focus-visible { outline: 0; }
+.v-body.stacked .v-resizer { cursor: row-resize; }
+.v-body.stacked .v-resizer::after { width: 32px; height: 2px; }
 .v-cmp-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: rgba(var(--w), 0.04); }
 .v-cmp-title { flex: 1; font-weight: 600; font-size: 0.86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
 .v-cmp-pick { flex: 1; min-height: 0; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
@@ -342,7 +354,13 @@ section[id] { scroll-margin-top: 84px; }
 .v-cmp-result span { font-size: 0.76rem; color: var(--muted); }
 .v-cmp-result:hover, .v-cmp-result:focus-visible { background: rgba(var(--w), 0.08); outline: 0; }
 @media (max-width: 900px) {
-  #vCompare { display: none; }   /* side-by-side panes don't fit a narrow screen */
+  /* Too narrow for side-by-side panes, so Compare always opens below instead — the
+     layout toggle has nothing to toggle here, so it's hidden rather than shown disabled. */
+  .v-body { flex-direction: column; }
+  .v-cmp { border-left: 0; border-top: 1px solid var(--line); }
+  #cmpLayout { display: none; }
+  .v-resizer { cursor: row-resize; }
+  .v-resizer::after { width: 32px; height: 2px; }
 }
 
 .v-prog { height: 2px; background: rgba(var(--w), 0.06); }
