@@ -67,7 +67,7 @@
     const token = ++S.refToken;
     window.Viewer.ready(res.id).then((ready) => {
       if (!ready || token !== S.refToken || !window.Viewer.pdf()) return;
-      scanFigureRefs(window.Viewer.pdf()).then((refs) => {
+      scanFigureRefs(window.Viewer.pdf(), res).then((refs) => {
         if (token !== S.refToken) return;
         S.refs = refs;
         renderRefs();
@@ -75,36 +75,52 @@
     });
   }
 
-  // Finds "[FIGURE: ... — paste from source paper, <ref>]" placeholders in a PDF's text.
-  async function scanFigureRefs(doc) {
-    const re = /\[FIGURE:\s*(.*?)\s*[—-]\s*paste from source paper,\s*([^\]]+)\]/gis;
+  // Finds every "[FIGURE: ...]" placeholder in a PDF's text and, from each, pulls out one or
+  // more { desc, year, letter, q, code } references. A placeholder can name two source papers
+  // at once ("2025S Q3(x) and 2026S Q3(x): ...") — each becomes its own entry. The curators
+  // aren't fully consistent about where the reference sits (before or after the "paste from..."
+  // clause, which itself isn't worded the same way every time) or whether a 3-digit subject code
+  // is even included, so this doesn't anchor to a fixed phrase: it just looks for a year
+  // (optionally followed directly by "S" for specimen) followed, somewhere after it, by a
+  // "Q<number>" reference, anywhere inside the bracket. A missing subject code falls back to the
+  // Question Bank's own subject, since these placeholders are almost always about that subject.
+  async function scanFigureRefs(doc, bankRes) {
+    const blockRe = /\[FIGURE:\s*([^\]]+)\]/gi;
+    const refRe = /(\d{4})([A-Za-z])?\b[\s\S]*?\bQ(\d+(?:\([a-zA-Z]+\))?)/g;
+    const fallbackCode = (bankRes && bankRes.codes && bankRes.codes[0]) || null;
     const out = [];
     try {
       for (let i = 1; i <= doc.numPages; i++) {
         const page = await doc.getPage(i);
         const tc = await page.getTextContent();
         const text = tc.items.map((it) => it.str).join(' ');
-        let m;
-        re.lastIndex = 0;
-        while ((m = re.exec(text))) out.push({ desc: m[1].trim(), ref: m[2].trim() });
+        let bm;
+        blockRe.lastIndex = 0;
+        while ((bm = blockRe.exec(text))) {
+          const block = bm[1];
+          const codeM = /\b(\d{3})\b/.exec(block);
+          const code = codeM ? codeM[1] : fallbackCode;
+          const desc = block.replace(/[—-]?\s*paste from[\s\S]*$/i, '').trim();
+          refRe.lastIndex = 0;
+          let rm, found = false;
+          while ((rm = refRe.exec(block))) {
+            found = true;
+            out.push({ desc, year: +rm[1], letter: rm[2] ? rm[2].toUpperCase() : '', q: 'Q' + rm[3], code });
+          }
+          if (!found) out.push({ desc, year: null, letter: '', q: '', code });   // no ref found at all — still show it, unresolved
+        }
       }
     } catch (e) { console.warn('Figure-reference scan failed', e); }
     return out;
   }
 
-  // "2027S 522 Q1(v)" -> { year: 2027, letter: 'S', code: '522', q: 'Q1(v)' }
-  function parseRef(ref) {
-    const m = /^(\d{4})\s*([A-Za-z]+)\s+(\d{3})\s+(.+)$/.exec(ref);
-    return m ? { year: +m[1], letter: m[2].toUpperCase(), code: m[3], q: m[4].trim() } : null;
-  }
-
-  function resolveRef(p) {
-    if (!p) return null;
+  function resolveRef(f) {
+    if (!f.year || !f.code) return null;
     const typeMap = (CFG && CFG.compare && CFG.compare.refTypes) || {};
-    const type = typeMap[p.letter];
+    const type = typeMap[f.letter];
     if (!type) return null;
     const list = (App() && App().all ? App().all() : []) || [];
-    return list.find((r) => r.year === p.year && r.type === type && (r.codes || []).includes(p.code)) || null;
+    return list.find((r) => r.year === f.year && r.type === type && (r.codes || []).includes(f.code)) || null;
   }
 
   function renderRefs() {
@@ -114,14 +130,15 @@
     const h = document.createElement('div'); h.className = 'v-cmp-refs-h'; h.textContent = 'Figures referenced in this paper';
     el.refs.appendChild(h);
     for (const f of S.refs) {
-      const parsed = parseRef(f.ref);
-      const target = resolveRef(parsed);
+      const target = resolveRef(f);
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'v-cmp-result' + (target ? '' : ' v-cmp-ref-missing');
       const strong = document.createElement('b');
-      strong.textContent = (parsed ? parsed.q + ' — ' : '') + f.desc;
+      strong.textContent = (f.q ? f.q + ' — ' : '') + f.desc;
       const span = document.createElement('span');
-      span.textContent = target ? ('Jump to ' + target.title) : ('Source paper not in the library yet (' + f.ref + ')');
+      span.textContent = target
+        ? ('Jump to ' + target.title)
+        : ('Source paper not in the library yet' + (f.year ? ' (' + f.year + f.letter + ' ' + (f.code || '?') + ' ' + f.q + ')' : ''));
       b.append(strong, span);
       if (target) b.addEventListener('click', () => loadInto(target));
       else b.disabled = true;

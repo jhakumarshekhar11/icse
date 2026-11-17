@@ -80,15 +80,17 @@ window.ICSE_CONFIG = {
     types: ["Question Banks"],
 
     // Some Question Banks leave a figure as a placeholder instead of redrawing it, like:
-    //   [FIGURE: diagram: P reacts with dilute HCl and the gas is passed over Q — paste from source paper, 2027S 522 Q1(v)]
-    // The reference at the end ("2027S 522 Q1(v)") reads as: year 2027, paper-type letter "S",
-    // subject code 522, question Q1(v). Compare looks for this pattern in the Question Bank's text
-    // and, when it can match the letter + year + subject code to a real paper, offers a one-tap
-    // jump straight to that source paper (at its first page — it cannot know the exact page inside
-    // the source paper, only which paper it is).
-    // refTypes maps each letter to the resource "type" (as used in resources.json) it stands for.
-    // Add more letters here if your placeholders reference other paper types.
-    refTypes: { S: "Specimen Papers", P: "Previous Year Papers", B: "Sample Papers" }
+    //   [FIGURE: diagram: P reacts with dilute HCl and the gas is passed over Q — paste from source paper, 2027S T27 522 – SPECIMEN Q1(v)]
+    //   [FIGURE: ... — paste from source paper, 2026 T26 522 Q1(vi)]
+    // Compare only needs 3 things out of that reference, wherever they fall in the string:
+    //   1. the year at the very start, with an optional trailing "S" for specimen papers
+    //      (anything else in between — "T27", "– SPECIMEN", etc. — is ignored)
+    //   2. a standalone 3-digit subject code (e.g. 522) anywhere after the year
+    //   3. the "Q..." question reference at the very end
+    // refTypes maps that optional trailing letter to the resource "type" (as used in
+    // resources.json). "" (no letter at all) is the plain/previous-year case. Add more letters
+    // here if your placeholders use other paper types.
+    refTypes: { "": "Previous Year Papers", S: "Specimen Papers", B: "Sample Papers" }
   },
 };
 
