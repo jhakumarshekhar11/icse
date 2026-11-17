@@ -354,10 +354,12 @@
   /* ---------- keyboard ---------- */
   function onKey(e) {
     if (!S.open || App().shareOpen()) return;
-    const typing = e.target === el.page;
+    // Any text field (the page-number box, or the compare pane's search box) gets to type
+    // freely — letters and symbols like n/p/+/-/0/f/g must not double as viewer shortcuts.
+    const typing = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
     if (e.key === 'Escape') { if (document.fullscreenElement) return; e.preventDefault(); App().closeReader(); return; }
     if (e.key === 'Tab') { trap(e); return; }
-    if (typing) { if (e.key === 'Enter') { goTo(parseInt(el.page.value, 10)); el.page.blur(); } return; }
+    if (typing) { if (e.target === el.page && e.key === 'Enter') { goTo(parseInt(el.page.value, 10)); el.page.blur(); } return; }
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     switch (e.key) {
       case 'ArrowRight': case 'n': e.preventDefault(); goTo(S.cur + 1); break;

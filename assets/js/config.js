@@ -70,6 +70,28 @@ window.ICSE_CONFIG = {
 
   // Quick-search suggestions under the search bar
   quickSearches: ["Board paper","Specimen Paper", "Solutions", "2027","2026", "2025", "2024", "2023", "2022"],
+
+  // Compare (split-screen) mode in the viewer: the Compare button only shows up when the paper
+  // currently open is one of these "type" values (as used in resources.json / the Filters panel).
+  // Once open, the picker can compare against ANY paper on the site, of any type. Add more type
+  // strings here any time you want Compare to also be available on those categories,
+  // e.g. ["Question Banks", "Sample Papers"].
+  compare: {
+    types: ["Question Banks"],
+
+    // Some Question Banks leave a figure as a placeholder instead of redrawing it, like:
+    //   [FIGURE: diagram: P reacts with dilute HCl and the gas is passed over Q — paste from source paper, 2027S T27 522 – SPECIMEN Q1(v)]
+    //   [FIGURE: ... — paste from source paper, 2026 T26 522 Q1(vi)]
+    // Compare only needs 3 things out of that reference, wherever they fall in the string:
+    //   1. the year at the very start, with an optional trailing "S" for specimen papers
+    //      (anything else in between — "T27", "– SPECIMEN", etc. — is ignored)
+    //   2. a standalone 3-digit subject code (e.g. 522) anywhere after the year
+    //   3. the "Q..." question reference at the very end
+    // refTypes maps that optional trailing letter to the resource "type" (as used in
+    // resources.json). "" (no letter at all) is the plain/previous-year case. Add more letters
+    // here if your placeholders use other paper types.
+    refTypes: { "": "Previous Year Papers", S: "Specimen Papers", B: "Sample Papers" }
+  },
 };
 
 // The tiers written above, kept untouched as a fallback. The admin page (Subjects and types tab) can save a
