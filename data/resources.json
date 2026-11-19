@@ -4815,6 +4815,38 @@
         "hydrogen",
         "sodium"
       ]
+    },
+    {
+      "id": "englishlit-2025-specimen-paper",
+      "title": "ICSE SPECIMEN 2025 English Literature",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2025,
+      "file": "/pdfs/englishlit-2025-specimen-paper.pdf",
+      "pages": 14,
+      "size_kb": 1054,
+      "added": "2026-11-19",
+      "updated": "2026-11-19",
+      "downloads": 0,
+      "description": "Specimen paper of English Literature 2025. Covers poem, extract, short story and julius caesar.",
+      "tags": [
+        "poem",
+        "extract",
+        "short story",
+        "understanding",
+        "julius caesar",
+        "recall",
+        "great trees fall",
+        "small things recoil",
+        "narrator",
+        "brutus",
+        "cassius",
+        "great soul"
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 11
     }
   ],
   "examDefaults": {
