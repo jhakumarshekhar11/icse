@@ -4847,6 +4847,38 @@
       "minutes": 120,
       "marks": 80,
       "msFrom": 11
+    },
+    {
+      "id": "englishlit-2027-specimen-paper",
+      "title": "ICSE SPECIMEN 2027 English Literature",
+      "subject": "englishlit",
+      "class": "X",
+      "type": "Specimen Papers",
+      "year": 2027,
+      "file": "/pdfs/englishlit-2027-specimen-paper.pdf",
+      "pages": 20,
+      "size_kb": 223,
+      "added": "2026-11-19",
+      "updated": "2026-11-19",
+      "downloads": 0,
+      "description": "Specimen paper of English Literature 2027. Covers poem, extract and short story.",
+      "tags": [
+        "caesar",
+        "personal response",
+        "brutus",
+        "poem",
+        "understanding",
+        "extract",
+        "short story",
+        "martin",
+        "antony",
+        "please accept",
+        "analysis",
+        "cassius"
+      ],
+      "minutes": 120,
+      "marks": 80,
+      "msFrom": 13
     }
   ],
   "examDefaults": {
