@@ -4879,6 +4879,36 @@
       "minutes": 120,
       "marks": 80,
       "msFrom": 13
+    },
+    {
+      "id": "history-2027-question-bank",
+      "title": "History Civics All Chapterwise Question Bank ICSE 2027",
+      "subject": "history",
+      "class": "X",
+      "type": "Question Banks",
+      "year": 2027,
+      "file": "/pdfs/history-2027-question-bank.pdf",
+      "pages": 64,
+      "size_kb": 528,
+      "added": "2026-11-20",
+      "updated": "2026-11-20",
+      "downloads": 0,
+      "tier": "catalyst",
+      "description": "Question bank for History & Civics.",
+      "tags": [
+        "supreme court",
+        "lok sabha",
+        "rajya sabha",
+        "world war",
+        "source",
+        "president",
+        "mcq",
+        "india",
+        "2026s",
+        "2024s",
+        "2025s",
+        "high court"
+      ]
     }
   ],
   "examDefaults": {
