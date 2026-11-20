@@ -77,7 +77,7 @@ window.ICSE_CONFIG = {
   // strings here any time you want Compare to also be available on those categories,
   // e.g. ["Question Banks", "Sample Papers"].
   compare: {
-    types: ["Question Banks"],
+    types: ["Question Banks", "All Chapterwise Question Banks"],
 
     // Some Question Banks leave a figure as a placeholder instead of redrawing it, like:
     //   [FIGURE: diagram: P reacts with dilute HCl and the gas is passed over Q — paste from source paper, 2027S T27 522 – SPECIMEN Q1(v)]
