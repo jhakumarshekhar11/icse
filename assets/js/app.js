@@ -428,15 +428,24 @@
   }
 
   /* ---------- downloads + counter ---------- */
+  // Live counts always land after the grid's first render, which had to use 0 for every paper.
+  // A text patch (refreshCounts) is enough to fix what's on screen for most sorts, but Tier
+  // Rank's ORDER itself depends on download counts — for that one the grid has to be rebuilt,
+  // or papers stay stuck in whatever (wrong) order they first rendered in until something else
+  // happens to trigger a re-render (e.g. clicking the sort button again).
+  function afterCounts() {
+    if (state.sort === 'tier' && state.byId.size) renderGrid();
+    else refreshCounts();
+  }
   async function loadCounts() {
     const c = CFG.counter, C = window.ICSE_COUNTER;
     if (!c || !c.enabled || !C || !C.ready()) return;
     const cache = store.get('icse:counts2', null);
-    if (cache && Date.now() - cache.t < (c.cacheMinutes || 10) * 6e4) { state.live = cache.v; refreshCounts(); return; }
+    if (cache && Date.now() - cache.t < (c.cacheMinutes || 10) * 6e4) { state.live = cache.v; afterCounts(); return; }
     const v = await C.fetchAll();            // one request for every paper; null if it failed
     if (v) { state.live = v; store.set('icse:counts2', { t: Date.now(), v }); }
     else if (cache) state.live = cache.v;    // keep the last good numbers instead of dropping to 0
-    refreshCounts();
+    afterCounts();
   }
   // Every click on a Download button counts: the number on screen goes up at once, and the saved copy of the counts follows.
   function download(r) {
