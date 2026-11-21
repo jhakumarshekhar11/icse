@@ -563,14 +563,51 @@
   addEventListener('exam:change', () => { if (state.byId.size) { renderGrid(); renderStrip(); } });
 
   /* ---------- search + filters ---------- */
-  // ?q= is kept in the address bar so a search can be shared or bookmarked
-  function syncQueryUrl() {
-    if (Viewer.isOpen()) return;
-    const u = new URL(location.href);
+  // Keeps the address bar honest about what's actually on screen. Without this, changing
+  // filters never touches the URL at all: a generated landing page like /physics/2025/ stays
+  // put even after its filters are cleared or changed, and the plain library page stays at "/"
+  // even once filters are applied from there — so analytics (and shared links) attribute every
+  // view to whatever URL happened to be loaded first, not what's actually being looked at.
+  const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  // Mirrors scripts/build-seo.js's own page-grouping rule: a landing page exists for any single
+  // subject / type / year (in that order), so this only returns a path when at most one value is
+  // picked for each of those three — exactly what has a real generated page to match.
+  function prettyFilterPath() {
+    if (state.subject.length > 1 || state.type.length > 1 || state.year.length > 1) return null;
+    const segs = [];
+    if (state.subject.length === 1) {
+      const s = state.subjects.get(state.subject[0]);
+      if (!s) return null;
+      segs.push(slugify(s.name));
+    }
+    if (state.type.length === 1) segs.push(slugify(state.type[0]));
+    if (state.year.length === 1) segs.push(state.year[0]);
+    const base = CFG.basePath.replace(/\/$/, '');
+    return segs.length ? base + '/' + segs.join('/') + '/' : (base || '/');
+  }
+
+  function syncFiltersUrl() {
+    if (Viewer.isOpen()) return;   // don't fight the reader's own history entries
+    const path = prettyFilterPath();
+    const u = new URL(location.origin + (path || CFG.basePath));
     state.q ? u.searchParams.set('q', state.q) : u.searchParams.delete('q');
+    if (!path) {
+      // More than one value picked for some facet: no landing page covers that combination, so
+      // spell it out in the query string rather than silently staying on whatever path loaded.
+      state.subject.length ? u.searchParams.set('subject', state.subject.join(',')) : u.searchParams.delete('subject');
+      state.type.length ? u.searchParams.set('type', state.type.join(',')) : u.searchParams.delete('type');
+      state.year.length ? u.searchParams.set('year', state.year.join(',')) : u.searchParams.delete('year');
+    }
+    // Class, tier and saved-only have no landing pages of their own, so these are always spelled
+    // out — otherwise they'd be silently invisible in the address bar regardless of path.
+    state.cls.length ? u.searchParams.set('cls', state.cls.join(',')) : u.searchParams.delete('cls');
+    state.tier ? u.searchParams.set('tier', state.tier) : u.searchParams.delete('tier');
+    state.savedOnly ? u.searchParams.set('saved', '1') : u.searchParams.delete('saved');
     history.replaceState(history.state, '', u.pathname + (u.search || '') + u.hash);
   }
-  // Starting filters from ?q= / ?subject= / ?type= / ?year= or from a generated landing page
+  // Starting filters from ?q= / ?subject= / ?type= / ?year= / ?cls= / ?tier= / ?saved=, or from
+  // a generated landing page's embedded preset
   function readStartFilters() {
     const p = new URLSearchParams(location.search);
     // Landing pages carry their starting filters in a JSON data block (an inline script would break the CSP)
@@ -586,11 +623,14 @@
     if (pre.type) state.type = list(pre.type).map((v) => state.types.find((x) => x === v || norm(x) === norm(v))).filter(Boolean);
     if (pre.year) state.year = list(pre.year).map(String);
     ['subject', 'type', 'year'].forEach((k) => { if (state[k].length >= options(k).length) state[k] = []; });
+    if (p.get('cls')) state.cls = list(p.get('cls'));
+    if (p.get('tier')) state.tier = p.get('tier');
+    if (p.get('saved')) state.savedOnly = true;
     if (p.get('q')) { el.q.value = state.q = p.get('q'); applyQuery(state.q); }
   }
   function setQuery(v, focus) {
     state.q = v; el.q.value = v;
-    applyQuery(v); renderChips(); renderGrid(); syncQueryUrl();
+    applyQuery(v); renderChips(); renderGrid(); syncFiltersUrl();
     if (focus) el.q.focus();
   }
   function focusSearch() {
@@ -599,7 +639,7 @@
   }
   function resetAll() {
     Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, tier: '' });
-    el.q.value = ''; renderChips(); renderGrid(); syncQueryUrl();
+    el.q.value = ''; renderChips(); renderGrid(); syncFiltersUrl();
   }
 
   el.q.addEventListener('input', () => setQuery(el.q.value));
@@ -613,7 +653,7 @@
       // Re-rendering can show or hide sections above the filters (e.g. "Just added") and
       // replaces the clicked chip, so keep the filter row exactly where it was on screen.
       const before = node.getBoundingClientRect().top;
-      toggleFilter(key, b.dataset.v); state.auto[key] = false; renderChips(); renderGrid();
+      toggleFilter(key, b.dataset.v); state.auto[key] = false; renderChips(); renderGrid(); syncFiltersUrl();
       const shift = node.getBoundingClientRect().top - before;
       if (shift) window.scrollBy({ top: shift, left: 0, behavior: 'instant' });
     });
@@ -633,15 +673,15 @@
   });
   el.chipsTier.addEventListener('click', (e) => {
     const b = e.target.closest('.chip'); if (!b) return;
-    state.tier = b.dataset.v || ''; renderChips(); renderGrid();
+    state.tier = b.dataset.v || ''; renderChips(); renderGrid(); syncFiltersUrl();
   });
   el.savedBtn.addEventListener('click', () => {
-    state.savedOnly = !state.savedOnly; renderChips(); renderGrid();
+    state.savedOnly = !state.savedOnly; renderChips(); renderGrid(); syncFiltersUrl();
     if (state.savedOnly) $('#library').scrollIntoView({ behavior: 'smooth' });
   });
   el.subjects.addEventListener('click', (e) => {
     const b = e.target.closest('[data-subject]'); if (!b) return;
-    state.subject = [b.dataset.subject]; state.auto.subject = false; renderChips(); renderGrid();
+    state.subject = [b.dataset.subject]; state.auto.subject = false; renderChips(); renderGrid(); syncFiltersUrl();
     requestAnimationFrame(() => $('#library').scrollIntoView({ behavior: 'smooth' }));
   });
 
