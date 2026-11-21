@@ -191,34 +191,35 @@
       <button class="ib o-close" id="vClose" type="button" aria-label="Close reader" title="Close (Esc)"><svg class="ic"><use href="#i-close"/></svg></button>
       <div class="v-title"><strong id="vTitle"></strong><span id="vSub"></span></div>
 
-      <div class="x-chip" id="xChip" role="timer" aria-label="Exam timer" hidden data-phase="writing" data-warn="0">
-        <svg class="ic" aria-hidden="true"><use href="#i-timer"/></svg>
-        <span class="x-ph" id="xPhase">Writing</span>
-        <span class="x-time" id="xTime">0:00</span>
-        <button class="x-fin" id="xFinish" type="button">Finish</button>
+      <div class="v-bar2" id="vBar2">
+        <div class="x-chip" id="xChip" role="timer" aria-label="Exam timer" hidden data-phase="writing" data-warn="0">
+          <svg class="ic" aria-hidden="true"><use href="#i-timer"/></svg>
+          <span class="x-ph" id="xPhase">Writing</span>
+          <span class="x-time" id="xTime">0:00</span>
+          <button class="x-fin" id="xFinish" type="button">Finish</button>
+        </div>
+
+        <div class="grp" role="group" aria-label="Page navigation">
+          <button class="ib" id="vPrev" type="button" aria-label="Previous page" title="Previous page (←)"><svg class="ic"><use href="#i-up"/></svg></button>
+          <span class="pg-in"><label class="sr" for="vPage">Go to page</label><input id="vPage" type="number" min="1" value="1" inputmode="numeric"> of <span id="vTotal">–</span></span>
+          <button class="ib" id="vNext" type="button" aria-label="Next page" title="Next page (→)"><svg class="ic"><use href="#i-down"/></svg></button>
+        </div>
+
+        <div class="grp" role="group" aria-label="Zoom">
+          <button class="ib zbtn" id="vZout" type="button" aria-label="Zoom out" title="Zoom out (-)"><svg class="ic"><use href="#i-zout"/></svg></button>
+          <span class="zl" id="vZoom">100%</span>
+          <button class="ib zbtn" id="vZin" type="button" aria-label="Zoom in" title="Zoom in (+)"><svg class="ic"><use href="#i-zin"/></svg></button>
+          <button class="ib" id="vFit" type="button" aria-label="Fit to width" title="Fit to width (0)"><svg class="ic"><use href="#i-fitw"/></svg></button>
+        </div>
+
+        <button class="ib" id="vCompare" type="button" aria-pressed="false" aria-label="Compare with another paper" title="Compare with another paper" hidden><svg class="ic"><use href="#i-split"/></svg></button>
+        <button class="ib" id="vExam" type="button" aria-label="Start a timed exam" title="Timed exam" hidden><svg class="ic"><use href="#i-timer"/></svg></button>
+        <button class="ib" id="vSave" type="button" aria-pressed="false" aria-label="Save to bookmarks" title="Bookmark"><svg class="ic"><use href="#i-bookmark"/></svg></button>
+        <button class="ib" id="vShare" type="button" aria-label="Share" title="Share"><svg class="ic"><use href="#i-share"/></svg></button>
+        <a class="ib" id="vReport" aria-label="Report an error" title="Report an error" target="_blank" rel="noopener"><svg class="ic"><use href="#i-flag"/></svg></a>
+        <button class="ib o-full" id="vFull" type="button" aria-label="Fullscreen" title="Fullscreen (F)"><svg class="ic"><use href="#i-full"/></svg></button>
       </div>
 
-      <div class="grp" role="group" aria-label="Page navigation">
-        <button class="ib" id="vPrev" type="button" aria-label="Previous page" title="Previous page (←)"><svg class="ic"><use href="#i-up"/></svg></button>
-        <span class="pg-in"><label class="sr" for="vPage">Go to page</label><input id="vPage" type="number" min="1" value="1" inputmode="numeric"> of <span id="vTotal">–</span></span>
-        <button class="ib" id="vNext" type="button" aria-label="Next page" title="Next page (→)"><svg class="ic"><use href="#i-down"/></svg></button>
-      </div>
-
-      <div class="grp" role="group" aria-label="Zoom">
-        <button class="ib zbtn" id="vZout" type="button" aria-label="Zoom out" title="Zoom out (-)"><svg class="ic"><use href="#i-zout"/></svg></button>
-        <span class="zl" id="vZoom">100%</span>
-        <button class="ib zbtn" id="vZin" type="button" aria-label="Zoom in" title="Zoom in (+)"><svg class="ic"><use href="#i-zin"/></svg></button>
-        <button class="ib" id="vFit" type="button" aria-label="Fit to width" title="Fit to width (0)"><svg class="ic"><use href="#i-fitw"/></svg></button>
-      </div>
-
-      <span class="v-break"></span>
-
-      <button class="ib" id="vCompare" type="button" aria-pressed="false" aria-label="Compare with another paper" title="Compare with another paper" hidden><svg class="ic"><use href="#i-split"/></svg></button>
-      <button class="ib" id="vExam" type="button" aria-label="Start a timed exam" title="Timed exam" hidden><svg class="ic"><use href="#i-timer"/></svg></button>
-      <button class="ib" id="vSave" type="button" aria-pressed="false" aria-label="Save to bookmarks" title="Bookmark"><svg class="ic"><use href="#i-bookmark"/></svg></button>
-      <button class="ib" id="vShare" type="button" aria-label="Share" title="Share"><svg class="ic"><use href="#i-share"/></svg></button>
-      <a class="ib" id="vReport" aria-label="Report an error" title="Report an error" target="_blank" rel="noopener"><svg class="ic"><use href="#i-flag"/></svg></a>
-      <button class="ib o-full" id="vFull" type="button" aria-label="Fullscreen" title="Fullscreen (F)"><svg class="ic"><use href="#i-full"/></svg></button>
       <a class="btn btn-primary o-dl" id="vDl" href="#" download><svg class="ic"><use href="#i-download"/></svg>Download</a>
     </div>
 
