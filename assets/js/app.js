@@ -27,7 +27,7 @@
 
   const state = {
     res: [], byId: new Map(), subjects: new Map(), types: [],
-    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false, tier: '',
+    q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], sort: 'year', savedOnly: false, tier: [],
     saved: new Set(store.get('icse:saved', [])), live: {}, shareFor: null, pushed: false
   };
 
@@ -183,7 +183,7 @@
     const tokens = state.rest.split(/\s+/).filter(Boolean);
     const list = state.res.filter((r) =>
       (!state.savedOnly || state.saved.has(r.id)) &&
-      (!state.tier || (tierOf(r) || {}).id === state.tier) &&
+      (!state.tier.length || state.tier.includes((tierOf(r) || {}).id)) &&
       (!state.cls.length || state.cls.includes(r.class)) &&
       (!state.subject.length || state.subject.includes(r.subject)) &&
       (!state.type.length || state.type.includes(r.type)) &&
@@ -205,7 +205,7 @@
     const grouped = state.sort === 'year' && !(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly);
     return list.sort((a, b) => (grouped ? rank(a) - rank(b) : 0) || by(a, b));
   }
-  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.tier);
+  const filtering = () => !!(state.q || state.cls.length || state.subject.length || state.type.length || state.year.length || state.savedOnly || state.tier.length);
 
   /* ---------- rendering ---------- */
   function badges(r) {
@@ -300,6 +300,7 @@
     if (k === 'cls') return [...new Set(state.res.map((r) => r.class))].sort();
     if (k === 'subject') return [...state.subjects.values()].filter((s) => state.res.some((r) => r.subject === s.id)).map((s) => s.id);
     if (k === 'type') return state.types.filter((t) => state.res.some((r) => r.type === t));
+    if (k === 'tier') return (CFG.tiers || []).map((t) => t.id).filter((id) => state.res.some((r) => (tierOf(r) || {}).id === id));
     return [...new Set(state.res.map((r) => String(r.year)))].sort().reverse();
   }
   // Click on a chip: "All" clears; others toggle. Picking every option is the same as All.
@@ -322,12 +323,11 @@
     el.sort.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.sort === state.sort));
     el.savedBtn.setAttribute('aria-pressed', state.savedOnly);
     // Badge row: only tiers that at least one paper currently shows
-    const present = new Set(state.res.map((r) => (tierOf(r) || {}).id).filter(Boolean));
-    const tiers = (CFG.tiers || []).filter((t) => present.has(t.id));
-    if (state.tier && !present.has(state.tier)) state.tier = '';
-    el.rowTier.hidden = !tiers.length;
-    el.chipsTier.innerHTML = chip('All', '', !state.tier) + tiers.map((t) => chip(t.name, t.id, state.tier === t.id, t.color)).join('');
-    const nf = ['cls', 'subject', 'type', 'year'].filter((k) => state[k].length).length + (state.tier ? 1 : 0);
+    const tierOpts = options('tier'), tierMeta = new Map((CFG.tiers || []).map((t) => [t.id, t]));
+    state.tier = state.tier.filter((id) => tierOpts.includes(id));   // drop a tier id if it no longer exists at all
+    el.rowTier.hidden = !tierOpts.length;
+    el.chipsTier.innerHTML = chip('All', '', allOf('tier')) + tierOpts.map((id) => { const t = tierMeta.get(id); return chip(t.name, id, on('tier', id), t.color); }).join('');
+    const nf = ['cls', 'subject', 'type', 'year', 'tier'].filter((k) => state[k].length).length;
     el.filterCount.textContent = nf; el.filterCount.hidden = !nf;
     el.savedCount.textContent = state.saved.size;
   }
@@ -602,7 +602,7 @@
     // Class, tier and saved-only have no landing pages of their own, so these are always spelled
     // out — otherwise they'd be silently invisible in the address bar regardless of path.
     state.cls.length ? u.searchParams.set('cls', state.cls.join(',')) : u.searchParams.delete('cls');
-    state.tier ? u.searchParams.set('tier', state.tier) : u.searchParams.delete('tier');
+    state.tier.length ? u.searchParams.set('tier', state.tier.join(',')) : u.searchParams.delete('tier');
     state.savedOnly ? u.searchParams.set('saved', '1') : u.searchParams.delete('saved');
     history.replaceState(history.state, '', u.pathname + (u.search || '') + u.hash);
   }
@@ -624,7 +624,7 @@
     if (pre.year) state.year = list(pre.year).map(String);
     ['subject', 'type', 'year'].forEach((k) => { if (state[k].length >= options(k).length) state[k] = []; });
     if (p.get('cls')) state.cls = list(p.get('cls'));
-    if (p.get('tier')) state.tier = p.get('tier');
+    if (p.get('tier')) state.tier = list(p.get('tier'));
     if (p.get('saved')) state.savedOnly = true;
     if (p.get('q')) { el.q.value = state.q = p.get('q'); applyQuery(state.q); }
   }
@@ -638,7 +638,7 @@
     el.q.focus({ preventScroll: true }); el.q.select();
   }
   function resetAll() {
-    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, tier: '' });
+    Object.assign(state, { q: '', rest: '', auto: {}, cls: [], subject: [], type: [], year: [], savedOnly: false, tier: [] });
     el.q.value = ''; renderChips(); renderGrid(); syncFiltersUrl();
   }
 
@@ -659,7 +659,7 @@
     });
   }
   bindChips(el.chipsClass, 'cls'); bindChips(el.chipsSubject, 'subject');
-  bindChips(el.chipsType, 'type'); bindChips(el.chipsYear, 'year');
+  bindChips(el.chipsType, 'type'); bindChips(el.chipsYear, 'year'); bindChips(el.chipsTier, 'tier');
 
   el.sort.addEventListener('click', (e) => {
     const b = e.target.closest('[data-sort]'); if (!b) return;
@@ -670,10 +670,6 @@
   el.filterBtn.addEventListener('click', () => {
     const open = el.filters.hidden;
     el.filters.hidden = !open; el.filterBtn.setAttribute('aria-expanded', open);
-  });
-  el.chipsTier.addEventListener('click', (e) => {
-    const b = e.target.closest('.chip'); if (!b) return;
-    state.tier = b.dataset.v || ''; renderChips(); renderGrid(); syncFiltersUrl();
   });
   el.savedBtn.addEventListener('click', () => {
     state.savedOnly = !state.savedOnly; renderChips(); renderGrid(); syncFiltersUrl();
