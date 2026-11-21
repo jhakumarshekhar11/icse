@@ -286,6 +286,9 @@ section[id] { scroll-margin-top: 84px; }
 .viewer:fullscreen .v-shell { max-width: none; border-radius: 0; border: 0; }
 
 .v-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: rgba(var(--w), 0.04); }
+/* Desktop: this wrapper is transparent — its children lay out directly as .v-bar's own flex
+   items, exactly as if there were no wrapper at all. Only overridden on narrow screens below. */
+#vBar2 { display: contents; }
 .v-title { flex: 1 1 160px; min-width: 0; line-height: 1.25; }
 .v-title strong { display: block; font-family: var(--font-display); font-weight: 620; font-size: 1rem; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .v-title span { display: block; color: var(--dim); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -298,7 +301,6 @@ section[id] { scroll-margin-top: 84px; }
 .pg-in input:focus { border-color: var(--strong); box-shadow: 0 0 0 3px rgba(var(--w), 0.12); }
 .zl { min-width: 3.4em; text-align: center; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
 .v-bar .btn { height: 38px; }
-.v-break { display: none; }
 
 .v-scroll { position: relative; flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; background: radial-gradient(ellipse at 50% 0%, rgba(var(--w), 0.06), transparent 55%), var(--reader-bg); -webkit-overflow-scrolling: touch; }
 .v-pages { display: flex; flex-direction: column; align-items: center; gap: 16px; width: max-content; min-width: 100%; padding: 24px 32px 48px; transform-origin: 0 0; }
@@ -367,13 +369,20 @@ section[id] { scroll-margin-top: 84px; }
 .v-prog i { display: block; height: 100%; width: 0; background: var(--strong); box-shadow: var(--prog-glow); transition: width 0.12s; }
 
 @media (max-width: 760px) {
-  .v-bar > * { order: 4; }
   .v-bar > .o-close { order: 0; }
   .v-bar > .v-title { order: 1; }
   .v-bar > .o-dl { order: 2; }
-  .v-break { display: block; order: 3; flex-basis: 100%; height: 0; }
+  /* The row of secondary buttons scrolls sideways instead of wrapping onto more lines — a
+     flex-wrap container can only ever grow taller, never scroll, so this needs its own
+     nowrap+overflow context rather than trying to make .v-bar itself scroll. */
+  #vBar2 {
+    display: flex; flex-wrap: nowrap; align-items: center; gap: 8px 10px;
+    order: 3; flex-basis: 100%; width: 100%; min-width: 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  #vBar2::-webkit-scrollbar { display: none; }
+  #vBar2 > * { flex: 0 0 auto; }   /* buttons/groups keep their natural size, never shrink to fit */
   .v-bar .zbtn, .v-bar .zl, .v-bar .o-full { display: none; }
-  .v-bar { overflow-x: auto; scrollbar-width: none; }
   .v-pages { padding: 14px 12px 40px; gap: 12px; }
 }
 
