@@ -531,9 +531,13 @@
     Viewer.open(r, page);
     if (exam && window.Exam) Exam.prompt(r);
   }
-  // While a timed exam is running on this paper, closing asks for confirmation first
+  // While a timed exam is running on this paper, closing asks for confirmation first.
+  // Otherwise, if closing lands on the paper's last page for the first time, Account asks whether to drop
+  // it from Continue where you left off and the reader waits for that answer before it actually closes.
   function closeReader() {
     if (window.Exam && Exam.confirmLeave(closeReaderNow)) return;
+    if (window.Viewer && Viewer.flush) Viewer.flush();
+    if (window.Account && Account.confirmFinish && Account.confirmFinish(closeReaderNow)) return;
     closeReaderNow();
   }
   function closeReaderNow() {

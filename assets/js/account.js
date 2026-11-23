@@ -247,16 +247,50 @@
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && user) flush(); });
 
   // Reading progress. The reader reports each page it settles on.
+  //
+  // "Finished" prompt (offer to drop a paper from Continue where you left off once its last page is reached):
+  // - askedFinished: rids already prompted this tab, so revisiting the last page doesn't ask again.
+  // - pendingAsk: set the moment a paper reaches its last page. It fires itself after a short pause if the
+  //   reader stays open. If instead the student closes the reader before that pause elapses, confirmFinish()
+  //   below (called from the reader's close button) fires it immediately and holds the close until answered,
+  //   so the reader never closes a beat before the question about it appears.
+  // - suppressReadd: closing the reader flushes the current page again (Viewer.close -> flushPage). If that
+  //   happens right after "Remove" was pressed, skip that one duplicate update so it isn't silently re-added.
+  const askedFinished = new Set();
+  const suppressReadd = new Set();
+  let pendingAsk = null;
+  function offerDrop(rid, title) {
+    return ask('You\u2019ve finished \u201c' + title + '\u201d. Remove it from Continue where you left off?', 'Remove', 'Keep it')
+      .then((yes) => { if (yes) { suppressReadd.add(rid); forget(rid); } });
+  }
+  // Called by the reader before it closes. Returns true when it took over (the question is showing and
+  // the reader should wait for proceed() instead of closing right away).
+  function confirmFinish(proceed) {
+    if (!pendingAsk) return false;
+    const { rid, title, timer } = pendingAsk;
+    clearTimeout(timer); pendingAsk = null;
+    offerDrop(rid, title).then(proceed);
+    return true;
+  }
   root.addEventListener('icse:progress', (e) => {
     const d = e.detail || {}; if (!okKey(d.rid) || !(d.p > 0)) return;
+    if (suppressReadd.delete(d.rid)) return;   // the reader's own close-time re-flush right after a Remove
     const m = objOf(jget(K.prog, {}));
     const res = root.App && root.App.byId ? root.App.byId(d.rid) : null;
-    m[d.rid] = { p: d.p | 0, n: (res && res.pages) || (m[d.rid] && m[d.rid].n) || 0, at: Date.now() };
+    const prevP = m[d.rid] ? m[d.rid].p | 0 : 0;
+    const n = (d.n | 0) || (res && res.pages) || (m[d.rid] && m[d.rid].n) || 0;
+    m[d.rid] = { p: d.p | 0, n, at: Date.now() };
     const keep = Object.entries(m).sort((a, b) => (b[1].at || 0) - (a[1].at || 0));
     keep.slice(OPT.maxProgress).forEach(([rid]) => { delete m[rid]; LS.del(K.page + rid); });
     jset(K.prog, m);
     emit('account:data', { progress: true });
     later();
+    // Just reached the last page for the first time (not a 1-page file, and signed in, since that's
+    // the only state where "Continue where you left off" shows this paper at all): line up the question.
+    if (signedIn() && n > 1 && d.p >= n && prevP < n && res && !askedFinished.has(d.rid)) {
+      askedFinished.add(d.rid);
+      pendingAsk = { rid: d.rid, title: res.title, timer: setTimeout(() => { pendingAsk = null; offerDrop(d.rid, res.title); }, 600) };
+    }
   });
 
   function recent(n) {
@@ -896,6 +930,7 @@
     signedIn,
     recent,
     forget,
+    confirmFinish,
     status: () => status
   };
 

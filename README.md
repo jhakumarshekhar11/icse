@@ -406,7 +406,7 @@ Accounts are **optional**. Without one the site works exactly as before. A stude
 | --- | --- |
 | **Bookmarks** | The Saved list. |
 | **Exam history and scores** | Every finished timed exam, with the score a student entered. |
-| **Reading progress** | The last page opened in each paper. Drives the **Continue where you left off** row (shown only when logged in, up to 8 papers, each with Resume and a remove button). |
+| **Reading progress** | The last page opened in each paper. Drives the **Continue where you left off** row (shown only when logged in, up to 8 papers, each with Resume and a remove button). Reaching the last page of a paper (more than one page long) asks, once per paper per browser tab, whether to remove it from this row — "Keep it" leaves it, "Remove" drops it immediately. If the student closes the reader right at that moment (before the question would normally appear), the reader holds off closing until they answer, so the question is never left hanging over an already-closed paper. |
 | **Preferences** | Light or dark theme, sort order and the exam beep switch. |
 
 It uses **Firebase Authentication** and **Cloud Firestore** (free Spark plan is plenty). There is still no server of your own.
