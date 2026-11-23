@@ -316,7 +316,7 @@
   function flushPage() {
     if (!S.res || !S.n) return;
     store.set('icse:page:' + S.res.id, S.cur);
-    window.dispatchEvent(new CustomEvent('icse:progress', { detail: { rid: S.res.id, p: S.cur } }));   // account sync + "Continue"
+    window.dispatchEvent(new CustomEvent('icse:progress', { detail: { rid: S.res.id, p: S.cur, n: S.n } }));   // account sync + "Continue"
     App().pageChanged && App().pageChanged(S.cur);
   }
 
@@ -465,6 +465,10 @@
 
   window.Viewer = {
     open, close, goTo, syncSave, isOpen: () => S.open, current: () => S.res,
+    // Flush the current page immediately rather than waiting for the normal debounce. closeReader() in
+    // app.js calls this before Viewer.close() so Account has already seen "reached the last page" (and can
+    // hold the close for the finished-paper question) even if the student closes within a page or two of it.
+    flush: flushPage,
     fullscreenHost: () => document.fullscreenElement || document.body,
     // for the exam timer: wait for the document, read it, and limit or restore the visible pages
     ready: (id) => (S.res && S.res.id === id && S.readyP ? S.readyP : Promise.resolve(false)),
