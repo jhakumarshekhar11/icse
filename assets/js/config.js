@@ -42,13 +42,14 @@ window.ICSE_CONFIG = {
     { id: "loop", name: "while(true) { Centum(); }", min: 200, color: "#FF3131", note: "An infinite loop of absolute academic perfection that can never be stopped.", code: true }
   ],
 
-  // Download counter. Counts are kept in your Firebase project (Cloud Firestore)
-  // (collection "downloads", one document per paper), see assets/js/counter.js and the rules in README. Counts in resources.json are
-  // used as the starting value, and live clicks are added on top. If Firebase is not set up or unreachable
-  // the site still works and just shows the starting numbers. Set enabled to false to turn it off completely.
+  // Download counter. All counts live in ONE Cloud Firestore document (default stats/downloads) as
+  // { "<paper id>": number, ... }, see assets/js/counter.js and firestore.rules.counter. Loading the counts
+  // costs one read. Counts in resources.json are used as the starting value, and live clicks are added on top.
+  // If Firebase is not set up or unreachable the site still works and just shows the starting numbers.
+  // Set enabled to false to turn it off completely.
   counter: {
     enabled: true,
-    collection: "downloads",   // one document per paper: downloads/<paper id> = { n: count }
+    doc: "stats/downloads",    // the single document that holds every paper's count
     cacheMinutes: 10
   },
 
