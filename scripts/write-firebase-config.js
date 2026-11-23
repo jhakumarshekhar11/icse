@@ -1,4 +1,4 @@
-// Runs before the SEO build on Render. If the FIREBASE_* environment variables are set, it fills the
+// Runs before the SEO build on Cloudflare Pages. If the FIREBASE_* environment variables are set, it fills the
 // values into assets/js/firebase-config.js in the deployed copy, so the keys never need to be committed.
 // Without them it does nothing and the committed file is used as it is.
 //   FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_APP_ID, GOOGLE_ONE_TAP_CLIENT_ID (optional)
