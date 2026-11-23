@@ -5,7 +5,7 @@
 **A fast, glassy library of ICSE Class 10 papers, specimen papers, notes and solutions.**
 Read every PDF in the browser, run a timed exam on any paper, and manage it all from a hidden admin page.
 
-[**icse.shekharjha.tech**](https://icse.shekharjha.tech) &nbsp;·&nbsp; Plain HTML, CSS and JavaScript &nbsp;·&nbsp; Hosted on Render &nbsp;·&nbsp; No framework, no database
+[**icse.shekharjha.tech**](https://icse.shekharjha.tech) &nbsp;·&nbsp; Plain HTML, CSS and JavaScript &nbsp;·&nbsp; Hosted on Cloudflare Pages &nbsp;·&nbsp; No framework, no database
 
 </div>
 
@@ -16,7 +16,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 1. [Features](#features)
 2. [Project layout](#project-layout)
 3. [How it fits together](#how-it-fits-together)
-4. [Deploying on Render](#deploying-on-render)
+4. [Deploying on Cloudflare Pages](#deploying-on-cloudflare-pages)
 5. [Adding resources](#adding-resources)
 6. [The admin page](#the-admin-page)
 7. [Timed exam mode](#timed-exam-mode)
@@ -35,7 +35,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 | --- | --- |
 | **Smart search.** Type "ICSE Computer paper 2025" and the right filters switch on by themselves. | **Hidden admin** at `/admin`: upload, edit, drafts, bulk edit, undo, JSON backup. |
 | **Multi-select filters** for class, subject, type and year. Pick everything and it resets to All. | **Autoread on upload.** Subject, type and year from the file name, keywords, a description, time allowed, total marks and marking scheme page from the PDF. |
-| **Sorting:** Latest year (default, newest year first), Oldest added, Most downloaded. | **Every change is one Git commit**, so Render redeploys on its own and Undo is one click. |
+| **Sorting:** Latest year (default, newest year first), Oldest added, Most downloaded. | **Every change is one Git commit**, so Cloudflare Pages redeploys on its own and Undo is one click. |
 | **In-page PDF reader** with zoom, page jump, fullscreen, pinch and swipe. | **SEO built at deploy time:** a page for every subject, type, year and paper, plus a sitemap. |
 | **Timed exams** with reading time, a countdown, a beep, History and scores. The marking scheme stays hidden until time is up. | **Per-subject exam defaults** for writing time and total marks, editable in the admin. |
 | **Bookmarks, share links, QR codes, WhatsApp share** and a "Report an error" button. **Optional accounts** (email or Google) sync bookmarks, history, progress and theme, with a "Continue where you left off" row. | **Download counter** kept in your own Firebase project (one Firestore document). |
@@ -76,7 +76,8 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 │   ├── build-seo.js           Runs on every deploy: landing pages and sitemap
 │   └── check-links.js         Checks every PDF path in resources.json exists
 ├── firestore.rules            Security rules for the accounts database (publish in Firebase)
-├── render.yaml                Render settings: build, redirects, headers
+├── _headers                   Cloudflare Pages: security and cache headers
+├── _redirects                 Cloudflare Pages: the /resource redirects
 ├── robots.txt                 Keeps /admin out of search, points to the sitemap
 └── favicon.svg
 ```
@@ -86,7 +87,7 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 ## How it fits together
 
 ```text
- I (admin page) ──token──▶ GitHub repo, branch "website" ──auto deploy──▶ Render
+ I (admin page) ──token──▶ GitHub repo, branch "website" ──auto deploy──▶ Cloudflare Pages
                                    │                                          │
                          data/resources.json + pdfs/                 node scripts/build-seo.js
                                                                                │
@@ -100,27 +101,42 @@ Read every PDF in the browser, run a timed exam on any paper, and manage it all 
 
 ---
 
-## Deploying on Render
+## Deploying on Cloudflare Pages
 
-The service is a **Static Site**.
+The project is a **Pages** project connected directly to the GitHub repo.
 
 | Setting | Value |
 | --- | --- |
-| Branch | `website` |
+| Production branch | `website` |
 | Build command | `node scripts/write-firebase-config.js && node scripts/build-seo.js` |
-| Publish directory | `.` |
-| Custom domain | `icse.shekharjha.tech` (CNAME to the address Render shows) |
+| Build output directory | `/` |
+| Root directory | `/` (leave blank unless the site is in a sub-folder) |
+| Environment variable | `SITE_URL = https://icse.shekharjha.tech` (used by `build-seo.js` for canonical links and the sitemap) |
+| Custom domain | `icse.shekharjha.tech`, added under the Pages project's **Custom domains** tab |
 
-**Redirects and rewrites**
+**Domain (registered on get.tech, DNS kept at get.tech)**
+
+The domain's nameservers stay with get.tech — only the DNS records were changed, Cloudflare is not the authoritative DNS for the zone. This works because `icse.shekharjha.tech` is a subdomain, which can simply be a `CNAME`:
+
+1. In the Cloudflare Pages project, open **Custom domains** → **Set up a custom domain** → enter `icse.shekharjha.tech`. Cloudflare shows a `CNAME` target (your project's `*.pages.dev` address) to add at the DNS provider.
+2. At get.tech's DNS records page (not nameservers), add a `CNAME` record: host `icse`, value the `*.pages.dev` target Cloudflare gave you.
+3. Back in Cloudflare Pages, the custom domain moves from "Pending" to "Active" once it detects the record and issues the SSL certificate — usually within minutes, sometimes up to a few hours depending on get.tech's DNS propagation.
+4. If anything stays stuck on "Pending" for a long time, double check the record at get.tech is a `CNAME` (not an `A` record) and that get.tech isn't proxying or caching DNS responses.
+
+(Note: a bare root/apex domain, e.g. `shekharjha.tech` itself with no subdomain, generally can't use a `CNAME` — that would need either Cloudflare-managed nameservers or get.tech's ALIAS/ANAME support, if it has one. Not a concern here since the site lives on the `icse` subdomain.)
+
+**Redirects and headers**
+
+Cloudflare Pages reads `_redirects` and `_headers` from the repo root automatically — no dashboard configuration needed. `/about`, `/admin`, `/privpol`, `/tos` and `/auth/action` are real folders with their own `index.html`, so Cloudflare serves them at those clean paths without any rewrite rule.
+
+`_redirects`:
 
 | Type | From | To |
 | --- | --- | --- |
 | Redirect | `/resource` | `/` |
 | Redirect | `/resource/*` | `/*` |
-| Rewrite | `/about` | `/about/index.html` |
-| Rewrite | `/admin` and `/admin/` | `/admin/index.html` |
 
-**Headers**
+`_headers`:
 
 | Path | Header |
 | --- | --- |
@@ -131,6 +147,8 @@ The service is a **Static Site**.
 | `/sitemap.xml` | `Cache-Control: public, max-age=3600` |
 
 Because assets are cached for five minutes, a change can take a few minutes to show on a device that already loaded the site. A hard refresh skips the wait.
+
+**Keeping the keys out of Git on Cloudflare Pages:** add `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID`, `FIREBASE_APP_ID` (and optionally `GOOGLE_ONE_TAP_CLIENT_ID`) as environment variables on the Pages project (Settings → Environment variables, for the Production environment). The build command already runs `write-firebase-config.js` first, which fills them into `firebase-config.js` at build time.
 
 ---
 
@@ -411,7 +429,7 @@ It uses **Firebase Authentication** and **Cloud Firestore** (free Spark plan is 
 1. **Firebase console** (console.firebase.google.com): open your project, or **Add project**.
 2. **Add a web app:** Project settings (gear), Your apps, **</>** (Web). Copy the `firebaseConfig` values into `assets/js/firebase-config.js` (`apiKey`, `authDomain`, `projectId`, `appId`). These keys are public by design.
 3. **Authentication:** Build, Authentication, **Get started**. Under **Sign-in method** turn on **Email/Password** and **Google** (pick a support email for Google).
-4. **Authorized domains:** Authentication, Settings, **Authorized domains**. Add `icse.shekharjha.tech` (and your `*.onrender.com` address if you test there). `localhost` is already allowed.
+4. **Authorized domains:** Authentication, Settings, **Authorized domains**. Add `icse.shekharjha.tech` (and your `*.pages.dev` address if you test there). `localhost` is already allowed.
 5. **Firestore:** Build, **Firestore Database**, Create database (production mode, region near India such as `asia-south1`). Open the **Rules** tab, paste the contents of `firestore.rules`, **Publish**.
 6. Commit and deploy. A **Log in** button appears in the top bar.
 
@@ -419,7 +437,7 @@ While `apiKey` is empty, no account button appears and nothing changes.
 
 ### Keeping the keys out of Git (optional)
 
-On Render, add environment variables `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID` and `FIREBASE_APP_ID`. The build command (`node scripts/write-firebase-config.js && node scripts/build-seo.js`) writes them into `firebase-config.js` on the server. Leave the committed file empty. This only keeps them out of the repository: a Firebase web key is always visible in the browser, so protect it with the key restrictions and Firestore rules described above.
+On Cloudflare Pages, add environment variables `FIREBASE_API_KEY`, `FIREBASE_AUTH_DOMAIN`, `FIREBASE_PROJECT_ID` and `FIREBASE_APP_ID` on the Pages project. The build command (`node scripts/write-firebase-config.js && node scripts/build-seo.js`) writes them into `firebase-config.js` at build time. Leave the committed file empty. This only keeps them out of the repository: a Firebase web key is always visible in the browser, so protect it with the key restrictions and Firestore rules described above.
 
 ### Settings (`assets/js/firebase-config.js`)
 
@@ -450,8 +468,8 @@ Confirm-email, reset-password and undo-email-change links open `/auth/action/` o
 Guests on the home page see Google's "Continue as <name>" prompt. It is off until you set a client ID.
 
 1. Firebase console > Authentication > Sign-in method > Google > **Web SDK configuration**: copy the **Web client ID**.
-2. Paste it into `oneTapClientId` in `assets/js/firebase-config.js`, or set the Render variable `GOOGLE_ONE_TAP_CLIENT_ID`.
-3. Google Cloud console > APIs & Services > Credentials > that Web client > **Authorized JavaScript origins**: add `https://icse.shekharjha.tech` (and your `*.onrender.com` address if you test there).
+2. Paste it into `oneTapClientId` in `assets/js/firebase-config.js`, or set the Cloudflare Pages environment variable `GOOGLE_ONE_TAP_CLIENT_ID`.
+3. Google Cloud console > APIs & Services > Credentials > that Web client > **Authorized JavaScript origins**: add `https://icse.shekharjha.tech` (and your `*.pages.dev` address if you test there).
 4. Redeploy. The prompt only appears on the home page, to guests, and Google decides how often to show it after a dismissal.
 
 Only Google's small script loads for guests. The Firebase bundle loads when the student taps their account. `firebase-lite.js` was rebuilt so it also exports `signInWithCredential` (see `scripts/firebase-entry.js`).
