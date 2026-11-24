@@ -4875,13 +4875,14 @@
       "class": "X",
       "type": "All Chapterwise Question Banks",
       "year": 2027,
-      "file": "/pdfs/chemistry-2027-question-bank.pdf",
-      "pages": 80,
-      "size_kb": 589,
+      "file": "/pdfs/chemistry-2027-question-bank-v2.pdf",
+      "pages": 87,
+      "size_kb": 921,
       "added": "2026-11-14",
-      "updated": "2026-11-20",
+      "updated": "2026-11-24",
       "downloads": 0,
       "tier": "catalyst",
+      "rev": 2,
       "description": "Question bank for Chemistry.",
       "tags": [
         "sulphuric acid",
@@ -4895,7 +4896,10 @@
         "hydrochloric acid",
         "concentrated sulphuric",
         "hydrogen",
-        "sodium"
+        "sodium",
+        "element",
+        "metal",
+        "nitrate"
       ]
     },
     {
