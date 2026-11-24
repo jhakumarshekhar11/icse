@@ -52,7 +52,7 @@
   }
 
   const modals = [];
-  function modal(html, { cls = '', closable = true, scroll = false } = {}) {
+  function modal(html, { cls = '', closable = true, scroll = false, guardClose = null } = {}) {
     const dlg = document.createElement('div');
     dlg.className = 'dlg' + (scroll ? ' scroll' : ''); dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true');
     dlg.innerHTML = `<div class="dlg-card glass ${cls}">${html}</div>`;
@@ -64,8 +64,12 @@
       if (m.onClose) m.onClose();
       if (m.prev && m.prev.focus && document.contains(m.prev)) m.prev.focus({ preventScroll: true });
     };
+    // A dismiss attempt via the backdrop or Escape, as opposed to calling m.close() directly. With no guard
+    // this just closes, same as before. A guard (e.g. "discard unsaved changes?") runs first and decides
+    // for itself whether, and when, to call the proceed function it's given.
+    m.requestClose = guardClose ? () => guardClose(m.close) : m.close;
     m.prev = document.activeElement;
-    if (closable) dlg.addEventListener('mousedown', (e) => { if (e.target === dlg) m.close(); });
+    if (closable) dlg.addEventListener('mousedown', (e) => { if (e.target === dlg) m.requestClose(); });
     modals.push(m);
     const f = dlg.querySelector('[autofocus],input,select,textarea,button,a[href]');
     if (f) f.focus({ preventScroll: true });
@@ -74,7 +78,7 @@
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' || !modals.length || (window.Viewer && Viewer.isOpen())) return;
     const top = modals[modals.length - 1];
-    if (top.closable) { e.preventDefault(); top.close(); }
+    if (top.closable) { e.preventDefault(); top.requestClose(); }
   });
 
   function confirmDialog({ title, body, ok = 'Confirm', danger = false, cancel = 'Cancel' }) {
@@ -105,6 +109,15 @@
     return m;
   }
 
+  // True while there's a draft that only lives in this tab: subjects/types, tiers or exam defaults with
+  // unsaved edits, the Upload tab's in-progress new resource, or an open Edit-resource sheet. Used before
+  // anything that would otherwise throw that work away without asking (signing out, idle timeout).
+  function hasUnsavedWork() {
+    return !!((state.tax && state.tax.dirty) || (state.tiers && state.tiers.dirty) || (state.xd && state.xd.dirty) ||
+      (state.editor && state.editor.isDirty && state.editor.isDirty()) ||
+      modals.some((m) => m.editor && m.editor.isDirty && m.editor.isDirty()));
+  }
+
   /* ---------- session ---------- */
   const SS = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
@@ -114,9 +127,28 @@
   let lastSaved = 0;
   const touch = () => { state.last = Date.now(); if (state.last - lastSaved > 5000) { lastSaved = state.last; SS.set('icse:adm:last', String(state.last)); } };
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => document.addEventListener(ev, touch, { passive: true, capture: true }));
+  // Idle timeout. With nothing unsaved this signs out immediately, same as before. With unsaved work it
+  // warns first and counts down, so inactivity can still force a sign-out (the whole point of this timer)
+  // without silently discarding a draft the moment it's noticed.
+  let idleWarnShowing = false;
+  function idleWarn() {
+    idleWarnShowing = true;
+    let left = 30;
+    const m = modal(`<h3>Still there?</h3><div class="body"><p>You have unsaved changes that will be lost if you\u2019re signed out. Signing out in <b data-el="secs">${left}</b>s.</p></div>
+      <div class="row-acts"><button class="btn btn-primary" type="button" data-stay autofocus>Stay signed in</button></div>`, { cls: 'mid', closable: false });
+    const secs = m.card.querySelector('[data-el="secs"]');
+    const timer = setInterval(() => {
+      left--; if (secs) secs.textContent = left;
+      if (left <= 0) { clearInterval(timer); idleWarnShowing = false; m.close(); signOut('Signed out after inactivity.'); }
+    }, 1000);
+    m.card.querySelector('[data-stay]').onclick = () => { clearInterval(timer); idleWarnShowing = false; touch(); m.close(); };
+  }
   setInterval(() => {
-    if (!state.user) return;
-    if (Date.now() - state.last > AC.idleMinutes * 60000) signOut('You were signed out after ' + AC.idleMinutes + ' minutes of inactivity.');
+    if (!state.user || idleWarnShowing) return;
+    if (Date.now() - state.last > AC.idleMinutes * 60000) {
+      if (hasUnsavedWork()) idleWarn();
+      else signOut('You were signed out after ' + AC.idleMinutes + ' minutes of inactivity.');
+    }
   }, 10000);
 
   function showLogin(msg) {
@@ -339,7 +371,7 @@
       <aside class="ed-side prev">
         <h3>How it looks on the site</h3>
         <div data-el="preview"></div>
-        <p class="hint">${edit ? 'Saving creates one commit on GitHub. The site updates after Render redeploys.' : 'Publishing creates one commit on GitHub. The site updates after Render redeploys, usually in 1 to 2 minutes.'}</p>
+        <p class="hint">${edit ? 'Saving creates one commit on GitHub. The site updates after Cloudflare Pages redeploys.' : 'Publishing creates one commit on GitHub. The site updates after Cloudflare Pages redeploys, usually in 1 to 2 minutes.'}</p>
       </aside>
     </div>`;
     const el = (n) => host.querySelector(`[data-el="${n}"]`);
@@ -648,7 +680,7 @@
       });
       doneDialog({
         title: asDraft ? 'Draft saved' : 'Published',
-        body: `${esc(v.title)} is saved to GitHub. ${asDraft ? 'It stays hidden from the site until you publish it.' : 'It appears on the site after Render redeploys, usually in 1 to 2 minutes.'}`,
+        body: `${esc(v.title)} is saved to GitHub. ${asDraft ? 'It stays hidden from the site until you publish it.' : 'It appears on the site after Cloudflare Pages redeploys, usually in 1 to 2 minutes.'}`,
         url: c.url, again: 'Upload another'
       });
       onSaved && onSaved('new');
@@ -670,12 +702,16 @@
           return data;
         }, { upserts, deletes }, step);
       });
-      toast('Saved. Render will redeploy shortly.');
+      toast('Saved. Cloudflare Pages will redeploy shortly.');
       onSaved && onSaved('edit', c);
     }
 
     render();
-    return { destroy() { if (st.url) URL.revokeObjectURL(st.url); host.removeEventListener('input', onInput); host.removeEventListener('change', onInput); host.innerHTML = ''; }, reset() { /* fresh editor is mounted instead */ } };
+    return {
+      destroy() { if (st.url) URL.revokeObjectURL(st.url); host.removeEventListener('input', onInput); host.removeEventListener('change', onInput); host.innerHTML = ''; },
+      reset() { /* fresh editor is mounted instead */ },
+      isDirty: () => touched   // the admin has typed, chosen a file, or clicked an action in this form
+    };
   }
   let uid = 0;
 
@@ -784,9 +820,17 @@
 
   function openEdit(r) {
     uid++;
-    const m = modal('<div class="sheet-head"><h3>Edit resource</h3><button class="ib" type="button" aria-label="Close" data-x><svg class="ic"><use href="#i-close"/></svg></button></div><div data-host></div>', { cls: 'wide', scroll: true });
-    m.card.querySelector('[data-x]').onclick = () => m.close();
-    const ed = createEditor(m.card.querySelector('[data-host]'), { mode: 'edit', res: r, onSaved: () => m.close() });
+    let ed; // assigned below; referenced here only once guardClose actually runs, so the order is fine
+    const m = modal('<div class="sheet-head"><h3>Edit resource</h3><button class="ib" type="button" aria-label="Close" data-x><svg class="ic"><use href="#i-close"/></svg></button></div><div data-host></div>', {
+      cls: 'wide', scroll: true,
+      guardClose: async (proceed) => {
+        if (ed && ed.isDirty() && !(await confirmDialog({ title: 'Discard unsaved changes?', body: '<p>Your edits to this resource have not been saved.</p>', ok: 'Discard', danger: true, cancel: 'Keep editing' }))) return;
+        proceed();
+      }
+    });
+    m.card.querySelector('[data-x]').onclick = () => m.requestClose();
+    ed = createEditor(m.card.querySelector('[data-host]'), { mode: 'edit', res: r, onSaved: () => m.close() });
+    m.editor = ed; // so hasUnsavedWork() (used by sign-out) can see this sheet too
     m.onClose = () => ed.destroy();
   }
 
@@ -873,7 +917,8 @@
   function resetTax() {
     state.tax = {
       subjects: state.data.subjects.map((s) => ({ id: s.id, name: s.name, accent: s.accent, code: s.code || '', altCode: s.altCode || '', isNew: false })),
-      types: state.data.types.map((t) => ({ orig: t, name: t })), dirty: false
+      types: state.data.types.map((t) => ({ orig: t, name: t })), dirty: false,
+      removedNames: []   // names of subjects/types removed from this draft so far, for the confirm on Save
     };
     renderTax();
   }
@@ -909,9 +954,19 @@
     const k = e.target.dataset.k; if (k === 'name' || k === 'accent' || k === 'code' || k === 'altCode') s[k] = e.target.value;
     dirty();
   });
-  $('#subjList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tax.subjects.splice(b.closest('.trow').dataset.i, 1); dirty(); renderTax(); });
+  $('#subjList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return;
+    const removed = state.tax.subjects.splice(b.closest('.trow').dataset.i, 1)[0];
+    if (removed && !removed.isNew) state.tax.removedNames.push(removed.name || '(unnamed subject)');
+    dirty(); renderTax();
+  });
   $('#typeList').addEventListener('input', (e) => { const row = e.target.closest('.trow'); if (!row) return; state.tax.types[row.dataset.i].name = e.target.value; dirty(); });
-  $('#typeList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tax.types.splice(b.closest('.trow').dataset.i, 1); dirty(); renderTax(); });
+  $('#typeList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return;
+    const removed = state.tax.types.splice(b.closest('.trow').dataset.i, 1)[0];
+    if (removed && removed.orig) state.tax.removedNames.push(removed.name || '(unnamed type)');
+    dirty(); renderTax();
+  });
   $('#addSubject').addEventListener('click', () => {
     const used = state.tax.subjects.length;
     state.tax.subjects.push({ id: '', name: '', accent: PALETTE[used % PALETTE.length], code: '', altCode: '', isNew: true }); dirty(); renderTax();
@@ -932,6 +987,14 @@
     }
     const taken = new Set(t.subjects.filter((s) => !s.isNew).map((s) => s.id));
     t.subjects.forEach((s) => { if (s.isNew) { let b = slug(s.name) || 'subject', id = b, n = 2; while (taken.has(id)) id = b + '-' + n++; s.id = id; taken.add(id); } });
+    if (t.removedNames.length) {
+      const ok = await confirmDialog({
+        title: t.removedNames.length === 1 ? 'Remove this for good?' : `Remove ${t.removedNames.length} items for good?`,
+        body: `<p>${t.removedNames.map((n) => esc(n)).join('<br>')}</p><p>Saving removes ${t.removedNames.length === 1 ? 'this' : 'these'} from the site for every student. This can\u2019t be undone here \u2014 use "Undo last change" or GitHub history if you need it back.</p>`,
+        ok: 'Save and remove', danger: true
+      });
+      if (!ok) return;
+    }
     try {
       await withBusy('Saving subjects and types', (step) => commitMutation('Update subjects and types', (data) => {
         data.subjects = t.subjects.map((s) => {
@@ -946,7 +1009,7 @@
         return data;
       }, {}, step));
       state.tax.dirty = false; resetTax();
-      toast('Saved. Render will redeploy shortly.');
+      toast('Saved. Cloudflare Pages will redeploy shortly.');
     } catch (e) { showError(e); }
   });
 
@@ -957,7 +1020,8 @@
     const list = (state.data.tiers && state.data.tiers.length) ? state.data.tiers : CFG.defaultTiers;
     state.tiers = {
       items: list.map((t) => ({ id: t.id, name: t.name, color: t.color || '#ffffff', min: t.min, note: t.note || '', code: !!t.code, isNew: false })),
-      dirty: false
+      dirty: false,
+      removedNames: []   // names of tiers removed from this draft so far, for the confirm on Save
     };
     renderTiers();
   }
@@ -990,7 +1054,12 @@
     const row = e.target.closest('.trow'); if (!row) return;
     state.tiers.items[row.dataset.i].code = e.target.checked; tierDirty();
   });
-  $('#tierList').addEventListener('click', (e) => { const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return; state.tiers.items.splice(b.closest('.trow').dataset.i, 1); tierDirty(); renderTiers(); });
+  $('#tierList').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-k="del"]'); if (!b || b.disabled) return;
+    const removed = state.tiers.items.splice(b.closest('.trow').dataset.i, 1)[0];
+    if (removed && !removed.isNew) state.tiers.removedNames.push(removed.name || '(unnamed tier)');
+    tierDirty(); renderTiers();
+  });
   $('#addTier').addEventListener('click', () => {
     const mins = state.tiers.items.map((x) => x.min).filter((n) => Number.isInteger(n));
     const used = state.tiers.items.length;
@@ -999,7 +1068,8 @@
     const rows = $$('#tierList .trow'); rows[rows.length - 1].querySelector('[data-k="name"]').focus();
   });
   $('#tierDefault').addEventListener('click', () => {
-    state.tiers = { items: CFG.defaultTiers.map((t) => ({ id: t.id, name: t.name, color: t.color || '#ffffff', min: t.min, note: t.note || '', code: !!t.code, isNew: false })), dirty: true };
+    const removedNames = state.tiers.removedNames.concat(state.tiers.items.filter((x) => !x.isNew).map((x) => x.name || '(unnamed tier)'));
+    state.tiers = { items: CFG.defaultTiers.map((t) => ({ id: t.id, name: t.name, color: t.color || '#ffffff', min: t.min, note: t.note || '', code: !!t.code, isNew: false })), dirty: true, removedNames };
     renderTiers(); toast('Built-in tiers loaded. Save to apply them.');
   });
   $('#tierReset').addEventListener('click', resetTiers);
@@ -1011,6 +1081,14 @@
     if (t.items.some((x) => !Number.isInteger(x.min) || x.min < 1)) return toast('Each tier needs a whole-number download threshold of at least 1.');
     const taken = new Set(t.items.filter((x) => !x.isNew).map((x) => x.id));
     t.items.forEach((x) => { if (x.isNew) { let b = slug(x.name) || 'tier', id = b, n = 2; while (taken.has(id)) id = b + '-' + n++; x.id = id; taken.add(id); } });
+    if (t.removedNames.length) {
+      const ok = await confirmDialog({
+        title: t.removedNames.length === 1 ? 'Remove this tier for good?' : `Remove ${t.removedNames.length} tiers for good?`,
+        body: `<p>${t.removedNames.map((n) => esc(n)).join('<br>')}</p><p>Saving removes ${t.removedNames.length === 1 ? 'this' : 'these'} for good. This can\u2019t be undone here \u2014 use "Undo last change" or GitHub history if you need it back.</p>`,
+        ok: 'Save and remove', danger: true
+      });
+      if (!ok) return;
+    }
     const sorted = [...t.items].sort((a, b) => a.min - b.min);
     try {
       await withBusy('Saving tiers', (step) => commitMutation('Update download tiers', (data) => {
@@ -1023,7 +1101,7 @@
         return data;
       }, {}, step));
       resetTiers();
-      toast('Saved. Render will redeploy shortly.');
+      toast('Saved. Cloudflare Pages will redeploy shortly.');
     } catch (e) { showError(e); }
   });
 
@@ -1076,7 +1154,7 @@
         return data;
       }, {}, step));
       resetXd();
-      toast('Saved. Render will redeploy shortly.');
+      toast('Saved. Cloudflare Pages will redeploy shortly.');
     } catch (e) { showError(e); }
   });
 
@@ -1119,7 +1197,10 @@
     $('#libCount').textContent = state.data.resources.length;
   }
 
-  $('#outBtn').addEventListener('click', () => signOut('Signed out.'));
+  $('#outBtn').addEventListener('click', async () => {
+    if (hasUnsavedWork() && !(await confirmDialog({ title: 'Sign out?', body: '<p>You have unsaved changes that have not been saved yet. Signing out will discard them.</p>', ok: 'Sign out anyway', danger: true, cancel: 'Stay signed in' }))) return;
+    signOut('Signed out.');
+  });
   $('#exportBtn').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(state.data, null, 2) + '\n'], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'resources-backup-' + today() + '.json';
@@ -1132,7 +1213,7 @@
     try {
       const c = await withBusy('Undoing', (step) => GH.undoLast(step));
       await reload(); refreshHead();
-      doneDialog({ title: 'Change undone', body: 'The site updates after Render redeploys.', url: c.url });
+      doneDialog({ title: 'Change undone', body: 'The site updates after Cloudflare Pages redeploys.', url: c.url });
     } catch (e) { showError(e); }
   });
 
