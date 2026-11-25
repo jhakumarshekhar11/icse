@@ -382,10 +382,34 @@
   const primary = (label, onclick, extra) => btn(label, onclick, Object.assign({ class: 'btn btn-primary' }, extra || {}));
 
   /* ---------- start ---------- */
+  // Timed exam mode needs a free account (so history and scores aren't lost the moment the browser forgets
+  // them). Only enforced on deployments that actually have accounts turned on (root.Account exists) \u2014
+  // on a site with no Firebase config there's nowhere to sign up, so exam mode stays open to everyone there.
+  function openExamGate(res) {
+    openDialog((card) => {
+      const reason = 'Create a free account to use timed exam mode.';
+      const toAccount = (mode) => { closeDialog(); if (root.Account && root.Account.open) root.Account.open(mode, reason); };
+      const wrap = h('div', { class: 'x-gate' });
+      wrap.append(
+        h('div', { class: 'xg-badge', 'aria-hidden': 'true' }, '\u23F1\uFE0F'),
+        h('h3', { id: 'xTitle' }, 'Timed exams are for registered students'),
+        h('p', { class: 'xg-sub' }, 'Create a free account to start "' + res.title + '" under full exam conditions.'),
+        h('ul', { class: 'xg-perks' },
+          h('li', {}, 'Reading time, with the marking scheme hidden until you finish'),
+          h('li', {}, 'Your exam history and scores, saved and synced'),
+          h('li', {}, 'Pick up where you left off on any device you sign in on')),
+        h('div', { class: 'dlg-acts' },
+          primary('Create free account', () => toAccount('signup'), { 'data-first': true }),
+          btn('I already have an account', () => toAccount('login'))),
+        h('button', { type: 'button', class: 'xg-later', onclick: closeDialog }, 'Maybe later'));
+      card.append(wrap);
+    });
+  }
   function prompt(res) {
     const c = CFG();
     if (!res || !eligible(res, c)) return;
     if (S) { toast(S.id === res.id ? 'Your exam is already running' : 'Finish your current exam first'); return; }
+    if (root.Account && !root.Account.signedIn()) { openExamGate(res); return; }
     let writing = defaultMinutes(res, c);
     let total = defaultTotal(res.subject, c);
     let touchedTime = false;   // once the student changes the time, the paper's value no longer replaces it

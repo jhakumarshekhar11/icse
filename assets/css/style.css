@@ -664,6 +664,19 @@ html.theme-wiping.theme-wipe-up::view-transition-new(root) {
 .x-note.warn { color: var(--strong); }
 .x-dlg .dlg-acts { margin-top: 18px; }
 
+/* Sign-up gate: shown instead of the setup dialog above when a guest taps "Start exam" */
+.x-gate { text-align: center; }
+.x-gate .xg-badge { width: 56px; height: 56px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; background: var(--glass-hi); border: 1px solid var(--line-hi); box-shadow: var(--badge-glow); }
+.x-gate h3 { margin-bottom: 6px; }
+.x-gate .xg-sub { margin: 0 0 16px; color: var(--muted); font-size: 0.94rem; line-height: 1.5; }
+.xg-perks { list-style: none; margin: 0 0 18px; padding: 14px 16px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--line); text-align: left; display: grid; gap: 10px; }
+.xg-perks li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; line-height: 1.4; }
+.xg-perks li::before { content: "\2713"; flex: none; width: 18px; height: 18px; margin-top: 1px; border-radius: 50%; display: grid; place-items: center; font-size: 0.7rem; font-weight: 700; background: rgba(var(--w), 0.12); color: var(--strong); }
+.x-gate .dlg-acts { flex-direction: column; }
+.x-gate .dlg-acts .btn { flex: 1 1 auto; width: 100%; }
+.xg-later { display: block; width: 100%; margin-top: 10px; padding: 8px; background: none; border: 0; color: var(--muted); font: inherit; font-size: 0.86rem; cursor: pointer; }
+.xg-later:hover { color: var(--strong); text-decoration: underline; }
+
 .x-banner { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin: 0 0 18px; padding: 12px 16px; border-radius: 16px; }
 .x-banner p { flex: 1 1 220px; margin: 0; font-size: 0.93rem; font-variant-numeric: tabular-nums; }
 .x-banner .btn { height: 36px; padding: 0 14px; }

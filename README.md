@@ -240,6 +240,8 @@ The admin page's security policy (`<meta http-equiv="Content-Security-Policy">` 
 
 Every paper type listed in `exam.types` gets a **Timed exam** button on its card, in the reader and on its own page.
 
+**Signed-in students only.** The button stays visible and enabled for everyone, so a guest can always see that exam mode exists. Pressing it as a guest shows a welcoming sign-up prompt instead of the real setup dialog, explaining what an account unlocks (reading time and hidden marking schemes, exam history and scores, synced across devices), with **Create free account**, **I already have an account** and **Maybe later**. This only applies on deployments that actually have accounts turned on (`firebase-config.js` filled in); on a deployment with no accounts at all, there is nowhere to sign up, so exam mode stays open to everyone there, exactly as before.
+
 ### What a student sees
 
 1. Press **Timed exam**. The dialog shows the **writing time** (adjustable), the fixed **total marks**, an optional **reading time** and a beep switch.
