@@ -254,14 +254,18 @@
   //   reader stays open. If instead the student closes the reader before that pause elapses, confirmFinish()
   //   below (called from the reader's close button) fires it immediately and holds the close until answered,
   //   so the reader never closes a beat before the question about it appears.
-  // - suppressReadd: closing the reader flushes the current page again (Viewer.close -> flushPage). If that
-  //   happens right after "Remove" was pressed, skip that one duplicate update so it isn't silently re-added.
+  // - droppedThisSession: once "Remove" is pressed for a paper, its progress stays gone for the rest of this
+  //   time the reader has it open \u2014 every further page-settle report for that rid is ignored, not just the
+  //   next one \u2014 since the reader keeps reporting pages (its own close-time re-flush, or the student simply
+  //   continuing to scroll) and each report would otherwise silently re-write the entry right back. Cleared
+  //   when the reader closes, so reopening the same paper later tracks progress normally again.
   const askedFinished = new Set();
-  const suppressReadd = new Set();
+  const droppedThisSession = new Set();
+  root.addEventListener('viewer:close', () => droppedThisSession.clear());
   let pendingAsk = null;
   function offerDrop(rid, title) {
     return ask('You\u2019ve finished \u201c' + title + '\u201d. Remove it from Continue where you left off?', 'Remove', 'Keep it')
-      .then((yes) => { if (yes) { suppressReadd.add(rid); forget(rid); } });
+      .then((yes) => { if (yes) { droppedThisSession.add(rid); forget(rid); } });
   }
   // Called by the reader before it closes. Returns true when it took over (the question is showing and
   // the reader should wait for proceed() instead of closing right away).
@@ -274,7 +278,7 @@
   }
   root.addEventListener('icse:progress', (e) => {
     const d = e.detail || {}; if (!okKey(d.rid) || !(d.p > 0)) return;
-    if (suppressReadd.delete(d.rid)) return;   // the reader's own close-time re-flush right after a Remove
+    if (droppedThisSession.has(d.rid)) return;   // removed this session; don't let a later report re-add it
     const m = objOf(jget(K.prog, {}));
     const res = root.App && root.App.byId ? root.App.byId(d.rid) : null;
     const prevP = m[d.rid] ? m[d.rid].p | 0 : 0;
