@@ -249,7 +249,10 @@
   // Reading progress. The reader reports each page it settles on.
   //
   // "Finished" prompt (offer to drop a paper from Continue where you left off once its last page is reached):
-  // - askedFinished: rids already prompted this tab, so revisiting the last page doesn't ask again.
+  // - askedFinished: rids already prompted during the reader's current time open, so revisiting the last
+  //   page doesn't ask twice in the same sitting. Cleared on close (with droppedThisSession below) so
+  //   reopening the same paper later \u2014 a new sitting \u2014 can ask again, e.g. after it was re-read from
+  //   scratch, or kept the first time and finished again later.
   // - pendingAsk: set the moment a paper reaches its last page. It fires itself after a short pause if the
   //   reader stays open. If instead the student closes the reader before that pause elapses, confirmFinish()
   //   below (called from the reader's close button) fires it immediately and holds the close until answered,
@@ -261,7 +264,7 @@
   //   when the reader closes, so reopening the same paper later tracks progress normally again.
   const askedFinished = new Set();
   const droppedThisSession = new Set();
-  root.addEventListener('viewer:close', () => droppedThisSession.clear());
+  root.addEventListener('viewer:close', () => { droppedThisSession.clear(); askedFinished.clear(); });
   let pendingAsk = null;
   function offerDrop(rid, title) {
     return ask('You\u2019ve finished \u201c' + title + '\u201d. Remove it from Continue where you left off?', 'Remove', 'Keep it')
@@ -307,6 +310,10 @@
   function forget(rid) {
     const m = objOf(jget(K.prog, {}));
     delete m[rid]; jset(K.prog, m); LS.del(K.page + rid);
+    // The reader keeps its own copy of "resume at page N" and, if this paper happens to be open right now,
+    // would otherwise just write that page straight back on its next flush (not covered by deleting K.page
+    // above, since that only clears this snapshot, not the reader's in-memory state that recreates it).
+    if (root.Viewer && root.Viewer.dropProgress) root.Viewer.dropProgress(rid);
     emit('account:data', { progress: true });
     later();
   }
