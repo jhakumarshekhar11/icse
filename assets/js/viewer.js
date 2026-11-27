@@ -19,14 +19,16 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+    del(k) { try { localStorage.removeItem(k); } catch { /* storage unavailable */ } }
   };
 
   const S = {
     res: null, doc: null, task: null, pages: [], n: 0, cur: 1, scale: 1, base: 1,
     pw: 595, ratio: 1.414, io: null, open: false, token: 0, fitMode: true,
     total: 0, locked: false, readyP: null, resolveReady: null,
-    lastFocus: null, raf: 0, rerender: 0, saveTimer: 0, hideTimer: 0
+    lastFocus: null, raf: 0, rerender: 0, saveTimer: 0, hideTimer: 0,
+    noSave: false   // set by dropProgress() when this paper was just removed from Continue, see flushPage()
   };
   const App = () => window.App;
   // Pages an exam in progress allows on this paper (0 = all of them). The marking scheme stays out of reach.
@@ -39,7 +41,7 @@
     clearTimeout(S.hideTimer);
     if (S.resolveReady) S.resolveReady(false);
     teardown();
-    S.res = res; S.open = true; S.lastFocus = document.activeElement;
+    S.res = res; S.open = true; S.lastFocus = document.activeElement; S.noSave = false;
     S.readyP = new Promise((r) => { S.resolveReady = r; });
     window.dispatchEvent(new CustomEvent('viewer:open', { detail: res }));
     el.root.hidden = false;
@@ -59,7 +61,10 @@
 
     const token = ++S.token;
     try {
-      const task = lib.getDocument({ url: res.file });
+      // verbosity: ERRORS only. PDF.js otherwise logs a "Warning: TT: ..." line for every PDF whose
+      // embedded font hinting uses instructions it doesn't implement (common from many PDF producers);
+      // harmless \u2014 it just skips that hint and draws the glyph outline directly \u2014 but noisy.
+      const task = lib.getDocument({ url: res.file, verbosity: lib.VerbosityLevel.ERRORS });
       S.task = task;
       task.onProgress = (p) => { if (token === S.token && p.total) setStatus('loading', 'Loading ' + Math.round((p.loaded / p.total) * 100) + '%'); };
       const doc = await task.promise;
@@ -315,9 +320,17 @@
   }
   function flushPage() {
     if (!S.res || !S.n) return;
-    store.set('icse:page:' + S.res.id, S.cur);
+    if (!S.noSave) store.set('icse:page:' + S.res.id, S.cur);
     window.dispatchEvent(new CustomEvent('icse:progress', { detail: { rid: S.res.id, p: S.cur, n: S.n } }));   // account sync + "Continue"
     App().pageChanged && App().pageChanged(S.cur);
+  }
+  // Called by Account when this exact paper is removed from "Continue where you left off", so the reader
+  // stops persisting (and immediately clears) its resume position for the rest of this time it's open \u2014
+  // otherwise the reader's own later flushes (its close-time one included) would just save the last page
+  // straight back, and reopening the paper would silently resume right where "Remove" said to forget.
+  function dropProgress(rid) {
+    if (S.res && S.res.id === rid) S.noSave = true;
+    store.del('icse:page:' + rid);
   }
 
   function updateCur() {
@@ -469,6 +482,7 @@
     // app.js calls this before Viewer.close() so Account has already seen "reached the last page" (and can
     // hold the close for the finished-paper question) even if the student closes within a page or two of it.
     flush: flushPage,
+    dropProgress,
     fullscreenHost: () => document.fullscreenElement || document.body,
     // for the exam timer: wait for the document, read it, and limit or restore the visible pages
     ready: (id) => (S.res && S.res.id === id && S.readyP ? S.readyP : Promise.resolve(false)),
