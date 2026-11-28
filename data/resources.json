@@ -4974,13 +4974,14 @@
       "class": "X",
       "type": "All Chapterwise Question Banks",
       "year": 2027,
-      "file": "/pdfs/history-2027-question-bank.pdf",
-      "pages": 64,
-      "size_kb": 528,
+      "file": "/pdfs/history-2027-question-bank-v2.pdf",
+      "pages": 73,
+      "size_kb": 1021,
       "added": "2026-11-20",
-      "updated": "2026-11-20",
+      "updated": "2026-11-28",
       "downloads": 0,
       "tier": "catalyst",
+      "rev": 2,
       "description": "Question bank for History & Civics.",
       "tags": [
         "supreme court",
@@ -4994,7 +4995,10 @@
         "2026s",
         "2024s",
         "2025s",
-        "high court"
+        "high court",
+        "movement",
+        "2023s",
+        "prime minister"
       ]
     },
     {
