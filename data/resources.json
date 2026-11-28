@@ -4845,13 +4845,14 @@
       "class": "X",
       "type": "All Chapterwise Question Banks",
       "year": 2027,
-      "file": "/pdfs/physics-2027-question-bank-3.pdf",
-      "pages": 56,
-      "size_kb": 539,
+      "file": "/pdfs/physics-2027-question-bank-3-v2.pdf",
+      "pages": 86,
+      "size_kb": 1315,
       "added": "2026-11-14",
-      "updated": "2026-11-20",
+      "updated": "2026-11-28",
       "downloads": 0,
       "tier": "catalyst",
+      "rev": 2,
       "description": "Question bank for Physics.",
       "tags": [
         "specific heat capacity",
@@ -4865,7 +4866,15 @@
         "2026",
         "mcq",
         "circuit",
-        "2023"
+        "2023",
+        "image",
+        "angle",
+        "distance",
+        "refractive index",
+        "object",
+        "focal length",
+        "shown",
+        "2025s"
       ]
     },
     {
